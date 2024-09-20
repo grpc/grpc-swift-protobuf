@@ -30,7 +30,8 @@ let products: [Product] = [
 
 let dependencies: [Package.Dependency] = [
   .package(
-    path: "/Users/georgebarnett/workspace/scratch/grpc-swift-project/grpc-swift"
+    url: "https://github.com/grpc/grpc-swift.git",
+    branch: "main"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
