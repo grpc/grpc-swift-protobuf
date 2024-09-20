@@ -61,7 +61,6 @@ if "$lint"; then
     "${repo}/Sources" \
     "${repo}/Tests" \
     "${repo}/Plugins" \
-    "${repo}/Performance/Benchmarks/Benchmarks/GRPCSwiftBenchmark" \
     && SWIFT_FORMAT_RC=$? || SWIFT_FORMAT_RC=$?
 
   if [[ "${SWIFT_FORMAT_RC}" -ne 0 ]]; then
@@ -81,7 +80,6 @@ elif "$format"; then
     "${repo}/Sources" \
     "${repo}/Tests" \
     "${repo}/Plugins" \
-    "${repo}/Performance/Benchmarks/Benchmarks/GRPCSwiftBenchmark" \
     && SWIFT_FORMAT_RC=$? || SWIFT_FORMAT_RC=$?
 
   if [[ "${SWIFT_FORMAT_RC}" -ne 0 ]]; then

@@ -63,20 +63,14 @@ struct GeneratorOptions {
   private(set) var visibility = Visibility.internal
 
   private(set) var generateServer = true
-
   private(set) var generateClient = true
-  private(set) var generateTestClient = false
 
-  private(set) var keepMethodCasing = false
   private(set) var protoToModuleMappings = ProtoFileToModuleMappings()
   private(set) var fileNaming = FileNaming.fullPath
   private(set) var extraModuleImports: [String] = []
   private(set) var gRPCModuleName = "GRPC"
   private(set) var swiftProtobufModuleName = "SwiftProtobuf"
   private(set) var generateReflectionData = false
-  #if compiler(>=6.0)
-  private(set) var v2 = false
-  #endif
   private(set) var useAccessLevelOnImports = false
 
   init(parameter: any CodeGeneratorParameter) throws {
@@ -103,20 +97,6 @@ struct GeneratorOptions {
       case "Client":
         if let value = Bool(pair.value) {
           self.generateClient = value
-        } else {
-          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
-        }
-
-      case "TestClient":
-        if let value = Bool(pair.value) {
-          self.generateTestClient = value
-        } else {
-          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
-        }
-
-      case "KeepMethodCasing":
-        if let value = Bool(pair.value) {
-          self.keepMethodCasing = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
@@ -167,15 +147,6 @@ struct GeneratorOptions {
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
-
-      #if compiler(>=6.0)
-      case "_V2":
-        if let value = Bool(pair.value) {
-          self.v2 = value
-        } else {
-          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
-        }
-      #endif
 
       case "UseAccessLevelOnImports":
         if let value = Bool(pair.value) {

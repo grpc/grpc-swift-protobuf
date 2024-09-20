@@ -15,13 +15,10 @@
  */
 
 import Foundation
-import SwiftProtobuf
-import SwiftProtobufPluginLibrary
-
-#if compiler(>=6.0)
 import GRPCCodeGen
 import GRPCProtobufCodeGen
-#endif
+import SwiftProtobuf
+import SwiftProtobufPluginLibrary
 
 @main
 final class GenerateGRPC: CodeGenerator {
@@ -65,17 +62,7 @@ final class GenerateGRPC: CodeGenerator {
         continue
       }
 
-      if options.generateClient || options.generateServer || options.generateTestClient {
-        #if compiler(>=6.0)
-        if options.v2 {
-          try self.generateV2Stubs(descriptor, options: options, outputs: outputs)
-        } else {
-          try self.generateV1Stubs(descriptor, options: options, outputs: outputs)
-        }
-        #else
-        try self.generateV1Stubs(descriptor, options: options, outputs: outputs)
-        #endif
-      }
+      try self.generateV2Stubs(descriptor, options: options, outputs: outputs)
     }
   }
 
@@ -98,21 +85,6 @@ final class GenerateGRPC: CodeGenerator {
     try outputs.add(fileName: fileName, contents: reflectionData)
   }
 
-  private func generateV1Stubs(
-    _ descriptor: FileDescriptor,
-    options: GeneratorOptions,
-    outputs: any GeneratorOutputs
-  ) throws {
-    let fileName = self.uniqueOutputFileName(
-      fileDescriptor: descriptor,
-      fileNamingOption: options.fileNaming
-    )
-
-    let fileGenerator = Generator(descriptor, options: options)
-    try outputs.add(fileName: fileName, contents: fileGenerator.code)
-  }
-
-  #if compiler(>=6.0)
   private func generateV2Stubs(
     _ descriptor: FileDescriptor,
     options: GeneratorOptions,
@@ -133,7 +105,6 @@ final class GenerateGRPC: CodeGenerator {
 
     try outputs.add(fileName: fileName, contents: contents)
   }
-  #endif
 }
 
 extension GenerateGRPC {
@@ -211,7 +182,6 @@ private func splitPath(pathname: String) -> (dir: String, base: String, suffix: 
   return (dir: dir, base: base, suffix: suffix)
 }
 
-#if compiler(>=6.0)
 extension SourceGenerator.Config {
   init(options: GeneratorOptions) {
     let accessLevel: SourceGenerator.Config.AccessLevel
@@ -232,4 +202,3 @@ extension SourceGenerator.Config {
     )
   }
 }
-#endif
