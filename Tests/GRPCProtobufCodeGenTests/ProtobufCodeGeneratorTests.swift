@@ -75,9 +75,9 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
                 ]
             }
             @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-            internal typealias ClientProtocol = Hello_World_GreeterClientProtocol
+            internal typealias ClientProtocol = Hello_World_Greeter_ClientProtocol
             @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-            internal typealias Client = Hello_World_GreeterClient
+            internal typealias Client = Hello_World_Greeter_Client
         }
 
         extension GRPCCore.ServiceDescriptor {
@@ -89,7 +89,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        internal protocol Hello_World_GreeterClientProtocol: Sendable {
+        internal protocol Hello_World_Greeter_ClientProtocol: Sendable {
             /// Sends a greeting.
             func sayHello<R>(
                 request: GRPCCore.ClientRequest.Single<Hello_World_HelloRequest>,
@@ -144,7 +144,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        internal struct Hello_World_GreeterClient: Hello_World_Greeter.ClientProtocol {
+        internal struct Hello_World_Greeter_Client: Hello_World_Greeter.ClientProtocol {
             private let client: GRPCCore.GRPCClient
             
             internal init(wrapping client: GRPCCore.GRPCClient) {
@@ -225,9 +225,9 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
             ]
           }
           @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-          public typealias StreamingServiceProtocol = Helloworld_GreeterStreamingServiceProtocol
+          public typealias StreamingServiceProtocol = Helloworld_Greeter_StreamingServiceProtocol
           @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-          public typealias ServiceProtocol = Helloworld_GreeterServiceProtocol
+          public typealias ServiceProtocol = Helloworld_Greeter_ServiceProtocol
         }
 
         extension GRPCCore.ServiceDescriptor {
@@ -239,7 +239,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        public protocol Helloworld_GreeterStreamingServiceProtocol: GRPCCore.RegistrableRPCService {
+        public protocol Helloworld_Greeter_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
           /// Sends a greeting.
           func sayHello(
             request: GRPCCore.ServerRequest.Stream<Helloworld_HelloRequest>,
@@ -268,7 +268,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        public protocol Helloworld_GreeterServiceProtocol: Helloworld_Greeter.StreamingServiceProtocol {
+        public protocol Helloworld_Greeter_ServiceProtocol: Helloworld_Greeter.StreamingServiceProtocol {
           /// Sends a greeting.
           func sayHello(
             request: GRPCCore.ServerRequest.Single<Helloworld_HelloRequest>,
@@ -276,7 +276,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
           ) async throws -> GRPCCore.ServerResponse.Single<Helloworld_HelloReply>
         }
 
-        /// Partial conformance to `Helloworld_GreeterStreamingServiceProtocol`.
+        /// Partial conformance to `Helloworld_Greeter_StreamingServiceProtocol`.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Helloworld_Greeter.ServiceProtocol {
           public func sayHello(
@@ -344,13 +344,13 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
             ]
           }
           @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-          package typealias StreamingServiceProtocol = GreeterStreamingServiceProtocol
+          package typealias StreamingServiceProtocol = Greeter_StreamingServiceProtocol
           @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-          package typealias ServiceProtocol = GreeterServiceProtocol
+          package typealias ServiceProtocol = Greeter_ServiceProtocol
           @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-          package typealias ClientProtocol = GreeterClientProtocol
+          package typealias ClientProtocol = Greeter_ClientProtocol
           @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-          package typealias Client = GreeterClient
+          package typealias Client = Greeter_Client
         }
 
         extension GRPCCore.ServiceDescriptor {
@@ -362,7 +362,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        package protocol GreeterStreamingServiceProtocol: GRPCCore.RegistrableRPCService {
+        package protocol Greeter_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
           /// Sends a greeting.
           func sayHello(
             request: GRPCCore.ServerRequest.Stream<HelloRequest>,
@@ -391,7 +391,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        package protocol GreeterServiceProtocol: Greeter.StreamingServiceProtocol {
+        package protocol Greeter_ServiceProtocol: Greeter.StreamingServiceProtocol {
           /// Sends a greeting.
           func sayHello(
             request: GRPCCore.ServerRequest.Single<HelloRequest>,
@@ -399,7 +399,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
           ) async throws -> GRPCCore.ServerResponse.Single<HelloReply>
         }
 
-        /// Partial conformance to `GreeterStreamingServiceProtocol`.
+        /// Partial conformance to `Greeter_StreamingServiceProtocol`.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Greeter.ServiceProtocol {
           package func sayHello(
@@ -416,7 +416,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        package protocol GreeterClientProtocol: Sendable {
+        package protocol Greeter_ClientProtocol: Sendable {
           /// Sends a greeting.
           func sayHello<R>(
             request: GRPCCore.ClientRequest.Single<HelloRequest>,
@@ -471,7 +471,7 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
 
         /// The greeting service definition.
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-        package struct GreeterClient: Greeter.ClientProtocol {
+        package struct Greeter_Client: Greeter.ClientProtocol {
           private let client: GRPCCore.GRPCClient
           
           package init(wrapping client: GRPCCore.GRPCClient) {
