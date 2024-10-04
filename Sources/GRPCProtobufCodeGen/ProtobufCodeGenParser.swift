@@ -15,7 +15,6 @@
  */
 
 internal import Foundation
-internal import SwiftProtobuf
 internal import SwiftProtobufPluginLibrary
 
 internal import struct GRPCCodeGen.CodeGenerationRequest
@@ -125,8 +124,8 @@ extension CodeGenerationRequest.ServiceDescriptor {
     }
     let name = CodeGenerationRequest.Name(
       base: descriptor.name,
-      generatedUpperCase: NamingUtils.toUpperCamelCase(descriptor.name),
-      generatedLowerCase: NamingUtils.toLowerCamelCase(descriptor.name)
+      generatedUpperCase: descriptor.name,  // The service name from the '.proto' file is expected to be in upper camel case
+      generatedLowerCase: CamelCaser.toLowerCamelCase(descriptor.name)
     )
 
     // Packages that are based on the path of the '.proto' file usually
@@ -145,8 +144,8 @@ extension CodeGenerationRequest.ServiceDescriptor.MethodDescriptor {
   fileprivate init(descriptor: MethodDescriptor, protobufNamer: SwiftProtobufNamer) {
     let name = CodeGenerationRequest.Name(
       base: descriptor.name,
-      generatedUpperCase: NamingUtils.toUpperCamelCase(descriptor.name),
-      generatedLowerCase: NamingUtils.toLowerCamelCase(descriptor.name)
+      generatedUpperCase: descriptor.name,  // The method name from the '.proto' file is expected to be in upper camel case
+      generatedLowerCase: CamelCaser.toLowerCamelCase(descriptor.name)
     )
     let documentation = descriptor.protoSourceComments()
     self.init(
