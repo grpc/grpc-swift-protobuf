@@ -16,31 +16,26 @@
 
 package struct CamelCaser {
   /// Converts a string from upper camel case to lower camel case.
-  package static func toLowerCamelCase(_ s: String) -> String {
-    if s.isEmpty { return "" }
+  package static func toLowerCamelCase(_ input: String) -> String {
+    guard let indexOfFirstLowercase = input.firstIndex(where: { $0.isLowercase }) else {
+      return input.lowercased()
+    }
 
-    let indexOfFirstLowerCase = s.firstIndex(where: { $0 != "_" && $0.lowercased() == String($0) })
-
-    if let indexOfFirstLowerCase {
-      if indexOfFirstLowerCase == s.startIndex {
-        // `s` already begins with a lower case letter. As in: "importCSV".
-        return s
-      } else if indexOfFirstLowerCase == s.index(after: s.startIndex) {
-        // The second character in `s` is lower case. As in: "ImportCSV".
-        return s[s.startIndex].lowercased() + s[indexOfFirstLowerCase...]  // -> "importCSV"
-      } else {
-        // The first lower case character is further within `s`. Tentatively, `s` begins with one or
-        // more abbreviations. Therefore, the last encountered upper case character could be the
-        // beginning of the next word. As in: "FOOBARImportCSV".
-
-        let leadingAbbreviation = s[..<s.index(before: indexOfFirstLowerCase)]
-        let followingWords = s[s.index(before: indexOfFirstLowerCase)...]
-
-        return leadingAbbreviation.lowercased() + followingWords  // -> "foobarImportCSV"
-      }
+    if indexOfFirstLowercase == input.startIndex {
+      // `input` already begins with a lower case letter. As in: "importCSV".
+      return input
+    } else if indexOfFirstLowercase == input.index(after: input.startIndex) {
+      // The second character in `input` is lower case. As in: "ImportCSV".
+      return input[input.startIndex].lowercased() + input[indexOfFirstLowercase...]  // -> "importCSV"
     } else {
-      // `s` did not contain any lower case letter.
-      return s.lowercased()
+      // The first lower case character is further within `input`. Tentatively, `input` begins
+      // with one or more abbreviations. Therefore, the last encountered upper case character
+      // could be the beginning of the next word. As in: "FOOBARImportCSV".
+
+      let leadingAbbreviation = input[..<input.index(before: indexOfFirstLowercase)]
+      let followingWords = input[input.index(before: indexOfFirstLowercase)...]
+
+      return leadingAbbreviation.lowercased() + followingWords  // -> "foobarImportCSV"
     }
   }
 }
