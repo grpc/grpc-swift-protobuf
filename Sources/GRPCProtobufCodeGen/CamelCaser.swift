@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package struct CamelCaser {
+package enum CamelCaser {
   /// Converts a string from upper camel case to lower camel case.
   package static func toLowerCamelCase(_ input: String) -> String {
     guard let indexOfFirstLowercase = input.firstIndex(where: { $0.isLowercase }) else {
