@@ -26,7 +26,8 @@ package struct CamelCaser {
       return input
     } else if indexOfFirstLowercase == input.index(after: input.startIndex) {
       // The second character in `input` is lower case. As in: "ImportCSV".
-      return input[input.startIndex].lowercased() + input[indexOfFirstLowercase...]  // -> "importCSV"
+      // returns "importCSV"
+      return input[input.startIndex].lowercased() + input[indexOfFirstLowercase...]
     } else {
       // The first lower case character is further within `input`. Tentatively, `input` begins
       // with one or more abbreviations. Therefore, the last encountered upper case character
@@ -35,7 +36,8 @@ package struct CamelCaser {
       let leadingAbbreviation = input[..<input.index(before: indexOfFirstLowercase)]
       let followingWords = input[input.index(before: indexOfFirstLowercase)...]
 
-      return leadingAbbreviation.lowercased() + followingWords  // -> "foobarImportCSV"
+      // returns "foobarImportCSV"
+      return leadingAbbreviation.lowercased() + followingWords
     }
   }
 }
