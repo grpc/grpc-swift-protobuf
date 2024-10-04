@@ -124,7 +124,8 @@ extension CodeGenerationRequest.ServiceDescriptor {
     }
     let name = CodeGenerationRequest.Name(
       base: descriptor.name,
-      generatedUpperCase: descriptor.name,  // The service name from the '.proto' file is expected to be in upper camel case
+      // The service name from the '.proto' file is expected to be in upper camel case
+      generatedUpperCase: descriptor.name,
       generatedLowerCase: CamelCaser.toLowerCamelCase(descriptor.name)
     )
 
@@ -144,7 +145,8 @@ extension CodeGenerationRequest.ServiceDescriptor.MethodDescriptor {
   fileprivate init(descriptor: MethodDescriptor, protobufNamer: SwiftProtobufNamer) {
     let name = CodeGenerationRequest.Name(
       base: descriptor.name,
-      generatedUpperCase: descriptor.name,  // The method name from the '.proto' file is expected to be in upper camel case
+      // The method name from the '.proto' file is expected to be in upper camel case
+      generatedUpperCase: descriptor.name,
       generatedLowerCase: CamelCaser.toLowerCamelCase(descriptor.name)
     )
     let documentation = descriptor.protoSourceComments()
