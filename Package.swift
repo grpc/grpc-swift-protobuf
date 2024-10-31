@@ -94,6 +94,9 @@ let targets: [Target] = [
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
     ],
+    resources: [
+      .copy("Generated")
+    ],
     swiftSettings: defaultSwiftSettings
   ),
 ]
