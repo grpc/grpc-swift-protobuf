@@ -42,7 +42,7 @@ let dependencies: [Package.Dependency] = [
 let defaultSwiftSettings: [SwiftSetting] = [
   .swiftLanguageMode(.v6),
   .enableUpcomingFeature("ExistentialAny"),
-  .enableUpcomingFeature("InternalImportsByDefault")
+  .enableUpcomingFeature("InternalImportsByDefault"),
 ]
 
 let targets: [Target] = [
@@ -95,7 +95,7 @@ let targets: [Target] = [
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
     ],
     swiftSettings: defaultSwiftSettings
-  )
+  ),
 ]
 
 let package = Package(
