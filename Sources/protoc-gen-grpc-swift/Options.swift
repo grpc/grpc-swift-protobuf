@@ -22,7 +22,7 @@ enum GenerationError: Error {
   /// Raised when a parameter was giving an invalid value
   case invalidParameterValue(name: String, value: String)
   /// Raised to wrap another error but provide a context message.
-  case wrappedError(message: String, error: Error)
+  case wrappedError(message: String, error: any Error)
 
   var localizedDescription: String {
     switch self {
