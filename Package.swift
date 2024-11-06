@@ -54,7 +54,8 @@ let targets: [Target] = [
       .product(name: "GRPCCodeGen", package: "grpc-swift"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
-    ]
+    ],
+    swiftSettings: defaultSwiftSettings
   ),
 
   // Runtime serialization components
@@ -72,7 +73,8 @@ let targets: [Target] = [
       .target(name: "GRPCProtobuf"),
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
-    ]
+    ],
+    swiftSettings: defaultSwiftSettings
   ),
 
   // Code generator library for protoc-gen-grpc-swift
@@ -91,7 +93,8 @@ let targets: [Target] = [
       .product(name: "GRPCCodeGen", package: "grpc-swift"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
-    ]
+    ],
+    swiftSettings: defaultSwiftSettings
   )
 ]
 
