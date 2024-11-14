@@ -61,9 +61,9 @@ final class ProtobufCodeGenParserTests: XCTestCase {
 
     self.testCommonHelloworldParsedRequestFields(for: parsedCodeGenRequest)
 
-    let expectedMethod = CodeGenerationRequest.ServiceDescriptor.MethodDescriptor(
+    let expectedMethod = MethodDescriptor(
       documentation: "/// Sends a greeting.\n",
-      name: CodeGenerationRequest.Name(
+      name: Name(
         base: "SayHello",
         generatedUpperCase: "SayHello",
         generatedLowerCase: "sayHello"
@@ -76,14 +76,14 @@ final class ProtobufCodeGenParserTests: XCTestCase {
     guard let method = parsedCodeGenRequest.services.first?.methods.first else { return XCTFail() }
     XCTAssertEqual(method, expectedMethod)
 
-    let expectedService = CodeGenerationRequest.ServiceDescriptor(
+    let expectedService = ServiceDescriptor(
       documentation: "/// The greeting service definition.\n",
-      name: CodeGenerationRequest.Name(
+      name: Name(
         base: "Greeter",
         generatedUpperCase: "Greeter",
         generatedLowerCase: "greeter"
       ),
-      namespace: CodeGenerationRequest.Name(
+      namespace: Name(
         base: "helloworld",
         generatedUpperCase: "Helloworld",
         generatedLowerCase: "helloworld"
@@ -143,9 +143,9 @@ final class ProtobufCodeGenParserTests: XCTestCase {
 
     self.testCommonHelloworldParsedRequestFields(for: parsedCodeGenRequest)
 
-    let expectedMethod = CodeGenerationRequest.ServiceDescriptor.MethodDescriptor(
+    let expectedMethod = MethodDescriptor(
       documentation: "/// Sends a greeting.\n",
-      name: CodeGenerationRequest.Name(
+      name: Name(
         base: "SayHello",
         generatedUpperCase: "SayHello",
         generatedLowerCase: "sayHello"
@@ -158,14 +158,14 @@ final class ProtobufCodeGenParserTests: XCTestCase {
     guard let method = parsedCodeGenRequest.services.first?.methods.first else { return XCTFail() }
     XCTAssertEqual(method, expectedMethod)
 
-    let expectedService = CodeGenerationRequest.ServiceDescriptor(
+    let expectedService = ServiceDescriptor(
       documentation: "/// The greeting service definition.\n",
-      name: CodeGenerationRequest.Name(
+      name: Name(
         base: "Greeter",
         generatedUpperCase: "Greeter",
         generatedLowerCase: "greeter"
       ),
-      namespace: CodeGenerationRequest.Name(
+      namespace: Name(
         base: "hello.world",
         generatedUpperCase: "Hello_World",
         generatedLowerCase: "hello_world"
@@ -225,9 +225,9 @@ final class ProtobufCodeGenParserTests: XCTestCase {
 
     self.testCommonHelloworldParsedRequestFields(for: parsedCodeGenRequest)
 
-    let expectedMethod = CodeGenerationRequest.ServiceDescriptor.MethodDescriptor(
+    let expectedMethod = MethodDescriptor(
       documentation: "/// Sends a greeting.\n",
-      name: CodeGenerationRequest.Name(
+      name: Name(
         base: "SayHello",
         generatedUpperCase: "SayHello",
         generatedLowerCase: "sayHello"
@@ -240,14 +240,14 @@ final class ProtobufCodeGenParserTests: XCTestCase {
     guard let method = parsedCodeGenRequest.services.first?.methods.first else { return XCTFail() }
     XCTAssertEqual(method, expectedMethod)
 
-    let expectedService = CodeGenerationRequest.ServiceDescriptor(
+    let expectedService = ServiceDescriptor(
       documentation: "/// The greeting service definition.\n",
-      name: CodeGenerationRequest.Name(
+      name: Name(
         base: "Greeter",
         generatedUpperCase: "Greeter",
         generatedLowerCase: "greeter"
       ),
-      namespace: CodeGenerationRequest.Name(
+      namespace: Name(
         base: "",
         generatedUpperCase: "",
         generatedLowerCase: ""
