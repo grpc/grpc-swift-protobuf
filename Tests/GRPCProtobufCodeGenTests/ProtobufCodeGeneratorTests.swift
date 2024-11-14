@@ -146,11 +146,11 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         internal struct Hello_World_Greeter_Client: Hello_World_Greeter.ClientProtocol {
             private let client: GRPCCore.GRPCClient
-            
+
             internal init(wrapping client: GRPCCore.GRPCClient) {
                 self.client = client
             }
-            
+
             /// Sends a greeting.
             internal func sayHello<R>(
                 request: GRPCCore.ClientRequest<Hello_World_HelloRequest>,
@@ -473,11 +473,11 @@ final class ProtobufCodeGeneratorTests: XCTestCase {
         @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         package struct Greeter_Client: Greeter.ClientProtocol {
           private let client: GRPCCore.GRPCClient
-          
+
           package init(wrapping client: GRPCCore.GRPCClient) {
             self.client = client
           }
-          
+
           /// Sends a greeting.
           package func sayHello<R>(
             request: GRPCCore.ClientRequest<HelloRequest>,

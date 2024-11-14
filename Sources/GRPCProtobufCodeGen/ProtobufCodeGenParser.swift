@@ -15,10 +15,8 @@
  */
 
 internal import Foundation
+internal import GRPCCodeGen
 internal import SwiftProtobufPluginLibrary
-
-internal import struct GRPCCodeGen.CodeGenerationRequest
-internal import struct GRPCCodeGen.SourceGenerator
 
 /// Parses a ``FileDescriptor`` object into a ``CodeGenerationRequest`` object.
 internal struct ProtobufCodeGenParser {
@@ -68,7 +66,7 @@ internal struct ProtobufCodeGenParser {
       "GRPCProtobuf.ProtobufDeserializer<\(messageType)>()"
     }
     let services = self.input.services.map {
-      CodeGenerationRequest.ServiceDescriptor(
+      ServiceDescriptor(
         descriptor: $0,
         package: input.package,
         protobufNamer: self.namer,
@@ -88,41 +86,41 @@ internal struct ProtobufCodeGenParser {
 }
 
 extension ProtobufCodeGenParser {
-  fileprivate var codeDependencies: [CodeGenerationRequest.Dependency] {
-    var codeDependencies: [CodeGenerationRequest.Dependency] = [
+  fileprivate var codeDependencies: [Dependency] {
+    var codeDependencies: [Dependency] = [
       .init(module: "GRPCProtobuf", accessLevel: .internal)
     ]
     // Adding as dependencies the modules containing generated code or types for
     // '.proto' files imported in the '.proto' file we are parsing.
     codeDependencies.append(
       contentsOf: (self.protoToModuleMappings.neededModules(forFile: self.input) ?? []).map {
-        CodeGenerationRequest.Dependency(module: $0, accessLevel: self.accessLevel)
+        Dependency(module: $0, accessLevel: self.accessLevel)
       }
     )
     // Adding extra imports passed in as an option to the plugin.
     codeDependencies.append(
       contentsOf: self.extraModuleImports.sorted().map {
-        CodeGenerationRequest.Dependency(module: $0, accessLevel: self.accessLevel)
+        Dependency(module: $0, accessLevel: self.accessLevel)
       }
     )
     return codeDependencies
   }
 }
 
-extension CodeGenerationRequest.ServiceDescriptor {
+extension GRPCCodeGen.ServiceDescriptor {
   fileprivate init(
-    descriptor: ServiceDescriptor,
+    descriptor: SwiftProtobufPluginLibrary.ServiceDescriptor,
     package: String,
     protobufNamer: SwiftProtobufNamer,
     file: FileDescriptor
   ) {
     let methods = descriptor.methods.map {
-      CodeGenerationRequest.ServiceDescriptor.MethodDescriptor(
+      GRPCCodeGen.MethodDescriptor(
         descriptor: $0,
         protobufNamer: protobufNamer
       )
     }
-    let name = CodeGenerationRequest.Name(
+    let name = Name(
       base: descriptor.name,
       // The service name from the '.proto' file is expected to be in upper camel case
       generatedUpperCase: descriptor.name,
@@ -131,7 +129,7 @@ extension CodeGenerationRequest.ServiceDescriptor {
 
     // Packages that are based on the path of the '.proto' file usually
     // contain dots. For example: "grpc.test".
-    let namespace = CodeGenerationRequest.Name(
+    let namespace = Name(
       base: package,
       generatedUpperCase: protobufNamer.formattedUpperCasePackage(file: file),
       generatedLowerCase: protobufNamer.formattedLowerCasePackage(file: file)
@@ -141,9 +139,12 @@ extension CodeGenerationRequest.ServiceDescriptor {
   }
 }
 
-extension CodeGenerationRequest.ServiceDescriptor.MethodDescriptor {
-  fileprivate init(descriptor: MethodDescriptor, protobufNamer: SwiftProtobufNamer) {
-    let name = CodeGenerationRequest.Name(
+extension GRPCCodeGen.MethodDescriptor {
+  fileprivate init(
+    descriptor: SwiftProtobufPluginLibrary.MethodDescriptor,
+    protobufNamer: SwiftProtobufNamer
+  ) {
+    let name = Name(
       base: descriptor.name,
       // The method name from the '.proto' file is expected to be in upper camel case
       generatedUpperCase: descriptor.name,
