@@ -30,17 +30,19 @@ function invoke_protoc {
 #- DESCRIPTOR SETS ------------------------------------------------------------
 
 function generate_test_service_descriptor_set {
-  local proto="$here/local/test-service.proto"
-  local proto_path="$(dirname $proto)"
-  local output="$root/Tests/GRPCProtobufCodeGenTests/Generated/test-service.pb"
+  local proto proto_path output
+  proto="$here/local/test-service.proto"
+  proto_path="$(dirname "$proto")"
+  output="$root/Tests/GRPCProtobufCodeGenTests/Generated/test-service.pb"
 
   invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" --include_source_info
 }
 
 function generate_foo_service_descriptor_set {
-  local proto="$here/local/foo-service.proto"
-  local proto_path="$(dirname $proto)"
-  local output="$root/Tests/GRPCProtobufCodeGenTests/Generated/foo-service.pb"
+  local proto proto_path output
+  proto="$here/local/foo-service.proto"
+  proto_path="$(dirname "$proto")"
+  output="$root/Tests/GRPCProtobufCodeGenTests/Generated/foo-service.pb"
 
   invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
     --include_source_info \
@@ -48,9 +50,10 @@ function generate_foo_service_descriptor_set {
 }
 
 function generate_bar_service_descriptor_set {
-  local proto="$here/local/bar-service.proto"
-  local proto_path="$(dirname $proto)"
-  local output="$root/Tests/GRPCProtobufCodeGenTests/Generated/bar-service.pb"
+  local proto proto_path output
+  proto="$here/local/bar-service.proto"
+  proto_path="$(dirname "$proto")"
+  output="$root/Tests/GRPCProtobufCodeGenTests/Generated/bar-service.pb"
 
   invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
     --include_source_info \

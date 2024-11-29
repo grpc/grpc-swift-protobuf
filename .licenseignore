@@ -38,3 +38,4 @@ def/protos/local/*
 .unacceptablelanguageignore
 LICENSE
 **/*.swift
+*.pb
