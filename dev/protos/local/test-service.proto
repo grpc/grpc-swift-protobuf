@@ -1,0 +1,19 @@
+// Leading trivia.
+syntax = "proto3";
+
+package test;
+
+// Service docs.
+service TestService {
+  // Unary docs.
+  rpc Unary (TestInput) returns (TestOutput) {}
+  // Client streaming docs.
+  rpc ClientStreaming (stream TestInput) returns (TestOutput) {}
+  // Server streaming docs.
+  rpc ServerStreaming (TestInput) returns (stream TestOutput) {}
+  // Bidirectional streaming docs.
+  rpc BidirectionalStreaming (stream TestInput) returns (stream TestOutput) {}
+}
+
+message TestInput {}
+message TestOutput {}

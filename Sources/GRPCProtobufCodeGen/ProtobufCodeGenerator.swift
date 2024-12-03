@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-public import GRPCCodeGen
-public import SwiftProtobufPluginLibrary
+package import GRPCCodeGen
+package import SwiftProtobufPluginLibrary
 
-public struct ProtobufCodeGenerator {
-  internal var configuration: SourceGenerator.Config
+package struct ProtobufCodeGenerator {
+  internal var config: SourceGenerator.Config
 
-  public init(
-    configuration: SourceGenerator.Config
+  package init(
+    config: SourceGenerator.Config
   ) {
-    self.configuration = configuration
+    self.config = config
   }
 
-  public func generateCode(
-    from fileDescriptor: FileDescriptor,
+  package func generateCode(
+    fileDescriptor: FileDescriptor,
     protoFileModuleMappings: ProtoFileToModuleMappings,
     extraModuleImports: [String]
   ) throws -> String {
     let parser = ProtobufCodeGenParser(
-      input: fileDescriptor,
       protoFileModuleMappings: protoFileModuleMappings,
       extraModuleImports: extraModuleImports,
-      accessLevel: self.configuration.accessLevel
+      accessLevel: self.config.accessLevel
     )
-    let sourceGenerator = SourceGenerator(config: self.configuration)
+    let sourceGenerator = SourceGenerator(config: self.config)
 
-    let codeGenerationRequest = try parser.parse()
+    let codeGenerationRequest = try parser.parse(descriptor: fileDescriptor)
     let sourceFile = try sourceGenerator.generate(codeGenerationRequest)
     return sourceFile.contents
   }

@@ -96,9 +96,9 @@ final class GenerateGRPC: CodeGenerator {
     )
 
     let config = SourceGenerator.Config(options: options)
-    let fileGenerator = ProtobufCodeGenerator(configuration: config)
+    let fileGenerator = ProtobufCodeGenerator(config: config)
     let contents = try fileGenerator.generateCode(
-      from: descriptor,
+      fileDescriptor: descriptor,
       protoFileModuleMappings: options.protoToModuleMappings,
       extraModuleImports: options.extraModuleImports
     )

@@ -34,6 +34,8 @@ Dockerfile
 Snippets/*
 dev/git.commit.template
 dev/version-bump.commit.template
+dev/protos/local/*
 .unacceptablelanguageignore
 LICENSE
 **/*.swift
+*.pb
