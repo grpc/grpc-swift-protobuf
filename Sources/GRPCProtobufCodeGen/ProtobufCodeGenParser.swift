@@ -97,8 +97,22 @@ extension ProtobufCodeGenParser {
   ) -> [Dependency] {
     var codeDependencies: [Dependency] = [
       Dependency(module: "GRPCProtobuf", accessLevel: .internal),
-      Dependency(module: "SwiftProtobuf", accessLevel: self.accessLevel),
     ]
+
+    // If any services in the file depend on well-known Protobuf types then also import
+    // SwiftProtobuf. Importing SwiftProtobuf unconditionally results in warnings in the generated
+    // code if access-levels are used on imports and no well-known types are used.
+    let usesAnyWellKnownTypesInServices = file.services.contains { service in
+      service.methods.contains { method in
+        let inputIsWellKnown = method.inputType.wellKnownType != nil
+        let outputIsWellKnown = method.outputType.wellKnownType != nil
+        return inputIsWellKnown || outputIsWellKnown
+      }
+    }
+    if usesAnyWellKnownTypesInServices {
+      codeDependencies.append(Dependency(module: "SwiftProtobuf", accessLevel: self.accessLevel))
+    }
+
     // Adding as dependencies the modules containing generated code or types for
     // '.proto' files imported in the '.proto' file we are parsing.
     codeDependencies.append(

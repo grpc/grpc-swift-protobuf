@@ -62,7 +62,6 @@ struct ProtobufCodeGenParserTests {
     func dependencies() {
       let expected: [GRPCCodeGen.Dependency] = [
         .init(module: "GRPCProtobuf", accessLevel: .internal),  // Always an internal import
-        .init(module: "SwiftProtobuf", accessLevel: .internal),
       ]
       #expect(self.codeGen.dependencies == expected)
     }
@@ -175,7 +174,6 @@ struct ProtobufCodeGenParserTests {
     func dependencies() {
       let expected: [GRPCCodeGen.Dependency] = [
         .init(module: "GRPCProtobuf", accessLevel: .internal),  // Always an internal import
-        .init(module: "SwiftProtobuf", accessLevel: .internal),
       ]
       #expect(self.codeGen.dependencies == expected)
     }
@@ -235,6 +233,28 @@ struct ProtobufCodeGenParserTests {
     @Test("Service namespace")
     func serviceNamespace() {
       #expect(self.service.namespace.base == "")
+    }
+  }
+
+  @Suite("Service using 'well-known types' (wkt-service.proto)")
+  struct WKTService: UsesDescriptorSet {
+    static let descriptorSetName = "wkt-service"
+    static let fileDescriptorName = "wkt-service"
+
+    let codeGen: CodeGenerationRequest
+
+    init() throws {
+      let descriptor = try #require(try Self.fileDescriptor)
+      self.codeGen = try parseDescriptor(descriptor)
+    }
+
+    @Test("Dependencies")
+    func dependencies() {
+      let expected: [Dependency] = [
+        Dependency(module: "GRPCProtobuf", accessLevel: .internal),
+        Dependency(module: "SwiftProtobuf", accessLevel: .internal),
+      ]
+      #expect(self.codeGen.dependencies == expected)
     }
   }
 }
