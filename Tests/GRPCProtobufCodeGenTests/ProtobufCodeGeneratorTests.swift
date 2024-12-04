@@ -67,6 +67,7 @@ struct ProtobufCodeGeneratorTests: UsesDescriptorSet {
 
       import GRPCCore
       import GRPCProtobuf
+      import SwiftProtobuf
 
       // MARK: - test.TestService
 

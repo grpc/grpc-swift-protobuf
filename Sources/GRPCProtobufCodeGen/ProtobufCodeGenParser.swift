@@ -96,7 +96,8 @@ extension ProtobufCodeGenParser {
     file: FileDescriptor
   ) -> [Dependency] {
     var codeDependencies: [Dependency] = [
-      .init(module: "GRPCProtobuf", accessLevel: .internal)
+      Dependency(module: "GRPCProtobuf", accessLevel: .internal),
+      Dependency(module: "SwiftProtobuf", accessLevel: self.accessLevel),
     ]
     // Adding as dependencies the modules containing generated code or types for
     // '.proto' files imported in the '.proto' file we are parsing.
