@@ -96,7 +96,7 @@ extension ProtobufCodeGenParser {
     file: FileDescriptor
   ) -> [Dependency] {
     var codeDependencies: [Dependency] = [
-      Dependency(module: "GRPCProtobuf", accessLevel: .internal),
+      Dependency(module: "GRPCProtobuf", accessLevel: .internal)
     ]
 
     // If any services in the file depend on well-known Protobuf types then also import
