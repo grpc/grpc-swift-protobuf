@@ -59,9 +59,21 @@ function generate_bar_service_descriptor_set {
     --include_imports
 }
 
+function generate_wkt_service_descriptor_set {
+  local proto proto_path output
+  proto="$here/local/wkt-service.proto"
+  proto_path="$(dirname "$proto")"
+  output="$root/Tests/GRPCProtobufCodeGenTests/Generated/wkt-service.pb"
+
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_source_info \
+    --include_imports
+}
+
 #------------------------------------------------------------------------------
 
 # Descriptor sets
 generate_test_service_descriptor_set
 generate_foo_service_descriptor_set
 generate_bar_service_descriptor_set
+generate_wkt_service_descriptor_set
