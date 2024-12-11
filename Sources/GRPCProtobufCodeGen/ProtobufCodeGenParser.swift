@@ -92,24 +92,20 @@ package struct ProtobufCodeGenParser {
 }
 
 extension ProtobufCodeGenParser {
-  fileprivate func codeDependencies(
-    file: FileDescriptor
-  ) -> [Dependency] {
+  fileprivate func codeDependencies(file: FileDescriptor) -> [Dependency] {
     var codeDependencies: [Dependency] = [
       Dependency(module: "GRPCProtobuf", accessLevel: .internal)
     ]
 
-    // If any services in the file depend on well-known Protobuf types then also import
-    // SwiftProtobuf. Importing SwiftProtobuf unconditionally results in warnings in the generated
-    // code if access-levels are used on imports and no well-known types are used.
-    let usesAnyWellKnownTypesInServices = file.services.contains { service in
-      service.methods.contains { method in
-        let inputIsWellKnown = method.inputType.wellKnownType != nil
-        let outputIsWellKnown = method.outputType.wellKnownType != nil
-        return inputIsWellKnown || outputIsWellKnown
-      }
+    // If there's a dependency on a bundled proto then add the SwiftProtobuf import.
+    //
+    // Importing SwiftProtobuf unconditionally results in warnings in the generated
+    // code if access-levels are used on imports and no bundled protos are used.
+    let dependsOnBundledProto = file.dependencies.contains { descriptor in
+      SwiftProtobufInfo.isBundledProto(file: descriptor)
     }
-    if usesAnyWellKnownTypesInServices {
+
+    if dependsOnBundledProto {
       codeDependencies.append(Dependency(module: "SwiftProtobuf", accessLevel: self.accessLevel))
     }
 
