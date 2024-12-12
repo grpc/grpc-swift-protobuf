@@ -88,14 +88,14 @@ struct GeneratorOptions {
         }
 
       case "Server":
-        if let value = Bool(pair.value) {
+        if let value = Bool(pair.value.lowercased()) {
           self.generateServer = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
 
       case "Client":
-        if let value = Bool(pair.value) {
+        if let value = Bool(pair.value.lowercased()) {
           self.generateClient = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
@@ -142,14 +142,14 @@ struct GeneratorOptions {
         }
 
       case "ReflectionData":
-        if let value = Bool(pair.value) {
+        if let value = Bool(pair.value.lowercased()) {
           self.generateReflectionData = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
 
       case "UseAccessLevelOnImports":
-        if let value = Bool(pair.value) {
+        if let value = Bool(pair.value.lowercased()) {
           self.useAccessLevelOnImports = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
