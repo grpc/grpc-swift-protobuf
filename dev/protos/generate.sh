@@ -19,11 +19,82 @@ here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 root="$here/../.."
 protoc=$(which protoc)
 
+# Checkout and build the plugins.
+swift build --package-path "$root" --product protoc-gen-swift
+swift build --package-path "$root" --product protoc-gen-grpc-swift
+
+# Grab the plugin paths.
+bin_path=$(swift build --package-path "$root" --show-bin-path)
+protoc_gen_swift="$bin_path/protoc-gen-swift"
+protoc_gen_grpc_swift="$bin_path/protoc-gen-grpc-swift"
+
+# Generates gRPC by invoking protoc with the gRPC Swift plugin.
+# Parameters:
+# - $1: .proto file
+# - $2: proto path
+# - $3: output path
+# - $4 onwards: options to forward to the plugin
+function generate_grpc {
+  local proto=$1
+  local args=("--plugin=$protoc_gen_grpc_swift" "--proto_path=${2}" "--grpc-swift_out=${3}")
+
+  for option in "${@:4}"; do
+    args+=("--grpc-swift_opt=$option")
+  done
+
+  invoke_protoc "${args[@]}" "$proto"
+}
+
+# Generates messages by invoking protoc with the Swift plugin.
+# Parameters:
+# - $1: .proto file
+# - $2: proto path
+# - $3: output path
+# - $4 onwards: options to forward to the plugin
+function generate_message {
+  local proto=$1
+  local args=("--plugin=$protoc_gen_swift" "--proto_path=$2" "--swift_out=$3")
+
+  for option in "${@:4}"; do
+    args+=("--swift_opt=$option")
+  done
+
+  invoke_protoc "${args[@]}" "$proto"
+}
+
 function invoke_protoc {
   # Setting -x when running the script produces a lot of output, instead boil
   # just echo out the protoc invocations.
   echo "$protoc" "$@"
   "$protoc" "$@"
+}
+
+#- DETAILED ERROR -------------------------------------------------------------
+
+function generate_rpc_error_details {
+  local protos output
+
+  protos=(
+    "$here/upstream/google/rpc/status.proto"
+    "$here/upstream/google/rpc/code.proto"
+    "$here/upstream/google/rpc/error_details.proto"
+  )
+  output="$root/Sources/GRPCProtobuf/Errors/Generated"
+
+  for proto in "${protos[@]}"; do
+    generate_message "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true"
+  done
+}
+
+#- DETAILED ERROR Tests -------------------------------------------------------
+
+function generate_error_service {
+  local proto output
+  proto="$here/local/error-service.proto"
+  output="$root/Tests/GRPCProtobufTests/Errors/Generated"
+
+  generate_message "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true"
+  generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true"
 }
 
 #- DESCRIPTOR SETS ------------------------------------------------------------
@@ -72,7 +143,13 @@ function generate_wkt_service_descriptor_set {
 
 #------------------------------------------------------------------------------
 
-# Descriptor sets
+# Detailed error model
+generate_rpc_error_details
+
+# Service for testing error details
+generate_error_service
+
+# Descriptor sets for tests
 generate_test_service_descriptor_set
 generate_foo_service_descriptor_set
 generate_bar_service_descriptor_set
