@@ -16,7 +16,7 @@
 
 public import SwiftProtobuf
 
-/// Common details which can be used to supplement ``DetailedRPCError`` and ``GoogleRPCStatus``.
+/// Common details which can be used to supplement ``GoogleRPCStatus``.
 ///
 /// This represents the set of common error types suggested by [Google AIP-193](https://google.aip.dev/193).
 /// These types are derived from and will serialize to the those represented in
