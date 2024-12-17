@@ -139,7 +139,7 @@ public struct ErrorDetails: Sendable, Hashable {
   /// Create a ``RequestInfo-swift.struct`` detail.
   ///
   /// - Parameters:
-  ///   - requestID: /// An opaque string that should only be interpreted by the service generating
+  ///   - requestID: An opaque string that should only be interpreted by the service generating
   ///       it. For example, it can be used to identify requests in the service's logs.
   ///   - servingData: Any data that was used to serve this request. For example, an encrypted
   ///       stack trace that can be sent back to the service provider for debugging.
@@ -301,7 +301,7 @@ extension ErrorDetails {
 
   /// Returns `Google_Protobuf_Any` if applicable.
   ///
-  /// Calling this **doesn't** encode a detail of another type into a `Google_Protobuf_Any`.
+  /// - Important: Calling this **doesn't** encode a detail of another type into a `Google_Protobuf_Any`.
   public var any: Google_Protobuf_Any? {
     switch self.wrapped {
     case .any(let any):

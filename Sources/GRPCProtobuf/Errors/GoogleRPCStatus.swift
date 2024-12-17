@@ -42,7 +42,7 @@ public struct GoogleRPCStatus: Error {
 
   /// A developer-facing error message, which should be in English.
   ///
-  /// Any user-facing error message should be localized and sent in the ``details`` field
+  /// Any user-facing error message should be localized and sent in the `details` field
   /// or localized by the client.
   public var message: String
 
