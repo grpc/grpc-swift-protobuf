@@ -31,7 +31,7 @@ let products: [Product] = [
 let dependencies: [Package.Dependency] = [
   .package(
     url: "https://github.com/grpc/grpc-swift.git",
-    exact: "2.0.0-beta.1"
+    branch: "main"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
@@ -73,6 +73,7 @@ let targets: [Target] = [
     dependencies: [
       .target(name: "GRPCProtobuf"),
       .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
     ],
     swiftSettings: defaultSwiftSettings

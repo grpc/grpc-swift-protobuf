@@ -35,6 +35,7 @@ Snippets/*
 dev/git.commit.template
 dev/version-bump.commit.template
 dev/protos/local/*
+dev/protos/upstream/*
 .unacceptablelanguageignore
 LICENSE
 **/*.swift
