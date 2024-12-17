@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Foundation
+
 import SwiftProtobufPluginLibrary
 
-enum GenerationError: Error {
+enum GenerationError: Error, CustomStringConvertible {
   /// Raised when parsing the parameter string and found an unknown key
   case unknownParameter(name: String)
   /// Raised when a parameter was giving an invalid value
@@ -24,14 +24,14 @@ enum GenerationError: Error {
   /// Raised to wrap another error but provide a context message.
   case wrappedError(message: String, error: any Error)
 
-  var localizedDescription: String {
+  var description: String {
     switch self {
     case let .unknownParameter(name):
       return "Unknown generation parameter '\(name)'"
     case let .invalidParameterValue(name, value):
       return "Unknown value for generation parameter '\(name)': '\(value)'"
     case let .wrappedError(message, error):
-      return "\(message): \(error.localizedDescription)"
+      return "\(message): \(error)"
     }
   }
 }
@@ -165,24 +165,32 @@ struct GeneratorOptions {
     guard let string = string, !string.isEmpty else {
       return []
     }
-    let parts = string.components(separatedBy: ",")
+
+    let parts = string.split(separator: ",")
 
     // Partitions the string into the section before the = and after the =
     let result = parts.map { string -> (key: String, value: String) in
-
       // Finds the equal sign and exits early if none
-      guard let index = string.range(of: "=")?.lowerBound else {
-        return (string, "")
+      guard let index = string.firstIndex(of: "=") else {
+        return (String(string), "")
       }
 
       // Creates key/value pair and trims whitespace
       let key = string[..<index]
-        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .trimmingWhitespaceAndNewlines()
       let value = string[string.index(after: index)...]
-        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .trimmingWhitespaceAndNewlines()
 
       return (key: key, value: value)
     }
     return result
+  }
+}
+
+extension String.SubSequence {
+  func trimmingWhitespaceAndNewlines() -> String {
+    let trimmedSuffix = self.drop(while: { $0.isNewline || $0.isWhitespace })
+    let trimmed = trimmedSuffix.trimmingPrefix(while: { $0.isNewline || $0.isWhitespace })
+    return String(trimmed)
   }
 }
