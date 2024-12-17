@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-import Foundation
 import GRPCCodeGen
 import GRPCProtobufCodeGen
 import SwiftProtobuf
 import SwiftProtobufPluginLibrary
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 @main
 final class GenerateGRPC: CodeGenerator {
@@ -146,8 +151,7 @@ extension GenerateGRPC {
     case .fullPath:
       return pathParts.dir + pathParts.base + ext
     case .pathToUnderscores:
-      let dirWithUnderscores =
-        pathParts.dir.replacingOccurrences(of: "/", with: "_")
+      let dirWithUnderscores = pathParts.dir.replacing("/", with: "_")
       return dirWithUnderscores + pathParts.base + ext
     case .dropPath:
       return pathParts.base + ext
