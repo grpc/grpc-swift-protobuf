@@ -47,8 +47,6 @@ public struct GoogleRPCStatus: Error {
   public var message: String
 
   /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
   public var details: [ErrorDetails]
 
   /// Create a new Google RPC Status error.
