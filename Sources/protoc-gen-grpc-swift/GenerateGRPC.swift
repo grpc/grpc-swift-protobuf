@@ -63,10 +63,6 @@ final class GenerateGRPC: CodeGenerator {
         )
       }
 
-      if descriptor.services.isEmpty {
-        continue
-      }
-
       try self.generateV2Stubs(descriptor, options: options, outputs: outputs)
     }
   }
