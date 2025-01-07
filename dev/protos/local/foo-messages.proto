@@ -1,3 +1,4 @@
+// Leading trivia.
 syntax = "proto3";
 
 package foo;

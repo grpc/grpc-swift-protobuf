@@ -119,6 +119,17 @@ function generate_foo_service_descriptor_set {
     --include_imports
 }
 
+function generate_foo_messages_descriptor_set {
+  local proto proto_path output
+  proto="$here/local/foo-messages.proto"
+  proto_path="$(dirname "$proto")"
+  output="$root/Tests/GRPCProtobufCodeGenTests/Generated/foo-messages.pb"
+
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_source_info \
+    --include_imports
+}
+
 function generate_bar_service_descriptor_set {
   local proto proto_path output
   proto="$here/local/bar-service.proto"
@@ -152,5 +163,6 @@ generate_error_service
 # Descriptor sets for tests
 generate_test_service_descriptor_set
 generate_foo_service_descriptor_set
+generate_foo_messages_descriptor_set
 generate_bar_service_descriptor_set
 generate_wkt_service_descriptor_set
