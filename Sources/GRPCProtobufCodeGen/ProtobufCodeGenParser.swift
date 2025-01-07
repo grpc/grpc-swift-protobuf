@@ -98,12 +98,13 @@ package struct ProtobufCodeGenParser {
 
 extension ProtobufCodeGenParser {
   fileprivate func codeDependencies(file: FileDescriptor) -> [Dependency] {
-    var codeDependencies: [Dependency] = []
-
-    if file.services.count > 0 {
-      codeDependencies.append(Dependency(module: "GRPCProtobuf", accessLevel: .internal))
+    guard file.services.count > 0 else {
+      return []
     }
 
+    var codeDependencies: [Dependency] = [
+      Dependency(module: "GRPCProtobuf", accessLevel: .internal)
+    ]
     // If there's a dependency on a bundled proto then add the SwiftProtobuf import.
     //
     // Importing SwiftProtobuf unconditionally results in warnings in the generated
