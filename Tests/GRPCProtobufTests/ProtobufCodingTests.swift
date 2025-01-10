@@ -28,7 +28,7 @@ final class ProtobufCodingTests: XCTestCase {
     let serializer = ProtobufSerializer<Google_Protobuf_Timestamp>()
     let deserializer = ProtobufDeserializer<Google_Protobuf_Timestamp>()
 
-    let bytes = try serializer.serialize(message)
+    let bytes = try serializer.serialize(message) as [UInt8]
     let roundTrip = try deserializer.deserialize(bytes)
     XCTAssertEqual(roundTrip, message)
   }
@@ -38,7 +38,7 @@ final class ProtobufCodingTests: XCTestCase {
     let serializer = ProtobufSerializer<TestMessage>()
 
     XCTAssertThrowsError(
-      try serializer.serialize(message)
+      try serializer.serialize(message) as [UInt8]
     ) { error in
       XCTAssertEqual(
         error as? RPCError,
