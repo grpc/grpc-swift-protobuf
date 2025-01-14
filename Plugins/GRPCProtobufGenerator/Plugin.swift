@@ -34,7 +34,7 @@ struct GRPCProtobufGenerator {
 
     var commands: [Command] = []
     for inputFile in inputFiles {
-      guard let config = configs.findApplicableConfig(for: inputFile) else {
+      guard let (configFilePath, config) = configs.findApplicableConfig(for: inputFile) else {
         throw PluginError.noConfigurationFilesFound
       }
 
@@ -60,7 +60,8 @@ struct GRPCProtobufGenerator {
           config: config,
           protoDirectoryPath: protoDirectoryPath,
           protocPath: protocPath,
-          protocGenSwiftPath: protocGenSwiftPath
+          protocGenSwiftPath: protocGenSwiftPath,
+          configFilePath: configFilePath
         )
         commands.append(protoCommand)
       }
@@ -96,15 +97,15 @@ extension [URL: GenerationConfig] {
   /// Finds the most precisely relevant config file for a given proto file URL.
   /// - Parameters:
   ///   - file: The path to the proto file to be matched.
-  /// - Returns: The path to the most precisely relevant config file if one is found, otherwise `nil`.
-  func findApplicableConfig(for file: URL) -> GenerationConfig? {
+  /// - Returns: The path to the most precisely relevant config file if one is found and the config itself, otherwise `nil`.
+  func findApplicableConfig(for file: URL) -> (URL, GenerationConfig)? {
     let filePathComponents = file.pathComponents
     for endComponent in (0 ..< filePathComponents.count).reversed() {
       for (configFilePath, config) in self {
         if filePathComponents[..<endComponent]
           == configFilePath.pathComponents[..<(configFilePath.pathComponents.count - 1)]
         {
-          return config
+          return (configFilePath, config)
         }
       }
     }
@@ -162,13 +163,15 @@ func protocGenGRPCSwiftCommand(
 ///   - protoDirectoryPath: The root path to the source `.proto` files used as the reference for relative path naming schemes.
 ///   - protocPath: The path to `protoc`
 ///   - protocGenSwiftPath: The path to `proto-gen-grpc-swift`.
+///   - configFilePath: The path to the config file in use.
 /// - Returns: The command to invoke `protoc` with the `proto-gen-swift` plugin.
 func protocGenSwiftCommand(
   inputFile: URL,
   config: GenerationConfig,
   protoDirectoryPath: URL,
   protocPath: URL,
-  protocGenSwiftPath: URL
+  protocGenSwiftPath: URL,
+  configFilePath: URL
 ) throws -> PackagePlugin.Command {
   let outputPathURL = URL(fileURLWithPath: config.outputPath)
 
@@ -192,7 +195,11 @@ func protocGenSwiftCommand(
     displayName: "Generating Swift Protobuf files for \(inputFile.relativePath)",
     executable: protocPath,
     arguments: arguments,
-    inputFiles: [inputFile, protocGenSwiftPath],
+    inputFiles: [
+      inputFile,
+      protocGenSwiftPath,
+      configFilePath
+    ],
     outputFiles: [outputFilePath]
   )
 }
