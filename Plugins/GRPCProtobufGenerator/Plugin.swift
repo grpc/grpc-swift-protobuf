@@ -42,7 +42,7 @@ struct GRPCProtobufGenerator {
       let protoDirectoryPath = inputFile.deletingLastPathComponent()
 
       // unless *explicitly* opted-out
-      if config.client != false || config.server != false {
+      if config.client || config.server {
         let grpcCommand = try protocGenGRPCSwiftCommand(
           inputFile: inputFile,
           config: config,
