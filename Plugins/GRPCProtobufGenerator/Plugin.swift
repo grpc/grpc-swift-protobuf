@@ -75,18 +75,18 @@ struct GRPCProtobufGenerator {
 /// - Parameter configurationFiles: URLs from which to load configuration
 /// - Returns: A map of source URLs to loaded configuration
 func readConfigurationFiles(
-  _ configurationFiles: [URL],
+  _ configFilePaths: [URL],
   pluginWorkDirectory: URL
 ) throws -> [URL: GenerationConfig] {
   var configs: [URL: GenerationConfig] = [:]
-  for configFile in configurationFiles {
+  for configFilePath in configFilePaths {
     let data = try Data(contentsOf: configFile)
-    let configuration = try JSONDecoder().decode(BuildPluginConfig.self, from: data)
+    let config = try JSONDecoder().decode(BuildPluginConfig.self, from: data)
 
     // the output directory mandated by the plugin system
-    configs[configFile] = GenerationConfig(
-      configurationFile: configuration,
-      configurationFilePath: configFile,
+    configs[configFilePath] = GenerationConfig(
+      configurationFile: config,
+      configurationFilePath: configFilePath,
       outputPath: pluginWorkDirectory
     )
   }
