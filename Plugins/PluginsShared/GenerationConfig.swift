@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-/// The configuration common to the build and command plugins.
-struct CommonConfiguration: Codable {
+/// The configuration used when generating code whether called from the build or command plugin.
+struct GenerationConfig {
   /// The visibility of the generated files.
-  enum Visibility: String, Codable {
+  enum Visibility: String {
     /// The generated files should have `internal` access level.
     case `internal` = "Internal"
     /// The generated files should have `public` access level.
@@ -25,7 +25,6 @@ struct CommonConfiguration: Codable {
     /// The generated files should have `package` access level.
     case `package` = "Package"
   }
-
   /// The naming of output files with respect to the path of the source file.
   ///
   /// For an input of `foo/bar/baz.proto` the following output file will be generated:
@@ -42,36 +41,29 @@ struct CommonConfiguration: Codable {
   }
 
   /// The visibility of the generated files.
-  var visibility: Visibility?
+  var visibility: Visibility
   /// Whether server code is generated.
-  var server: Bool?
+  var server: Bool
   /// Whether client code is generated.
-  var client: Bool?
+  var client: Bool
   /// Whether message code is generated.
-  var message: Bool?
-  //  /// Whether reflection data is generated.
-  //  var reflectionData: Bool?
+  var message: Bool
   /// The naming of output files with respect to the path of the source file.
-  var fileNaming: FileNaming?
-  /// Path to module map .asciipb file.
-  var protoPathModuleMappings: String?
+  var fileNaming: FileNaming
   /// Whether imports should have explicit access levels.
-  var useAccessLevelOnImports: Bool?
+  var useAccessLevelOnImports: Bool
 
-  /// Specify the directory in which to search for
-  /// imports. May be specified multiple times;
-  /// directories will be searched in order.
-  /// The target source directory is always appended
-  /// to the import paths.
-  var importPaths: [String]?
+  /// Specify the directory in which to search for imports.
+  ///
+  /// May be specified multiple times; directories will be searched in order.
+  /// The target source directory is always appended to the import paths.
+  var importPaths: [String]
 
   /// The path to the `protoc` binary.
   ///
-  /// If this is not set, SPM will try to find the tool itself.
+  /// If this is not set, Swift Package Manager will try to find the tool itself.
   var protocPath: String?
 
   /// The path into which the generated source files are created.
-  ///
-  /// If this is not set, the plugin will use a default path (see plugin for details).
-  var outputPath: String?
+  var outputPath: String
 }

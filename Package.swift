@@ -27,8 +27,8 @@ let products: [Product] = [
     targets: ["protoc-gen-grpc-swift"]
   ),
   .plugin(
-    name: "GRPCGeneratorPlugin",
-    targets: ["GRPCGeneratorPlugin"]
+    name: "GRPCProtobufGenerator",
+    targets: ["GRPCProtobufGenerator"]
   ),
 ]
 
@@ -108,10 +108,10 @@ let targets: [Target] = [
 
   // Code generator build plugin
   .plugin(
-    name: "GRPCGeneratorPlugin",
+    name: "GRPCProtobufGenerator",
     capability: .buildTool(),
     dependencies: [
-      "protoc-gen-grpc-swift",
+      .target(name: "protoc-gen-grpc-swift"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
     ]
   ),

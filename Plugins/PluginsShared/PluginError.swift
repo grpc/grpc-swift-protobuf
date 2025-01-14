@@ -16,13 +16,19 @@
 
 import Foundation
 
-enum PluginError: Error, LocalizedError {
+enum PluginError: Error {
   // Build plugin
   case incompatibleTarget(String)
   case noConfigurationFilesFound
-  case expectedConfigurationNotFound(String)
-  case missingFileNamingStrategy
-  case missingOutputPath
+}
 
-  case helpRequested
+extension PluginError: CustomStringConvertible {
+  var description: String {
+    switch self {
+    case .incompatibleTarget(let string):
+      "Build plugin applied to incompatible target."
+    case .noConfigurationFilesFound:
+      "No configuration files found."
+    }
+  }
 }
