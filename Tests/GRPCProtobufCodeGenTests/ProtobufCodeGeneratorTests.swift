@@ -405,7 +405,7 @@ struct ProtobufCodeGeneratorTests {
 
         // Default implementation of 'registerMethods(with:)'.
         extension Test_TestService.StreamingServiceProtocol {
-          \(access) func registerMethods(with router: inout GRPCCore.RPCRouter) {
+          \(access) func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
             router.registerHandler(
               forMethod: Test_TestService.Method.Unary.descriptor,
               deserializer: GRPCProtobuf.ProtobufDeserializer<Test_TestInput>(),
@@ -666,14 +666,14 @@ struct ProtobufCodeGeneratorTests {
           /// > Source IDL Documentation:
           /// >
           /// > Service docs.
-          \(access) struct Client: ClientProtocol {
-            private let client: GRPCCore.GRPCClient
+          \(access) struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+            private let client: GRPCCore.GRPCClient<Transport>
 
             /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
             ///
             /// - Parameters:
             ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-            \(access) init(wrapping client: GRPCCore.GRPCClient) {
+            \(access) init(wrapping client: GRPCCore.GRPCClient<Transport>) {
               self.client = client
             }
 
