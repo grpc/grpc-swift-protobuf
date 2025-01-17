@@ -65,7 +65,7 @@ final class ProtobufCodingTests: XCTestCase {
           code: .invalidArgument,
           message:
             """
-            Can't deserialize to message of type TestMessage
+            Can't deserialize to message of type TestMessage.
             """
         )
       )

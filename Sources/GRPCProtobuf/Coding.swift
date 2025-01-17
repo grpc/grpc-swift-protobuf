@@ -58,7 +58,7 @@ public struct ProtobufDeserializer<Message: SwiftProtobuf.Message>: GRPCCore.Mes
     } catch let error {
       throw RPCError(
         code: .invalidArgument,
-        message: "Can't deserialize to message of type \(Message.self) ERR: \(error)",
+        message: "Can't deserialize to message of type \(Message.self).",
         cause: error
       )
     }
