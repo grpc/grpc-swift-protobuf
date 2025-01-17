@@ -19,7 +19,7 @@ import Foundation
 enum PluginError: Error {
   // Build plugin
   case incompatibleTarget(String)
-  case noConfigurationFilesFound
+  case noConfigFilesFound
 }
 
 extension PluginError: CustomStringConvertible {
@@ -27,8 +27,8 @@ extension PluginError: CustomStringConvertible {
     switch self {
     case .incompatibleTarget(let string):
       "Build plugin applied to incompatible target."
-    case .noConfigurationFilesFound:
-      "No configuration files found."
+    case .noConfigFilesFound:
+      "No config files found. The build plugin relies on the existence of one or more '\(configFileName)' files in the target source."
     }
   }
 }

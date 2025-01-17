@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-/// The configuration used when generating code whether called from the build or command plugin.
+/// The config used when generating code whether called from the build or command plugin.
 struct GenerationConfig {
-  /// The visibility of the generated files.
-  enum Visibility: String {
+  /// The access level (i.e. visibility) of the generated files.
+  enum AccessLevel: String {
     /// The generated files should have `internal` access level.
     case `internal` = "Internal"
     /// The generated files should have `public` access level.
@@ -25,6 +25,7 @@ struct GenerationConfig {
     /// The generated files should have `package` access level.
     case `package` = "Package"
   }
+
   /// The naming of output files with respect to the path of the source file.
   ///
   /// For an input of `foo/bar/baz.proto` the following output file will be generated:
@@ -41,7 +42,7 @@ struct GenerationConfig {
   }
 
   /// The visibility of the generated files.
-  var visibility: Visibility
+  var visibility: AccessLevel
   /// Whether server code is generated.
   var server: Bool
   /// Whether client code is generated.
@@ -66,4 +67,19 @@ struct GenerationConfig {
 
   /// The path into which the generated source files are created.
   var outputPath: String
+}
+
+extension GenerationConfig.AccessLevel: Codable {
+  init?(rawValue: String) {
+    switch rawValue.lowercased() {
+    case "internal":
+      self = .internal
+    case "public":
+      self = .public
+    case "package":
+      self = .package
+    default:
+      return nil
+    }
+  }
 }

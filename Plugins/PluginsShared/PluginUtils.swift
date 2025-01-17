@@ -19,7 +19,7 @@ import PackagePlugin
 
 /// Derive the path to the instance of `protoc` to be used.
 /// - Parameters:
-///   - config: The supplied configuration. If no path is supplied then one is discovered using the `PROTOC_PATH` environment variable or the `findTool`.
+///   - config: The supplied config. If no path is supplied then one is discovered using the `PROTOC_PATH` environment variable or the `findTool`.
 ///   - findTool: The context-supplied tool which is used to attempt to discover the path to a `protoc` binary.
 /// - Returns: The path to the instance of `protoc` to be used.
 func deriveProtocPath(
@@ -37,67 +37,64 @@ func deriveProtocPath(
   }
 }
 
-/// Construct the arguments to be passed to `protoc` when invoking the `proto-gen-swift` `protoc` plugin.
+/// Construct the arguments to be passed to `protoc` when invoking the `protoc-gen-swift` `protoc` plugin.
 /// - Parameters:
-///   - config: The configuration for this operation.
+///   - config: The config for this operation.
 ///   - fileNaming: The file naming scheme to be used.
 ///   - inputFiles: The input `.proto` files.
-///   - protoDirectoryPaths: The directories in which `protoc` will search for imports.
-///   - protocGenSwiftPath: The path to the `proto-gen-swift` `protoc` plugin.
+///   - protoDirectoryPaths: The directories in which `protoc` will look for imports.
+///   - protocGenSwiftPath: The path to the `protoc-gen-swift` `protoc` plugin.
 ///   - outputDirectory: The directory in which generated source files are created.
-/// - Returns: The constructed arguments to be passed to `protoc` when invoking the `proto-gen-swift` `protoc` plugin.
+/// - Returns: The constructed arguments to be passed to `protoc` when invoking the `protoc-gen-swift` `protoc` plugin.
 func constructProtocGenSwiftArguments(
   config: GenerationConfig,
-  using fileNaming: GenerationConfig.FileNaming?,
+  fileNaming: GenerationConfig.FileNaming?,
   inputFiles: [URL],
-  protoDirectoryPaths: [URL],
+  protoDirectoryPaths: [String],
   protocGenSwiftPath: URL,
   outputDirectory: URL
 ) -> [String] {
   var protocArgs = [
-    "--plugin=protoc-gen-swift=\(protocGenSwiftPath.relativePath)",
-    "--swift_out=\(outputDirectory.relativePath)",
+    "--plugin=protoc-gen-swift=\(protocGenSwiftPath.absoluteStringNoScheme)",
+    "--swift_out=\(outputDirectory.absoluteStringNoScheme)",
   ]
 
-  for path in config.importPaths {
-    protocArgs.append("--proto_path")
-    protocArgs.append("\(path)")
+  for path in protoDirectoryPaths {
+    protocArgs.append("--proto_path=\(path)")
   }
 
   protocArgs.append("--swift_opt=Visibility=\(config.visibility.rawValue)")
   protocArgs.append("--swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--swift_opt=UseAccessLevelOnImports=\(config.useAccessLevelOnImports)")
-  protocArgs.append(contentsOf: protoDirectoryPaths.map { "--proto_path=\($0.relativePath)" })
-  protocArgs.append(contentsOf: inputFiles.map { $0.relativePath })
+  protocArgs.append(contentsOf: inputFiles.map { $0.absoluteStringNoScheme })
 
   return protocArgs
 }
 
-/// Construct the arguments to be passed to `protoc` when invoking the `proto-gen-grpc-swift` `protoc` plugin.
+/// Construct the arguments to be passed to `protoc` when invoking the `protoc-gen-grpc-swift` `protoc` plugin.
 /// - Parameters:
-///   - config: The configuration for this operation.
+///   - config: The config for this operation.
 ///   - fileNaming: The file naming scheme to be used.
 ///   - inputFiles: The input `.proto` files.
-///   - protoDirectoryPaths: The directories in which `protoc` will search for imports.
-///   - protocGenGRPCSwiftPath: The path to the `proto-gen-grpc-swift` `protoc` plugin.
+///   - protoDirectoryPaths: The directories in which `protoc` will look for imports.
+///   - protocGenGRPCSwiftPath: The path to the `protoc-gen-grpc-swift` `protoc` plugin.
 ///   - outputDirectory: The directory in which generated source files are created.
-/// - Returns: The constructed arguments to be passed to `protoc` when invoking the `proto-gen-grpc-swift` `protoc` plugin.
+/// - Returns: The constructed arguments to be passed to `protoc` when invoking the `protoc-gen-grpc-swift` `protoc` plugin.
 func constructProtocGenGRPCSwiftArguments(
   config: GenerationConfig,
-  using fileNaming: GenerationConfig.FileNaming?,
+  fileNaming: GenerationConfig.FileNaming?,
   inputFiles: [URL],
-  protoDirectoryPaths: [URL],
+  protoDirectoryPaths: [String],
   protocGenGRPCSwiftPath: URL,
   outputDirectory: URL
 ) -> [String] {
   var protocArgs = [
-    "--plugin=protoc-gen-grpc-swift=\(protocGenGRPCSwiftPath.relativePath)",
-    "--grpc-swift_out=\(outputDirectory.relativePath)",
+    "--plugin=protoc-gen-grpc-swift=\(protocGenGRPCSwiftPath.absoluteStringNoScheme)",
+    "--grpc-swift_out=\(outputDirectory.absoluteStringNoScheme)",
   ]
 
-  for path in config.importPaths {
-    protocArgs.append("--proto_path")
-    protocArgs.append("\(path)")
+  for path in protoDirectoryPaths {
+    protocArgs.append("--proto_path=\(path)")
   }
 
   protocArgs.append("--grpc-swift_opt=Visibility=\(config.visibility.rawValue.capitalized)")
@@ -105,8 +102,16 @@ func constructProtocGenGRPCSwiftArguments(
   protocArgs.append("--grpc-swift_opt=Client=\(config.client)")
   protocArgs.append("--grpc-swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--grpc-swift_opt=UseAccessLevelOnImports=\(config.useAccessLevelOnImports)")
-  protocArgs.append(contentsOf: protoDirectoryPaths.map { "--proto_path=\($0.relativePath)" })
-  protocArgs.append(contentsOf: inputFiles.map { $0.relativePath })
+  protocArgs.append(contentsOf: inputFiles.map { $0.absoluteStringNoScheme })
 
   return protocArgs
+}
+
+extension URL {
+  /// Returns `URL.absoluteString` with the `file://` scheme prefix removed
+  var absoluteStringNoScheme: String {
+    var absoluteString = self.absoluteString
+    absoluteString.trimPrefix("file://")
+    return absoluteString
+  }
 }
