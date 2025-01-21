@@ -21,7 +21,7 @@ import SwiftProtobufPluginLibrary
 import Testing
 
 import struct GRPCCodeGen.CodeGenerationRequest
-import struct GRPCCodeGen.SourceGenerator
+import struct GRPCCodeGen.CodeGenerator
 
 protocol UsesDescriptorSet {
   static var descriptorSetName: String { get }
@@ -71,7 +71,7 @@ private func loadDescriptorSet(
 func parseDescriptor(
   _ descriptor: FileDescriptor,
   extraModuleImports: [String] = [],
-  accessLevel: SourceGenerator.Config.AccessLevel = .internal
+  accessLevel: CodeGenerator.Config.AccessLevel = .internal
 ) throws -> CodeGenerationRequest {
   let parser = ProtobufCodeGenParser(
     protoFileModuleMappings: .init(),
