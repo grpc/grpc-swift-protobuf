@@ -97,7 +97,8 @@ struct GRPCProtobufGenerator {
           baseDirectoryPath: configFilePath.deletingLastPathComponent(),
           protoDirectoryPaths: protoDirectoryPaths,
           protocPath: protocPath,
-          protocGenGRPCSwiftPath: protocGenGRPCSwiftPath
+          protocGenGRPCSwiftPath: protocGenGRPCSwiftPath,
+          configFilePath: configFilePath
         )
         commands.append(grpcCommand)
       }
@@ -174,6 +175,7 @@ extension [URL: GenerationConfig] {
 ///   - protoDirectoryPaths: The paths passed to `protoc` in which to look for imported proto files.
 ///   - protocPath: The path to `protoc`
 ///   - protocGenGRPCSwiftPath: The path to `protoc-gen-grpc-swift`.
+///   - configFilePath: The path to the config file in use.
 /// - Returns: The command to invoke `protoc` with the `protoc-gen-grpc-swift` plugin.
 func protocGenGRPCSwiftCommand(
   inputFile: URL,
@@ -181,7 +183,8 @@ func protocGenGRPCSwiftCommand(
   baseDirectoryPath: URL,
   protoDirectoryPaths: [String],
   protocPath: URL,
-  protocGenGRPCSwiftPath: URL
+  protocGenGRPCSwiftPath: URL,
+  configFilePath: URL
 ) throws -> PackagePlugin.Command {
   let outputPathURL = URL(fileURLWithPath: config.outputPath)
 
@@ -205,7 +208,11 @@ func protocGenGRPCSwiftCommand(
     displayName: "Generating gRPC Swift files for \(inputFile.absoluteStringNoScheme)",
     executable: protocPath,
     arguments: arguments,
-    inputFiles: [inputFile, protocGenGRPCSwiftPath],
+    inputFiles: [
+      inputFile,
+      protocGenGRPCSwiftPath,
+      configFilePath,
+    ],
     outputFiles: [outputFilePath]
   )
 }

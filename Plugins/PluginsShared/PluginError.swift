@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import Foundation
-
 enum PluginError: Error {
   // Build plugin
   case incompatibleTarget(String)
