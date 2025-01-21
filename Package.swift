@@ -26,6 +26,14 @@ let products: [Product] = [
     name: "protoc-gen-grpc-swift",
     targets: ["protoc-gen-grpc-swift"]
   ),
+  .plugin(
+    name: "GRPCGeneratorPlugin",
+    targets: ["GRPCGeneratorPlugin"]
+  ),
+  .plugin(
+    name: "GRPCGeneratorCommand",
+    targets: ["GRPCGeneratorCommand"]
+  ),
 ]
 
 let dependencies: [Package.Dependency] = [
@@ -100,6 +108,37 @@ let targets: [Target] = [
       .copy("Generated")
     ],
     swiftSettings: defaultSwiftSettings
+  ),
+
+  // Code generator build plugin
+  .plugin(
+    name: "GRPCGeneratorPlugin",
+    capability: .buildTool(),
+    dependencies: [
+      "protoc-gen-grpc-swift",
+      .product(name: "protoc-gen-swift", package: "swift-protobuf"),
+    ]
+  ),
+
+  //  // Code generator SwiftPM command
+  .plugin(
+    name: "GRPCGeneratorCommand",
+    capability: .command(
+      intent: .custom(
+        verb: "generate-grpc-code-from-protos",
+        description: "Generate Swift code for gRPC services from protobuf definitions."
+      ),
+      permissions: [
+        .writeToPackageDirectory(
+          reason:
+            "To write the generated Swift files back into the source directory of the package."
+        )
+      ]
+    ),
+    dependencies: [
+      "protoc-gen-grpc-swift",
+      .product(name: "protoc-gen-swift", package: "swift-protobuf"),
+    ]
   ),
 ]
 
