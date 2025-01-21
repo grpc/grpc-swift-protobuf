@@ -83,10 +83,10 @@ struct GRPCProtobufGenerator {
 
       let protocPath = try deriveProtocPath(using: config, tool: tool)
       let protoDirectoryPaths: [String]
-      if !config.importPaths.isEmpty {
-        protoDirectoryPaths = config.importPaths
-      } else {
+      if config.importPaths.isEmpty {
         protoDirectoryPaths = [configFilePath.deletingLastPathComponent().absoluteStringNoScheme]
+      } else {
+        protoDirectoryPaths = config.importPaths
       }
 
       // unless *explicitly* opted-out
