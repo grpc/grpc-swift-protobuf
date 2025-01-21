@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "Foo/foo-messages.proto";
+
+package foo;
+
+service FooService1 {
+  rpc Foo (FooInput) returns (FooOutput) {}
+}
+
+service FooService2 {
+  rpc Foo (FooInput) returns (FooOutput) {}
+}
