@@ -25,9 +25,11 @@ public struct ProtobufSerializer<Message: SwiftProtobuf.Message>: GRPCCore.Messa
   ///
   /// - Parameter message: The message to serialize.
   /// - Returns: An array of serialized bytes representing the message.
-  public func serialize(_ message: Message) throws -> [UInt8] {
+  @inlinable
+  public func serialize<Bytes: GRPCContiguousBytes>(_ message: Message) throws -> Bytes {
     do {
-      return try message.serializedBytes()
+      let adapter = try message.serializedBytes() as ContiguousBytesAdapter<Bytes>
+      return adapter.bytes
     } catch let error {
       throw RPCError(
         code: .invalidArgument,
@@ -46,14 +48,17 @@ public struct ProtobufDeserializer<Message: SwiftProtobuf.Message>: GRPCCore.Mes
   ///
   /// - Parameter serializedMessageBytes: The array of bytes to deserialize.
   /// - Returns: The deserialized message.
-  public func deserialize(_ serializedMessageBytes: [UInt8]) throws -> Message {
+  @inlinable
+  public func deserialize<Bytes: GRPCContiguousBytes>(
+    _ serializedMessageBytes: Bytes
+  ) throws -> Message {
     do {
-      let message = try Message(serializedBytes: serializedMessageBytes)
+      let message = try Message(serializedBytes: ContiguousBytesAdapter(serializedMessageBytes))
       return message
     } catch let error {
       throw RPCError(
         code: .invalidArgument,
-        message: "Can't deserialize to message of type \(Message.self)",
+        message: "Can't deserialize to message of type \(Message.self).",
         cause: error
       )
     }
