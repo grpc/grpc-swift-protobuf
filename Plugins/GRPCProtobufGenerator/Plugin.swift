@@ -144,7 +144,9 @@ func readConfigFiles(
 }
 
 extension [URL: GenerationConfig] {
-  /// Finds the most precisely relevant config file for a given proto file URL.
+  /// Finds the most relevant config file for a given proto file URL.
+  ///
+  /// The most relevant config file is the lowest of config files which are either a sibling or a parent in the file heirarchy.
   /// - Parameters:
   ///   - file: The path to the proto file to be matched.
   /// - Returns: The path to the most precisely relevant config file if one is found and the config itself, otherwise `nil`.
