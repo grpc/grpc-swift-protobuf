@@ -109,8 +109,10 @@ func constructProtocGenGRPCSwiftArguments(
 
 extension URL {
   /// Returns `URL.absoluteString` with the `file://` scheme prefix removed
+  ///
+  /// Note: This method also removes percent-encoded UTF-8 characters
   var absoluteStringNoScheme: String {
-    var absoluteString = self.absoluteString
+    var absoluteString = self.absoluteString.removingPercentEncoding ?? self.absoluteString
     absoluteString.trimPrefix("file://")
     return absoluteString
   }
