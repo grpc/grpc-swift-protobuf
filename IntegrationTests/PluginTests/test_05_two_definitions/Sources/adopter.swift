@@ -44,7 +44,7 @@ struct PluginAdopter {
     }
   }
 
-  static func doRPC(_ fooService1: Foo_FooService1.Client) async throws {
+  static func doRPC<Transport>(_ fooService1: Foo_FooService1.Client<Transport>) async throws {
     do {
       let reply = try await fooService1.foo(.with { _ in () })
       print("Reply: \(reply.hashValue)")

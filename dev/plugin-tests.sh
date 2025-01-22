@@ -19,20 +19,20 @@ log() { printf -- "** %s\n" "$*" >&2; }
 error() { printf -- "** ERROR: %s\n" "$*" >&2; }
 fatal() { error "$@"; exit 1; }
 
-source_dir=$(pwd)
-pluginTests="${source_dir}/IntegrationTests/PluginTests"
+here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" 
+plugin_tests="${here}/../IntegrationTests/PluginTests"
 
-for dir in "$pluginTests"/test_*/ ; do
+for dir in "$plugin_tests"/test_*/ ; do
   if [[ -f "$dir/Package.swift" ]]; then
-    pluginTest=$(basename "$dir")
-    log "Building '$pluginTest' plugin test"
+    plugin_test=$(basename "$dir")
+    log "Building '$plugin_test' plugin test"
 
     if ! build_output=$(swift build --package-path "$dir" 2>&1); then
       # Only print the build output on failure.
       echo "$build_output"
-      fatal "Build failed for '$pluginTest'"
+      fatal "Build failed for '$plugin_test'"
     else
-      log "Build succeeded for '$pluginTest'"
+      log "Build succeeded for '$plugin_test'"
     fi
   fi
 done
