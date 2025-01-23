@@ -19,8 +19,22 @@ log() { printf -- "** %s\n" "$*" >&2; }
 error() { printf -- "** ERROR: %s\n" "$*" >&2; }
 fatal() { error "$@"; exit 1; }
 
-here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-tests_directory="${PLUGIN_TESTS_OUTPUT_DIRECTORY:=$(mktemp -d -t grpc-swift-protobuf-plugin-tests)}"
+tests_directory="${PLUGIN_TESTS_DIRECTORY:=""}"
+if [[ -z "$tests_directory" ]]; then
+  fatal "Tests parent directory must be specified."
+fi
 
-PLUGIN_TESTS_OUTPUT_DIRECTORY="$tests_directory" "$here/setup-plugin-tests.sh"
-PLUGIN_TESTS_DIRECTORY="$tests_directory" "$here/execute-plugin-tests.sh"
+for dir in "$tests_directory"/test_*/ ; do
+  if [[ -f "$dir/Package.swift" ]]; then
+    plugin_test=$(basename "$dir")
+    log "Building '$plugin_test' plugin test"
+
+    if ! build_output=$(swift build --package-path "$dir" 2>&1); then
+      # Only print the build output on failure.
+      echo "$build_output"
+      fatal "Build failed for '$plugin_test'"
+    else
+      log "Build succeeded for '$plugin_test'"
+    fi
+  fi
+done

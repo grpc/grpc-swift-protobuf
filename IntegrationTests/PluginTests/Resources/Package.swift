@@ -17,7 +17,7 @@
 
 import PackageDescription
 
-let package = Package(
+var package = Package(
   name: "grpc-adopter",
   platforms: [
     .macOS(.v15),
@@ -27,12 +27,11 @@ let package = Package(
     .visionOS(.v2),
   ],
   dependencies: [
-    .package(
-      path: "../../../../grpc-swift-protobuf"
-    ),
+    // Dependency on grpc-swift-protobuf to be added by setup-plugin-tests.sh script
+
     .package(
       url: "https://github.com/grpc/grpc-swift.git",
-      exact: "2.0.0-beta.3"
+      branch: "main"
     ),
   ],
   targets: [
