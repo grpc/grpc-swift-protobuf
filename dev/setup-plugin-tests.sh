@@ -19,12 +19,12 @@ log() { printf -- "** %s\n" "$*" >&2; }
 error() { printf -- "** ERROR: %s\n" "$*" >&2; }
 fatal() { error "$@"; exit 1; }
 
-output_directory="${PLUGIN_TESTS_OUTPUT_DIRECTORY:=$(mktemp -d -t grpc-swift-protobuf-plugin-tests)}"
+output_directory="${PLUGIN_TESTS_OUTPUT_DIRECTORY:=$(mktemp -d)}"
 
 here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 grpc_swift_protobuf_directory="$(readlink -f "${here}/..")"
 resources_directory="$(readlink -f "${grpc_swift_protobuf_directory}/IntegrationTests/PluginTests/Resources")"
-scratch_directory="$(mktemp -d -t grpc-swift-protobuf-plugin-tests-scratch)"
+scratch_directory="$(mktemp -d)"
 
 echo "Output directory: $output_directory"
 echo "grpc-swift-protobuf directory: $grpc_swift_protobuf_directory"

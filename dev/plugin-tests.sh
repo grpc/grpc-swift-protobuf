@@ -20,7 +20,7 @@ error() { printf -- "** ERROR: %s\n" "$*" >&2; }
 fatal() { error "$@"; exit 1; }
 
 here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-tests_directory="${PLUGIN_TESTS_OUTPUT_DIRECTORY:=$(mktemp -d -t grpc-swift-protobuf-plugin-tests)}"
+tests_directory="${PLUGIN_TESTS_OUTPUT_DIRECTORY:=$(mktemp -d)}"
 
 PLUGIN_TESTS_OUTPUT_DIRECTORY="$tests_directory" "$here/setup-plugin-tests.sh"
 PLUGIN_TESTS_DIRECTORY="$tests_directory" "$here/execute-plugin-tests.sh"
