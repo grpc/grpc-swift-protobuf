@@ -23,8 +23,8 @@ enum PluginError: Error {
 extension PluginError: CustomStringConvertible {
   var description: String {
     switch self {
-    case .incompatibleTarget(let string):
-      "Build plugin applied to incompatible target."
+    case .incompatibleTarget(let target):
+      "Build plugin applied to incompatible target (\(target))."
     case .noConfigFilesFound:
       "No config files found. The build plugin relies on the existence of one or more '\(configFileName)' files in the target source."
     }

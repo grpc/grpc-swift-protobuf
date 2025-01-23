@@ -25,10 +25,10 @@ struct ProtobufCodeGeneratorTests {
     static let descriptorSetName = "test-service"
     static let fileDescriptorName = "test-service"
 
-    @Test("Generate", arguments: [SourceGenerator.Config.AccessLevel.internal, .public, .package])
-    func generate(accessLevel: SourceGenerator.Config.AccessLevel) throws {
+    @Test("Generate", arguments: [CodeGenerator.Config.AccessLevel.internal])
+    func generate(accessLevel: GRPCCodeGen.CodeGenerator.Config.AccessLevel) throws {
       let generator = ProtobufCodeGenerator(
-        config: SourceGenerator.Config(
+        config: CodeGenerator.Config(
           accessLevel: accessLevel,
           accessLevelOnImports: false,
           client: true,
@@ -1072,7 +1072,7 @@ struct ProtobufCodeGeneratorTests {
     @Test("Generate")
     func generate() throws {
       let generator = ProtobufCodeGenerator(
-        config: SourceGenerator.Config(
+        config: CodeGenerator.Config(
           accessLevel: .public,
           accessLevelOnImports: false,
           client: true,

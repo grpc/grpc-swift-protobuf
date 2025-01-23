@@ -18,11 +18,12 @@ internal import SwiftProtobuf
 package import SwiftProtobufPluginLibrary
 
 package import struct GRPCCodeGen.CodeGenerationRequest
+package import struct GRPCCodeGen.CodeGenerator
 package import struct GRPCCodeGen.Dependency
 package import struct GRPCCodeGen.MethodDescriptor
-package import struct GRPCCodeGen.Name
+package import struct GRPCCodeGen.MethodName
 package import struct GRPCCodeGen.ServiceDescriptor
-package import struct GRPCCodeGen.SourceGenerator
+package import struct GRPCCodeGen.ServiceName
 
 #if canImport(FoundationEssentials)
 internal import struct FoundationEssentials.IndexPath
@@ -34,12 +35,12 @@ internal import struct Foundation.IndexPath
 package struct ProtobufCodeGenParser {
   let extraModuleImports: [String]
   let protoToModuleMappings: ProtoFileToModuleMappings
-  let accessLevel: SourceGenerator.Config.AccessLevel
+  let accessLevel: CodeGenerator.Config.AccessLevel
 
   package init(
     protoFileModuleMappings: ProtoFileToModuleMappings,
     extraModuleImports: [String],
-    accessLevel: SourceGenerator.Config.AccessLevel
+    accessLevel: CodeGenerator.Config.AccessLevel
   ) {
     self.extraModuleImports = extraModuleImports
     self.protoToModuleMappings = protoFileModuleMappings
@@ -69,12 +70,6 @@ package struct ProtobufCodeGenParser {
       //   https://github.com/grpc/grpc-swift
 
       """
-    let lookupSerializer: (String) -> String = { messageType in
-      "GRPCProtobuf.ProtobufSerializer<\(messageType)>()"
-    }
-    let lookupDeserializer: (String) -> String = { messageType in
-      "GRPCProtobuf.ProtobufDeserializer<\(messageType)>()"
-    }
 
     let services = descriptor.services.map {
       GRPCCodeGen.ServiceDescriptor(
@@ -90,8 +85,12 @@ package struct ProtobufCodeGenParser {
       leadingTrivia: header + leadingTrivia,
       dependencies: self.codeDependencies(file: descriptor),
       services: services,
-      lookupSerializer: lookupSerializer,
-      lookupDeserializer: lookupDeserializer
+      makeSerializerCodeSnippet: { messageType in
+        "GRPCProtobuf.ProtobufSerializer<\(messageType)>()"
+      },
+      makeDeserializerCodeSnippet: { messageType in
+        "GRPCProtobuf.ProtobufDeserializer<\(messageType)>()"
+      }
     )
   }
 }
@@ -147,22 +146,17 @@ extension GRPCCodeGen.ServiceDescriptor {
         protobufNamer: protobufNamer
       )
     }
-    let name = Name(
-      base: descriptor.name,
+
+    let typePrefix = protobufNamer.typePrefix(forFile: file)
+    let name = ServiceName(
+      identifyingName: descriptor.fullName,
       // The service name from the '.proto' file is expected to be in upper camel case
-      generatedUpperCase: descriptor.name,
-      generatedLowerCase: CamelCaser.toLowerCamelCase(descriptor.name)
+      typeName: typePrefix + descriptor.name,
+      propertyName: protobufNamer.typePrefixProperty(file: file) + descriptor.name
     )
 
-    // Packages that are based on the path of the '.proto' file usually
-    // contain dots. For example: "grpc.test".
-    let namespace = Name(
-      base: package,
-      generatedUpperCase: protobufNamer.formattedUpperCasePackage(file: file),
-      generatedLowerCase: protobufNamer.formattedLowerCasePackage(file: file)
-    )
     let documentation = descriptor.protoSourceComments()
-    self.init(documentation: documentation, name: name, namespace: namespace, methods: methods)
+    self.init(documentation: documentation, name: name, methods: methods)
   }
 }
 
@@ -171,11 +165,11 @@ extension GRPCCodeGen.MethodDescriptor {
     descriptor: SwiftProtobufPluginLibrary.MethodDescriptor,
     protobufNamer: SwiftProtobufNamer
   ) {
-    let name = Name(
-      base: descriptor.name,
+    let name = MethodName(
+      identifyingName: descriptor.name,
       // The method name from the '.proto' file is expected to be in upper camel case
-      generatedUpperCase: descriptor.name,
-      generatedLowerCase: CamelCaser.toLowerCamelCase(descriptor.name)
+      typeName: descriptor.name,
+      functionName: CamelCaser.toLowerCamelCase(descriptor.name)
     )
     let documentation = descriptor.protoSourceComments()
     self.init(
@@ -208,17 +202,19 @@ extension FileDescriptor {
 }
 
 extension SwiftProtobufNamer {
-  internal func formattedUpperCasePackage(file: FileDescriptor) -> String {
-    let unformattedPackage = self.typePrefix(forFile: file)
-    return unformattedPackage.trimTrailingUnderscores()
-  }
-
-  internal func formattedLowerCasePackage(file: FileDescriptor) -> String {
-    let upperCasePackage = self.formattedUpperCasePackage(file: file)
-    let lowerCaseComponents = upperCasePackage.split(separator: "_").map { component in
+  internal func typePrefixProperty(file: FileDescriptor) -> String {
+    let typePrefix = self.typePrefix(forFile: file)
+    let lowercased = typePrefix.split(separator: "_").map { component in
       NamingUtils.toLowerCamelCase(String(component))
     }
-    return lowerCaseComponents.joined(separator: "_")
+
+    let joined = lowercased.joined(separator: "_")
+    if typePrefix.hasSuffix("_"), !joined.hasSuffix("_") {
+      // Add the trailing "_" if it was dropped.
+      return joined + "_"
+    } else {
+      return joined
+    }
   }
 }
 
