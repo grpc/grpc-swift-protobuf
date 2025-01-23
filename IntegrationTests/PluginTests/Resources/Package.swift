@@ -32,7 +32,7 @@ var package = Package(
     .package(
       url: "https://github.com/grpc/grpc-swift.git",
       branch: "main"
-    ),
+    )
   ],
   targets: [
     .executableTarget(
