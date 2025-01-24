@@ -17,7 +17,7 @@
 
 import PackageDescription
 
-var package = Package(
+let package = Package(
   name: "grpc-adopter",
   platforms: [
     .macOS(.v15),
