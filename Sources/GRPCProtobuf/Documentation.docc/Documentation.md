@@ -14,11 +14,13 @@ This package provides three products:
 - `GRPCProtobufGenerator`, a Swift Package build plugin for generating stubs as part of the build
   process.
 
-## Essentials
-
-- <doc:Installing-protoc>
 
 ## Topics
+
+### Essentials
+
+- <doc:Installing-protoc>
+- <doc:Generating-stubs>
 
 ### Serialization
 
