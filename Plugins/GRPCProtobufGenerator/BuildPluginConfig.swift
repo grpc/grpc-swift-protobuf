@@ -57,16 +57,16 @@ struct BuildPluginConfig: Codable {
     /// Whether imports should have explicit access levels.
     ///
     /// Defaults to `false`.
-    var useAccessLevelOnImports: Bool
+    var accessLevelOnImports: Bool
 
     static let defaults = Self(
       accessLevel: .internal,
-      useAccessLevelOnImports: false
+      accessLevelOnImports: false
     )
 
-    private init(accessLevel: GenerationConfig.AccessLevel, useAccessLevelOnImports: Bool) {
+    private init(accessLevel: GenerationConfig.AccessLevel, accessLevelOnImports: Bool) {
       self.accessLevel = accessLevel
-      self.useAccessLevelOnImports = useAccessLevelOnImports
+      self.accessLevelOnImports = accessLevelOnImports
     }
   }
 
@@ -159,7 +159,7 @@ extension BuildPluginConfig.GeneratedSource: Codable {
   // Codable conformance with defaults
   enum CodingKeys: String, CodingKey {
     case accessLevel
-    case useAccessLevelOnImports
+    case accessLevelOnImports
   }
 
   init(from decoder: any Decoder) throws {
@@ -168,9 +168,9 @@ extension BuildPluginConfig.GeneratedSource: Codable {
     self.accessLevel =
       try container.decodeIfPresent(GenerationConfig.AccessLevel.self, forKey: .accessLevel)
       ?? Self.defaults.accessLevel
-    self.useAccessLevelOnImports =
-      try container.decodeIfPresent(Bool.self, forKey: .useAccessLevelOnImports)
-      ?? Self.defaults.useAccessLevelOnImports
+    self.accessLevelOnImports =
+      try container.decodeIfPresent(Bool.self, forKey: .accessLevelOnImports)
+      ?? Self.defaults.accessLevelOnImports
   }
 }
 
@@ -199,7 +199,7 @@ extension GenerationConfig {
     // hard-code full-path to avoid collisions since this goes into a temporary directory anyway
     self.fileNaming = .fullPath
     self.visibility = buildPluginConfig.generatedSource.accessLevel
-    self.useAccessLevelOnImports = buildPluginConfig.generatedSource.useAccessLevelOnImports
+    self.accessLevelOnImports = buildPluginConfig.generatedSource.accessLevelOnImports
     // Generate absolute paths for the imports relative to the config file in which they are specified
     self.importPaths = buildPluginConfig.protoc.importPaths.map { relativePath in
       configFilePath.deletingLastPathComponent().absoluteStringNoScheme + "/" + relativePath

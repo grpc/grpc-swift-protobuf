@@ -52,7 +52,7 @@ struct GenerationConfig {
   /// The naming of output files with respect to the path of the source file.
   var fileNaming: FileNaming
   /// Whether imports should have explicit access levels.
-  var useAccessLevelOnImports: Bool
+  var accessLevelOnImports: Bool
 
   /// Specify the directory in which to search for imports.
   ///
