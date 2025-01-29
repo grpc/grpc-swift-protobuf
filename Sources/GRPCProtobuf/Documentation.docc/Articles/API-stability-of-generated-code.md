@@ -64,8 +64,8 @@ The gRPC Swift maintainers may need to evolve the generated code over time. This
 will be done in a source-compatible way.
 
 If APIs are no longer suitable then they may be deprecated in favour of new
-ones. Existing API will never be removed and deprecated APIs will continue to
-function.
+ones. Within a major version of the package existing API won't be removed
+and deprecated APIs will continue to function.
 
 If the generator introduces new ways to generate code which are incompatible
 with the previously generated code then they will require explicit opt-in via an
