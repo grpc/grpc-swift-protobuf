@@ -21,6 +21,8 @@ This package provides three products:
 
 - <doc:Installing-protoc>
 - <doc:Generating-stubs>
+- <doc:API-stability-of-generated-code>
+- <doc:Understanding-the-generated-code>
 
 ### Serialization
 
