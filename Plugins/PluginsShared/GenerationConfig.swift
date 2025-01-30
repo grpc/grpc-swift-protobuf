@@ -42,13 +42,13 @@ struct GenerationConfig {
   }
 
   /// The visibility of the generated files.
-  var visibility: AccessLevel
+  var accessLevel: AccessLevel
   /// Whether server code is generated.
-  var server: Bool
+  var servers: Bool
   /// Whether client code is generated.
-  var client: Bool
+  var clients: Bool
   /// Whether message code is generated.
-  var message: Bool
+  var messages: Bool
   /// The naming of output files with respect to the path of the source file.
   var fileNaming: FileNaming
   /// Whether imports should have explicit access levels.

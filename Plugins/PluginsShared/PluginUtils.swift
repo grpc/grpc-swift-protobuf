@@ -17,6 +17,8 @@
 import Foundation
 import PackagePlugin
 
+let configFileName = "grpc-swift-proto-generator-config.json"
+
 /// Derive the path to the instance of `protoc` to be used.
 /// - Parameters:
 ///   - config: The supplied config. If no path is supplied then one is discovered using the `PROTOC_PATH` environment variable or the `findTool`.
@@ -63,7 +65,7 @@ func constructProtocGenSwiftArguments(
     protocArgs.append("--proto_path=\(path)")
   }
 
-  protocArgs.append("--swift_opt=Visibility=\(config.visibility.rawValue)")
+  protocArgs.append("--swift_opt=Visibility=\(config.accessLevel.rawValue)")
   protocArgs.append("--swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--swift_opt=UseAccessLevelOnImports=\(config.accessLevelOnImports)")
   protocArgs.append(contentsOf: inputFiles.map { $0.absoluteStringNoScheme })
@@ -97,9 +99,9 @@ func constructProtocGenGRPCSwiftArguments(
     protocArgs.append("--proto_path=\(path)")
   }
 
-  protocArgs.append("--grpc-swift_opt=Visibility=\(config.visibility.rawValue.capitalized)")
-  protocArgs.append("--grpc-swift_opt=Server=\(config.server)")
-  protocArgs.append("--grpc-swift_opt=Client=\(config.client)")
+  protocArgs.append("--grpc-swift_opt=Visibility=\(config.accessLevel.rawValue.capitalized)")
+  protocArgs.append("--grpc-swift_opt=Server=\(config.servers)")
+  protocArgs.append("--grpc-swift_opt=Client=\(config.clients)")
   protocArgs.append("--grpc-swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--grpc-swift_opt=UseAccessLevelOnImports=\(config.accessLevelOnImports)")
   protocArgs.append(contentsOf: inputFiles.map { $0.absoluteStringNoScheme })

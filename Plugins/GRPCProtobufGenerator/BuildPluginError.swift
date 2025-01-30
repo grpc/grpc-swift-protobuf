@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, gRPC Authors All rights reserved.
+ * Copyright 2025, gRPC Authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-enum PluginError: Error {
-  // Build plugin
+enum BuildPluginError: Error {
   case incompatibleTarget(String)
   case noConfigFilesFound
 }
 
-extension PluginError: CustomStringConvertible {
+extension BuildPluginError: CustomStringConvertible {
   var description: String {
     switch self {
     case .incompatibleTarget(let target):
