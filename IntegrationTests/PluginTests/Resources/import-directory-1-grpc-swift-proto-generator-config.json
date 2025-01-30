@@ -1,0 +1,11 @@
+{
+  "generatedSource": {
+    "accessLevel": "internal"
+  },
+  "protoc": {
+    "importPaths": [
+      ".",
+      "../directory_1"
+    ]
+  }
+}

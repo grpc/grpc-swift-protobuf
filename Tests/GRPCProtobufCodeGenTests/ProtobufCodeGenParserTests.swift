@@ -78,12 +78,7 @@ struct ProtobufCodeGenParserTests {
 
       @Test("Name")
       func name() {
-        #expect(self.service.name.base == "TestService")
-      }
-
-      @Test("Namespace")
-      func namespace() {
-        #expect(self.service.namespace.base == "test")
+        #expect(self.service.name.identifyingName == "test.TestService")
       }
 
       @Suite("Methods")
@@ -114,10 +109,10 @@ struct ProtobufCodeGenParserTests {
 
         @Test("Name")
         func name() {
-          #expect(self.unary.name.base == "Unary")
-          #expect(self.clientStreaming.name.base == "ClientStreaming")
-          #expect(self.serverStreaming.name.base == "ServerStreaming")
-          #expect(self.bidiStreaming.name.base == "BidirectionalStreaming")
+          #expect(self.unary.name.identifyingName == "Unary")
+          #expect(self.clientStreaming.name.identifyingName == "ClientStreaming")
+          #expect(self.serverStreaming.name.identifyingName == "ServerStreaming")
+          #expect(self.bidiStreaming.name.identifyingName == "BidirectionalStreaming")
         }
 
         @Test("Input")
@@ -181,15 +176,14 @@ struct ProtobufCodeGenParserTests {
     @Test("Service1")
     func service1() throws {
       let service = self.codeGen.services[0]
-      #expect(service.name.base == "FooService1")
-      #expect(service.namespace.base == "foo")
+      #expect(service.name.identifyingName == "foo.FooService1")
       #expect(service.methods.count == 1)
     }
 
     @Test("Service1.Method")
     func service1Method() throws {
       let method = self.codeGen.services[0].methods[0]
-      #expect(method.name.base == "Foo")
+      #expect(method.name.identifyingName == "Foo")
       #expect(method.inputType == "Foo_FooInput")
       #expect(method.outputType == "Foo_FooOutput")
     }
@@ -197,15 +191,14 @@ struct ProtobufCodeGenParserTests {
     @Test("Service2")
     func service2() throws {
       let service = self.codeGen.services[1]
-      #expect(service.name.base == "FooService2")
-      #expect(service.namespace.base == "foo")
+      #expect(service.name.identifyingName == "foo.FooService2")
       #expect(service.methods.count == 1)
     }
 
     @Test("Service2.Method")
     func service2Method() throws {
       let method = self.codeGen.services[1].methods[0]
-      #expect(method.name.base == "Foo")
+      #expect(method.name.identifyingName == "Foo")
       #expect(method.inputType == "Foo_FooInput")
       #expect(method.outputType == "Foo_FooOutput")
     }
@@ -227,12 +220,7 @@ struct ProtobufCodeGenParserTests {
 
     @Test("Service name")
     func serviceName() {
-      #expect(self.service.name.base == "BarService")
-    }
-
-    @Test("Service namespace")
-    func serviceNamespace() {
-      #expect(self.service.namespace.base == "")
+      #expect(self.service.name.identifyingName == "BarService")
     }
   }
 
