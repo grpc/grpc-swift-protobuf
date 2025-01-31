@@ -31,7 +31,7 @@ let package = Package(
 
     .package(
       url: "https://github.com/grpc/grpc-swift.git",
-      exact: "2.0.0-rc.1"
+      from: "2.0.0"
     )
   ],
   targets: [
