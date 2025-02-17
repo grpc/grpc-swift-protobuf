@@ -119,3 +119,14 @@ extension URL {
     return absoluteString
   }
 }
+
+enum Stderr {
+  private static let newLine = "\n".data(using: .utf8)!
+
+  static func print(_ message: String) {
+    if let data = message.data(using: .utf8) {
+      FileHandle.standardError.write(data)
+      FileHandle.standardError.write(Self.newLine)
+    }
+  }
+}

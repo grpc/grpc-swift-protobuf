@@ -118,7 +118,7 @@ let targets: [Target] = [
 
   // Code generator SwiftPM command
   .plugin(
-    name: "GRPCGeneratorCommand",
+    name: "GRPCProtobufGeneratorCommand",
     capability: .command(
       intent: .custom(
         verb: "generate-grpc-code-from-protos",
@@ -132,7 +132,7 @@ let targets: [Target] = [
       ]
     ),
     dependencies: [
-      "protoc-gen-grpc-swift",
+      .target(name: "protoc-gen-grpc-swift"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
     ]
   ),

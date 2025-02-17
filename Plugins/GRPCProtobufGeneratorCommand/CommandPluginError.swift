@@ -15,9 +15,8 @@
  */
 
 enum CommandPluginError: Error {
-  case helpRequested
   case missingArgumentValue
-  case invalidArgumentValue(String)
+  case invalidArgumentValue(name: String, value: String)
   case missingInputFile
   case unknownOption(String)
 }
@@ -25,12 +24,10 @@ enum CommandPluginError: Error {
 extension CommandPluginError: CustomStringConvertible {
   var description: String {
     switch self {
-    case .helpRequested:
-      "User requested help."
     case .missingArgumentValue:
       "Provided option does not have a value."
-    case .invalidArgumentValue:
-      "Invalid option value."
+    case .invalidArgumentValue(let name, let value):
+      "Invalid value '\(value)', for '\(name)'."
     case .missingInputFile:
       "No input file(s) specified."
     case .unknownOption(let value):

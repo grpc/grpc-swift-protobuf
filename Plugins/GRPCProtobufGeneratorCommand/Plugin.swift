@@ -18,27 +18,32 @@ import Foundation
 import PackagePlugin
 
 @main
-struct GRPCGeneratorCommandPlugin: CommandPlugin {
+struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
   /// Perform command, the entry-point when using a Package manifest.
   func performCommand(context: PluginContext, arguments: [String]) async throws {
+    var argExtractor = ArgumentExtractor(arguments)
+    
+    if CommandConfig.helpRequested(argumentExtractor: &argExtractor) {
+      OptionsAndFlags.printHelp(requested: true)
+      return
+    }
 
     // MARK: Configuration
     let commandConfig: CommandConfig
     let inputFiles: [String]
     do {
       (commandConfig, inputFiles) = try CommandConfig.parse(
-        arguments: arguments,
+        argumentExtractor: &argExtractor,
         pluginWorkDirectory: context.pluginWorkDirectoryURL
       )
-    } catch CommandPluginError.helpRequested {
-      Flag.printHelp()
-      return  // don't throw, the user requested this
     } catch {
-      Flag.printHelp()
+      OptionsAndFlags.printHelp(requested: false)
       throw error
     }
 
-    print("InputFiles: \(inputFiles.joined(separator: ", "))")
+    if commandConfig.verbose {
+      Stderr.print("InputFiles: \(inputFiles.joined(separator: ", "))")
+    }
 
     let config = commandConfig.common
     let protocPath = try deriveProtocPath(using: config, tool: context.tool)
@@ -46,12 +51,14 @@ struct GRPCGeneratorCommandPlugin: CommandPlugin {
     let protocGenSwiftPath = try context.tool(named: "protoc-gen-swift").url
 
     let outputDirectory = URL(fileURLWithPath: config.outputPath)
-    print("Generated files will be written to: '\(outputDirectory.absoluteStringNoScheme)'")
+    if commandConfig.verbose {
+      Stderr.print("Generated files will be written to: '\(outputDirectory.absoluteStringNoScheme)'")
+    }
 
     let inputFileURLs = inputFiles.map { URL(fileURLWithPath: $0) }
 
     // MARK: protoc-gen-grpc-swift
-    if config.clients != false || config.servers != false {
+    if config.clients || config.servers {
       let arguments = constructProtocGenGRPCSwiftArguments(
         config: config,
         fileNaming: config.fileNaming,
@@ -61,13 +68,17 @@ struct GRPCGeneratorCommandPlugin: CommandPlugin {
         outputDirectory: outputDirectory
       )
 
-      printProtocInvocation(protocPath, arguments)
+      if commandConfig.verbose || commandConfig.dryRun {
+        printProtocInvocation(protocPath, arguments)
+      }
       if !commandConfig.dryRun {
         let process = try Process.run(protocPath, arguments: arguments)
         process.waitUntilExit()
 
-        if process.terminationReason == .exit && process.terminationStatus == 0 {
-          print("Generated gRPC Swift files for \(inputFiles.joined(separator: ", ")).")
+        if process.terminationReason == .exit, process.terminationStatus == 0 {
+          if commandConfig.verbose {
+            Stderr.print("Generated gRPC Swift files for \(inputFiles.joined(separator: ", ")).")
+          }
         } else {
           let problem = "\(process.terminationReason):\(process.terminationStatus)"
           Diagnostics.error("Generating gRPC Swift files failed: \(problem)")
@@ -76,7 +87,7 @@ struct GRPCGeneratorCommandPlugin: CommandPlugin {
     }
 
     // MARK: protoc-gen-swift
-    if config.messages != false {
+    if config.messages {
       let arguments = constructProtocGenSwiftArguments(
         config: config,
         fileNaming: config.fileNaming,
@@ -86,13 +97,15 @@ struct GRPCGeneratorCommandPlugin: CommandPlugin {
         outputDirectory: outputDirectory
       )
 
-      printProtocInvocation(protocPath, arguments)
+      if commandConfig.verbose || commandConfig.dryRun {
+        printProtocInvocation(protocPath, arguments)
+      }
       if !commandConfig.dryRun {
         let process = try Process.run(protocPath, arguments: arguments)
         process.waitUntilExit()
 
-        if process.terminationReason == .exit && process.terminationStatus == 0 {
-          print("Generated protobuf message Swift files for \(inputFiles.joined(separator: ", ")).")
+        if process.terminationReason == .exit, process.terminationStatus == 0 {
+          Stderr.print("Generated protobuf message Swift files for \(inputFiles.joined(separator: ", ")).")
         } else {
           let problem = "\(process.terminationReason):\(process.terminationStatus)"
           Diagnostics.error("Generating Protobuf message Swift files failed: \(problem)")
@@ -107,12 +120,6 @@ struct GRPCGeneratorCommandPlugin: CommandPlugin {
 ///   - executableURL: The path to the `protoc` executable.
 ///   - arguments: The arguments to be passed to `protoc`.
 func printProtocInvocation(_ executableURL: URL, _ arguments: [String]) {
-  print("protoc invocation:")
-  print("  \(executableURL.absoluteStringNoScheme) \\")
-  for argument in arguments[..<arguments.count.advanced(by: -1)] {
-    print("    \(argument) \\")
-  }
-  if let lastArgument = arguments.last {
-    print("    \(lastArgument)")
-  }
+  Stderr.print("\(executableURL.absoluteStringNoScheme) \\")
+  Stderr.print("  \(arguments.joined(separator: " \\\n  "))")
 }
