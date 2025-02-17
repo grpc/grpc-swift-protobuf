@@ -157,98 +157,23 @@ func extractSingleValue(_ flag: OptionsAndFlags, values: [String]) -> String? {
 }
 
 /// All valid input options/flags
-enum OptionsAndFlags: CaseIterable, RawRepresentable {
-  typealias RawValue = String
-
+enum OptionsAndFlags: String, CaseIterable {
   case servers
-  case noServers
+  case noServers = "no-servers"
   case clients
-  case noClients
+  case noClients = "no-clients"
   case messages
-  case noMessages
-  case fileNaming
-  case accessLevel
-  case accessLevelOnImports
-  case importPath
-  case protocPath
+  case noMessages = "no-messages"
+  case fileNaming = "file-naming"
+  case accessLevel = "access-level"
+  case accessLevelOnImports = "access-level-on-imports"
+  case importPath = "import-path"
+  case protocPath = "protoc-path"
   case output
   case verbose
-  case dryRun
+  case dryRun = "dry-run"
 
   case help
-
-  init?(rawValue: String) {
-    switch rawValue {
-    case "servers":
-      self = .servers
-    case "no-servers":
-      self = .noServers
-    case "clients":
-      self = .clients
-    case "no-clients":
-      self = .noClients
-    case "messages":
-      self = .messages
-    case "no-messages":
-      self = .noMessages
-    case "file-naming":
-      self = .fileNaming
-    case "access-level":
-      self = .accessLevel
-    case "access-level-on-imports":
-      self = .accessLevelOnImports
-    case "import-path":
-      self = .importPath
-    case "protoc-path":
-      self = .protocPath
-    case "output":
-      self = .output
-    case "verbose":
-      self = .verbose
-    case "dry-run":
-      self = .dryRun
-    case "help":
-      self = .help
-    default:
-      return nil
-    }
-    return nil
-  }
-
-  var rawValue: String {
-    switch self {
-    case .servers:
-      "servers"
-    case .noServers:
-      "no-servers"
-    case .clients:
-      "clients"
-    case .noClients:
-      "no-clients"
-    case .messages:
-      "messages"
-    case .noMessages:
-      "no-messages"
-    case .fileNaming:
-      "file-naming"
-    case .accessLevel:
-      "access-level"
-    case .accessLevelOnImports:
-      "access-level-on-imports"
-    case .importPath:
-      "import-path"
-    case .protocPath:
-      "protoc-path"
-    case .output:
-      "output"
-    case .verbose:
-      "verbose"
-    case .dryRun:
-      "dry-run"
-    case .help:
-      "help"
-    }
-  }
 }
 
 extension OptionsAndFlags {
