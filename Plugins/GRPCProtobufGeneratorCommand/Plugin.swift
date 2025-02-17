@@ -22,7 +22,7 @@ struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
   /// Perform command, the entry-point when using a Package manifest.
   func performCommand(context: PluginContext, arguments: [String]) async throws {
     var argExtractor = ArgumentExtractor(arguments)
-    
+
     if CommandConfig.helpRequested(argumentExtractor: &argExtractor) {
       OptionsAndFlags.printHelp(requested: true)
       return
@@ -52,7 +52,9 @@ struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
 
     let outputDirectory = URL(fileURLWithPath: config.outputPath)
     if commandConfig.verbose {
-      Stderr.print("Generated files will be written to: '\(outputDirectory.absoluteStringNoScheme)'")
+      Stderr.print(
+        "Generated files will be written to: '\(outputDirectory.absoluteStringNoScheme)'"
+      )
     }
 
     let inputFileURLs = inputFiles.map { URL(fileURLWithPath: $0) }
@@ -105,7 +107,9 @@ struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
         process.waitUntilExit()
 
         if process.terminationReason == .exit, process.terminationStatus == 0 {
-          Stderr.print("Generated protobuf message Swift files for \(inputFiles.joined(separator: ", ")).")
+          Stderr.print(
+            "Generated protobuf message Swift files for \(inputFiles.joined(separator: ", "))."
+          )
         } else {
           let problem = "\(process.terminationReason):\(process.terminationStatus)"
           Diagnostics.error("Generating Protobuf message Swift files failed: \(problem)")

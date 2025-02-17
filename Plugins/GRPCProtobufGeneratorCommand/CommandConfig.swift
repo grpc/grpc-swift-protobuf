@@ -41,7 +41,7 @@ struct CommandConfig {
 
 extension CommandConfig {
   static func helpRequested(
-    argumentExtractor: inout ArgumentExtractor,
+    argumentExtractor: inout ArgumentExtractor
   ) -> Bool {
     let help = argumentExtractor.extractFlag(named: OptionsAndFlags.help.rawValue)
     return help != 0
@@ -60,8 +60,7 @@ extension CommandConfig {
         if let value = extractSingleValue(flag, values: accessLevel) {
           if let accessLevel = GenerationConfig.AccessLevel(rawValue: value) {
             config.common.accessLevel = accessLevel
-          }
-          else {
+          } else {
             Diagnostics.error("Unknown access level '--\(flag.rawValue)' \(value)")
           }
         }
@@ -95,8 +94,7 @@ extension CommandConfig {
         if let value = extractSingleValue(flag, values: fileNaming) {
           if let fileNaming = GenerationConfig.FileNaming(rawValue: value) {
             config.common.fileNaming = fileNaming
-          }
-          else {
+          } else {
             Diagnostics.error("Unknown file naming strategy '--\(flag.rawValue)' \(value)")
           }
         }
@@ -119,7 +117,8 @@ extension CommandConfig {
 
       case .output:
         let output = argExtractor.extractOption(named: flag.rawValue)
-        config.common.outputPath = extractSingleValue(flag, values: output) ?? pluginWorkDirectory.absoluteStringNoScheme
+        config.common.outputPath =
+          extractSingleValue(flag, values: output) ?? pluginWorkDirectory.absoluteStringNoScheme
 
       case .verbose:
         let verbose = argExtractor.extractFlag(named: flag.rawValue)
@@ -130,7 +129,7 @@ extension CommandConfig {
         config.dryRun = dryRun != 0
 
       case .help:
-        () // handled elsewhere
+        ()  // handled elsewhere
       }
     }
 
@@ -150,7 +149,9 @@ extension CommandConfig {
 
 func extractSingleValue(_ flag: OptionsAndFlags, values: [String]) -> String? {
   if values.count > 1 {
-    Stderr.print("Warning: '--\(flag.rawValue)' was unexpectedly repeated, the first value will be used.")
+    Stderr.print(
+      "Warning: '--\(flag.rawValue)' was unexpectedly repeated, the first value will be used."
+    )
   }
   return values.first
 }
@@ -303,7 +304,8 @@ extension OptionsAndFlags {
 
     let spacing = 3
     let maxLength =
-      (OptionsAndFlags.allCases.map(\.rawValue).max(by: { $0.count < $1.count })?.count ?? 0) + spacing
+      (OptionsAndFlags.allCases.map(\.rawValue).max(by: { $0.count < $1.count })?.count ?? 0)
+      + spacing
     for flag in OptionsAndFlags.allCases {
       printMessage(
         "  --\(flag.rawValue.padding(toLength: maxLength, withPad: " ", startingAt: 0))\(flag.usageDescription())"
