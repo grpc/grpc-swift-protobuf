@@ -56,7 +56,7 @@ function test_01_top_level_config_file {
   #     │   └── HelloWorld.proto
   #     └── grpc-swift-proto-generator-config.json
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos"
   cp "${package_manifest}" "${test_dir}/"
   cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
@@ -73,7 +73,7 @@ function test_02_peer_config_file {
   #         ├── HelloWorld.proto
   #         └── grpc-swift-proto-generator-config.json
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos"
   cp "${package_manifest}" "${test_dir}/"
   cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
@@ -91,7 +91,7 @@ function test_03_separate_service_message_protos {
   #         ├── Service.proto
   #         └── grpc-swift-proto-generator-config.json
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos"
   cp "${package_manifest}" "${test_dir}/"
   cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
@@ -113,7 +113,7 @@ function test_04_cross_directory_imports {
   #             ├── Service.proto
   #             └── grpc-swift-proto-generator-config.json
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos/directory_1"
   mkdir -p "${test_dir}/Sources/Protos/directory_2"
 
@@ -138,7 +138,7 @@ function test_05_two_definitions {
   #         │   └── HelloWorld.proto
   #         └── grpc-swift-proto-generator-config.json
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos/HelloWorld"
   mkdir -p "${test_dir}/Sources/Protos/Foo"
 
@@ -165,7 +165,7 @@ function test_06_nested_definitions {
   #             ├── HelloWorld.proto
   #             └── grpc-swift-proto-generator-config.json
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos/HelloWorld/FooDefinitions/Foo"
   cp "${package_manifest}" "${test_dir}/"
   cp "${sources}/FooHelloWorldAdopter.swift" "${test_dir}/Sources/"
@@ -188,7 +188,7 @@ function test_07_duplicated_proto_file_name {
   #         └── noop2
   #             └── noop.proto
 
-  local test_dir=$(test_dir_name)
+  local -r test_dir=$(test_dir_name)
   mkdir -p "${test_dir}/Sources/Protos"
 
   cp "${package_manifest}" "${test_dir}/"
