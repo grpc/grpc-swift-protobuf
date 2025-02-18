@@ -28,7 +28,6 @@ let package = Package(
   ],
   dependencies: [
     // Dependency on grpc-swift-protobuf to be added by setup-plugin-tests.sh script
-
     .package(
       url: "https://github.com/grpc/grpc-swift.git",
       from: "2.0.0"
