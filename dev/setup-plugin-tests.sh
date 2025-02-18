@@ -205,5 +205,4 @@ test_03_separate_service_message_protos
 test_04_cross_directory_imports
 test_05_two_definitions
 test_06_nested_definitions
-# Expected to fail:
-# test_07_duplicated_proto_file_name
+test_07_duplicated_proto_file_name

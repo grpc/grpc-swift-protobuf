@@ -189,7 +189,7 @@ func protocGenGRPCSwiftCommand(
   let outputPathURL = URL(fileURLWithPath: config.outputPath)
 
   let outputFilePath = deriveOutputFilePath(
-    for: inputFile,
+    protoFile: inputFile,
     baseDirectoryPath: baseDirectoryPath,
     outputDirectory: outputPathURL,
     outputExtension: "grpc.swift"
@@ -239,7 +239,7 @@ func protocGenSwiftCommand(
   let outputPathURL = URL(fileURLWithPath: config.outputPath)
 
   let outputFilePath = deriveOutputFilePath(
-    for: inputFile,
+    protoFile: inputFile,
     baseDirectoryPath: baseDirectoryPath,
     outputDirectory: outputPathURL,
     outputExtension: "pb.swift"
@@ -267,28 +267,32 @@ func protocGenSwiftCommand(
   )
 }
 
-/// Derive the expected output file path to match the behavior of the `protoc-gen-swift` and `protoc-gen-grpc-swift` `protoc` plugins
-/// when using the `FullPath` naming scheme.
+/// Derive the expected output file path to match the behavior of the `protoc-gen-swift`
+/// and `protoc-gen-grpc-swift` `protoc` plugins using the `PathToUnderscores` naming scheme.
+///
+/// This means the generated file for an input proto file called "foo/bar/baz.proto" will
+/// have the name "foo\_bar\_baz.proto".
+///
 /// - Parameters:
-///   - inputFile: The input `.proto` file.
-///   - baseDirectoryPath: The root path to the source `.proto` files used as the reference for relative path naming schemes.
+///   - protoFile: The path of the input `.proto` file.
+///   - baseDirectoryPath: The root path to the source `.proto` files used as the reference for
+///     relative path naming schemes.
 ///   - outputDirectory: The directory in which generated source files are created.
 ///   - outputExtension: The file extension to be appended to generated files in-place of `.proto`.
 /// - Returns: The expected output file path.
 func deriveOutputFilePath(
-  for inputFile: URL,
+  protoFile: URL,
   baseDirectoryPath: URL,
   outputDirectory: URL,
   outputExtension: String
 ) -> URL {
-  // The name of the output file is based on the name of the input file.
-  // We validated in the beginning that every file has the suffix of .proto
-  // This means we can just drop the last 5 elements and append the new suffix
-  let lastPathComponentRoot = inputFile.lastPathComponent.dropLast(5)
-  let lastPathComponent = String(lastPathComponentRoot + outputExtension)
+  // Replace the extension (".proto") with the new extension (".grpc.swift"
+  // or ".pb.swift").
+  precondition(protoFile.pathExtension == "proto")
+  let fileName = String(protoFile.lastPathComponent.dropLast(5) + outputExtension)
 
   // find the inputFile path relative to the proto directory
-  var relativePathComponents = inputFile.deletingLastPathComponent().pathComponents
+  var relativePathComponents = protoFile.deletingLastPathComponent().pathComponents
   for protoDirectoryPathComponent in baseDirectoryPath.pathComponents {
     if relativePathComponents.first == protoDirectoryPathComponent {
       relativePathComponents.removeFirst()
@@ -297,10 +301,7 @@ func deriveOutputFilePath(
     }
   }
 
-  let outputFileComponents = relativePathComponents + [lastPathComponent]
-  var outputFilePath = outputDirectory
-  for outputFileComponent in outputFileComponents {
-    outputFilePath.append(component: outputFileComponent)
-  }
-  return outputFilePath
+  relativePathComponents.append(fileName)
+  let path = relativePathComponents.joined(separator: "_")
+  return outputDirectory.appending(path: path)
 }
