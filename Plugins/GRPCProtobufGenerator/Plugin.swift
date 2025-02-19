@@ -22,7 +22,7 @@ extension GRPCProtobufGenerator: BuildToolPlugin {
   /// Create build commands, the entry-point when using a Package manifest.
   func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
     guard let swiftTarget = target as? SwiftSourceModuleTarget else {
-      throw PluginError.incompatibleTarget(target.name)
+      throw BuildPluginError.incompatibleTarget(target.name)
     }
     let configFiles = swiftTarget.sourceFiles(withSuffix: configFileName).map { $0.url }
     let inputFiles = swiftTarget.sourceFiles(withSuffix: ".proto").map { $0.url }
@@ -78,7 +78,7 @@ struct GRPCProtobufGenerator {
     var commands: [Command] = []
     for inputFile in inputFiles {
       guard let (configFilePath, config) = configs.findApplicableConfig(for: inputFile) else {
-        throw PluginError.noConfigFilesFound
+        throw BuildPluginError.noConfigFilesFound
       }
 
       let protocPath = try deriveProtocPath(using: config, tool: tool)
@@ -90,7 +90,7 @@ struct GRPCProtobufGenerator {
       }
 
       // unless *explicitly* opted-out
-      if config.client || config.server {
+      if config.clients || config.servers {
         let grpcCommand = try protocGenGRPCSwiftCommand(
           inputFile: inputFile,
           config: config,
@@ -104,7 +104,7 @@ struct GRPCProtobufGenerator {
       }
 
       // unless *explicitly* opted-out
-      if config.message {
+      if config.messages {
         let protoCommand = try protocGenSwiftCommand(
           inputFile: inputFile,
           config: config,

@@ -16,8 +16,6 @@
 
 import Foundation
 
-let configFileName = "grpc-swift-proto-generator-config.json"
-
 /// The config of the build plugin.
 struct BuildPluginConfig: Codable {
   /// Config defining which components should be considered when generating source.
@@ -193,12 +191,12 @@ extension BuildPluginConfig.Protoc: Codable {
 
 extension GenerationConfig {
   init(buildPluginConfig: BuildPluginConfig, configFilePath: URL, outputPath: URL) {
-    self.server = buildPluginConfig.generate.servers
-    self.client = buildPluginConfig.generate.clients
-    self.message = buildPluginConfig.generate.messages
+    self.servers = buildPluginConfig.generate.servers
+    self.clients = buildPluginConfig.generate.clients
+    self.messages = buildPluginConfig.generate.messages
     // hard-code full-path to avoid collisions since this goes into a temporary directory anyway
     self.fileNaming = .fullPath
-    self.visibility = buildPluginConfig.generatedSource.accessLevel
+    self.accessLevel = buildPluginConfig.generatedSource.accessLevel
     self.accessLevelOnImports = buildPluginConfig.generatedSource.accessLevelOnImports
     // Generate absolute paths for the imports relative to the config file in which they are specified
     self.importPaths = buildPluginConfig.protoc.importPaths.map { relativePath in
