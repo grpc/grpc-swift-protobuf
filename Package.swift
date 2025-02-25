@@ -115,6 +115,27 @@ let targets: [Target] = [
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
     ]
   ),
+
+  // Code generator SwiftPM command
+  .plugin(
+    name: "GRPCProtobufGeneratorCommand",
+    capability: .command(
+      intent: .custom(
+        verb: "generate-grpc-code-from-protos",
+        description: "Generate Swift code for gRPC services from protobuf definitions."
+      ),
+      permissions: [
+        .writeToPackageDirectory(
+          reason:
+            "To write the generated Swift files back into the source directory of the package."
+        )
+      ]
+    ),
+    dependencies: [
+      .target(name: "protoc-gen-grpc-swift"),
+      .product(name: "protoc-gen-swift", package: "swift-protobuf"),
+    ]
+  ),
 ]
 
 let package = Package(
