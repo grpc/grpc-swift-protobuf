@@ -24,73 +24,185 @@ output_directory="${PLUGIN_TESTS_OUTPUT_DIRECTORY:=$(mktemp -d)}"
 here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 grpc_swift_protobuf_directory="$(readlink -f "${here}/..")"
 resources_directory="$(readlink -f "${grpc_swift_protobuf_directory}/IntegrationTests/PluginTests/Resources")"
+config="${resources_directory}/Config"
+sources="${resources_directory}/Sources"
+protos="${resources_directory}/Protos"
 scratch_directory="$(mktemp -d)"
+package_manifest="${scratch_directory}/Package.swift"
 
 echo "Output directory: $output_directory"
 echo "grpc-swift-protobuf directory: $grpc_swift_protobuf_directory"
 
 # modify Package.swift
-cp "${resources_directory}/Package.swift" "${scratch_directory}/"
-cat >> "${scratch_directory}/Package.swift" <<- EOM
+cp "${resources_directory}/Sources/Package.swift" "${scratch_directory}/"
+cat >> "${package_manifest}" <<- EOM
 package.dependencies.append(
   .package(path: "$grpc_swift_protobuf_directory")
 )
 EOM
 
-# test_01_top_level_config_file
-test_01_output_directory="${output_directory}/test_01_top_level_config_file"
-mkdir -p "${test_01_output_directory}/Sources/Protos"
-cp "${scratch_directory}/Package.swift" "${test_01_output_directory}/"
-cp "${resources_directory}/HelloWorldAdopter.swift" "${test_01_output_directory}/Sources/adopter.swift"
-cp "${resources_directory}/HelloWorld/HelloWorld.proto" "${test_01_output_directory}/Sources/Protos"
-cp "${resources_directory}/internal-grpc-swift-proto-generator-config.json" "${test_01_output_directory}/Sources/grpc-swift-proto-generator-config.json"
+function test_dir_name {
+  # $FUNCNAME is a stack of function names. The 0th element is the name of this
+  # function, so the 1st element is the calling function.
+  echo "${output_directory}/${FUNCNAME[1]}"
+}
 
-# test_02_peer_config_file
-test_02_output_directory="${output_directory}/test_02_peer_config_file"
-mkdir -p "${test_02_output_directory}/Sources/Protos"
-cp "${scratch_directory}/Package.swift" "${test_02_output_directory}/"
-cp "${resources_directory}/HelloWorldAdopter.swift" "${test_02_output_directory}/Sources/adopter.swift"
-cp "${resources_directory}/HelloWorld/HelloWorld.proto" "${test_02_output_directory}/Sources/Protos/"
-cp "${resources_directory}/internal-grpc-swift-proto-generator-config.json" "${test_02_output_directory}/Sources/Protos/grpc-swift-proto-generator-config.json"
+function test_01_top_level_config_file {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── HelloWorldAdopter.swift
+  #     ├── Protos
+  #     │   └── HelloWorld.proto
+  #     └── grpc-swift-proto-generator-config.json
 
-# test_03_separate_service_message_protos
-test_03_output_directory="${output_directory}/test_03_separate_service_message_protos"
-mkdir -p "${test_03_output_directory}/Sources/Protos"
-cp "${scratch_directory}/Package.swift" "${test_03_output_directory}/"
-cp "${resources_directory}/HelloWorldAdopter.swift" "${test_03_output_directory}/Sources/adopter.swift"
-cp "${resources_directory}/internal-grpc-swift-proto-generator-config.json" "${test_03_output_directory}/Sources/Protos/grpc-swift-proto-generator-config.json"
-cp "${resources_directory}/HelloWorld/Service.proto"  "${test_03_output_directory}/Sources/Protos/"
-cp "${resources_directory}/HelloWorld/Messages.proto"  "${test_03_output_directory}/Sources/Protos/"
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos"
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${protos}/HelloWorld/HelloWorld.proto" "${test_dir}/Sources/Protos"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/grpc-swift-proto-generator-config.json"
+}
 
-# test_04_cross_directory_imports
-test_04_output_directory="${output_directory}/test_04_cross_directory_imports"
-mkdir -p "${test_04_output_directory}/Sources/Protos/directory_1"
-mkdir -p "${test_04_output_directory}/Sources/Protos/directory_2"
-cp "${scratch_directory}/Package.swift" "${test_04_output_directory}/"
-cp "${resources_directory}/HelloWorldAdopter.swift" "${test_04_output_directory}/Sources/adopter.swift"
-cp "${resources_directory}/internal-grpc-swift-proto-generator-config.json" "${test_04_output_directory}/Sources/Protos/directory_1/grpc-swift-proto-generator-config.json"
-cp "${resources_directory}/import-directory-1-grpc-swift-proto-generator-config.json" "${test_04_output_directory}/Sources/Protos/directory_2/grpc-swift-proto-generator-config.json"
-cp "${resources_directory}/HelloWorld/Service.proto" "${test_04_output_directory}/Sources/Protos/directory_2/"
-cp "${resources_directory}/HelloWorld/Messages.proto" "${test_04_output_directory}/Sources/Protos/directory_1/"
+function test_02_peer_config_file {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── HelloWorldAdopter.swift
+  #     └── Protos
+  #         ├── HelloWorld.proto
+  #         └── grpc-swift-proto-generator-config.json
 
-# test_05_two_definitions
-test_05_output_directory="${output_directory}/test_05_two_definitions"
-mkdir -p "${test_05_output_directory}/Sources/Protos/HelloWorld"
-mkdir -p "${test_05_output_directory}/Sources/Protos/Foo"
-cp "${scratch_directory}/Package.swift" "${test_05_output_directory}/"
-cp "${resources_directory}/FooHelloWorldAdopter.swift" "${test_05_output_directory}/Sources/adopter.swift"
-cp "${resources_directory}/HelloWorld/HelloWorld.proto" "${test_05_output_directory}/Sources/Protos/HelloWorld/"
-cp "${resources_directory}/internal-grpc-swift-proto-generator-config.json" "${test_05_output_directory}/Sources/Protos/grpc-swift-proto-generator-config.json"
-cp "${resources_directory}/Foo/foo-messages.proto" "${test_05_output_directory}/Sources/Protos/Foo/"
-cp "${resources_directory}/Foo/foo-service.proto" "${test_05_output_directory}/Sources/Protos/Foo/"
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos"
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${protos}/HelloWorld/HelloWorld.proto" "${test_dir}/Sources/Protos/"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/grpc-swift-proto-generator-config.json"
+}
 
-# test_06_nested_definitions
-test_06_output_directory="${output_directory}/test_06_nested_definitions"
-mkdir -p "${test_06_output_directory}/Sources/Protos/HelloWorld/FooDefinitions/Foo"
-cp "${scratch_directory}/Package.swift" "${test_06_output_directory}/"
-cp "${resources_directory}/FooHelloWorldAdopter.swift" "${test_06_output_directory}/Sources/adopter.swift"
-cp "${resources_directory}/HelloWorld/HelloWorld.proto" "${test_06_output_directory}/Sources/Protos/HelloWorld/"
-cp "${resources_directory}/internal-grpc-swift-proto-generator-config.json" "${test_06_output_directory}/Sources/Protos/HelloWorld/grpc-swift-proto-generator-config.json"
-cp "${resources_directory}/public-grpc-swift-proto-generator-config.json" "${test_06_output_directory}/Sources/Protos/HelloWorld/FooDefinitions/grpc-swift-proto-generator-config.json"
-cp "${resources_directory}/Foo/foo-messages.proto" "${test_06_output_directory}/Sources/Protos/HelloWorld/FooDefinitions/Foo/"
-cp "${resources_directory}/Foo/foo-service.proto" "${test_06_output_directory}/Sources/Protos/HelloWorld/FooDefinitions/Foo/"
+function test_03_separate_service_message_protos {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── HelloWorldAdopter.swift
+  #     └── Protos
+  #         ├── Messages.proto
+  #         ├── Service.proto
+  #         └── grpc-swift-proto-generator-config.json
+
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos"
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/grpc-swift-proto-generator-config.json"
+  cp "${protos}/HelloWorld/Service.proto"  "${test_dir}/Sources/Protos/"
+  cp "${protos}/HelloWorld/Messages.proto"  "${test_dir}/Sources/Protos/"
+}
+
+function test_04_cross_directory_imports {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── HelloWorldAdopter.swift
+  #     └── Protos
+  #         ├── directory_1
+  #         │   ├── Messages.proto
+  #         │   └── grpc-swift-proto-generator-config.json
+  #         └── directory_2
+  #             ├── Service.proto
+  #             └── grpc-swift-proto-generator-config.json
+
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos/directory_1"
+  mkdir -p "${test_dir}/Sources/Protos/directory_2"
+
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/directory_1/grpc-swift-proto-generator-config.json"
+  cp "${config}/import-directory-1-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/directory_2/grpc-swift-proto-generator-config.json"
+  cp "${protos}/HelloWorld/Service.proto" "${test_dir}/Sources/Protos/directory_2/"
+  cp "${protos}/HelloWorld/Messages.proto" "${test_dir}/Sources/Protos/directory_1/"
+}
+
+function test_05_two_definitions {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── FooHelloWorldAdopter.swift
+  #     └── Protos
+  #         ├── Foo
+  #         │   ├── foo-messages.proto
+  #         │   └── foo-service.proto
+  #         ├── HelloWorld
+  #         │   └── HelloWorld.proto
+  #         └── grpc-swift-proto-generator-config.json
+
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos/HelloWorld"
+  mkdir -p "${test_dir}/Sources/Protos/Foo"
+
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/FooHelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${protos}/HelloWorld/HelloWorld.proto" "${test_dir}/Sources/Protos/HelloWorld/"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/grpc-swift-proto-generator-config.json"
+  cp "${protos}/Foo/foo-messages.proto" "${test_dir}/Sources/Protos/Foo/"
+  cp "${protos}/Foo/foo-service.proto" "${test_dir}/Sources/Protos/Foo/"
+}
+
+function test_06_nested_definitions {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── FooHelloWorldAdopter.swift
+  #     └── Protos
+  #         └── HelloWorld
+  #             ├── FooDefinitions
+  #             │   ├── Foo
+  #             │   │   ├── foo-messages.proto
+  #             │   │   └── foo-service.proto
+  #             │   └── grpc-swift-proto-generator-config.json
+  #             ├── HelloWorld.proto
+  #             └── grpc-swift-proto-generator-config.json
+
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos/HelloWorld/FooDefinitions/Foo"
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/FooHelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${protos}/HelloWorld/HelloWorld.proto" "${test_dir}/Sources/Protos/HelloWorld/"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/HelloWorld/grpc-swift-proto-generator-config.json"
+  cp "${config}/public-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/HelloWorld/FooDefinitions/grpc-swift-proto-generator-config.json"
+  cp "${protos}/Foo/foo-messages.proto" "${test_dir}/Sources/Protos/HelloWorld/FooDefinitions/Foo/"
+  cp "${protos}/Foo/foo-service.proto" "${test_dir}/Sources/Protos/HelloWorld/FooDefinitions/Foo/"
+}
+
+function test_07_duplicated_proto_file_name {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── NoOp.swift
+  #     └── Protos
+  #         ├── grpc-swift-proto-generator-config.json
+  #         ├── noop
+  #         │   └── noop.proto
+  #         └── noop2
+  #             └── noop.proto
+
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos"
+
+  cp "${package_manifest}" "${test_dir}/"
+  mkdir -p "${test_dir}/Sources/Protos"
+  cp -rp "${protos}/noop" "${test_dir}/Sources/Protos"
+  cp -rp "${protos}/noop2" "${test_dir}/Sources/Protos"
+  cp "${sources}/NoOp.swift" "${test_dir}/Sources"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/grpc-swift-proto-generator-config.json"
+}
+
+test_01_top_level_config_file
+test_02_peer_config_file
+test_03_separate_service_message_protos
+test_04_cross_directory_imports
+test_05_two_definitions
+test_06_nested_definitions
+test_07_duplicated_proto_file_name

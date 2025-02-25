@@ -41,7 +41,7 @@ jobs:
         env:
           MATRIX_LINUX_5_9_ENABLED: false
           MATRIX_LINUX_5_10_ENABLED: false
-          MATRIX_LINUX_COMMAND: "curl -s https://raw.githubusercontent.com/rnro/grpc-swift-protobuf/refs/heads/build_plugin_integration_tests/dev/plugin-tests.sh | GITHUB_ACTIONS=true bash"
+          MATRIX_LINUX_COMMAND: "GITHUB_ACTIONS=true ./dev/plugin-tests.sh"
           MATRIX_LINUX_SETUP_COMMAND: "apt-get update -y -q && apt-get install -y -q curl protobuf-compiler"
 
   plugin-tests-matrix:

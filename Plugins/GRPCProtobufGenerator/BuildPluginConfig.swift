@@ -191,12 +191,14 @@ extension BuildPluginConfig.Protoc: Codable {
 
 extension GenerationConfig {
   init(buildPluginConfig: BuildPluginConfig, configFilePath: URL, outputPath: URL) {
-    self.servers = buildPluginConfig.generate.servers
-    self.clients = buildPluginConfig.generate.clients
-    self.messages = buildPluginConfig.generate.messages
-    // hard-code full-path to avoid collisions since this goes into a temporary directory anyway
-    self.fileNaming = .fullPath
-    self.accessLevel = buildPluginConfig.generatedSource.accessLevel
+    self.server = buildPluginConfig.generate.servers
+    self.client = buildPluginConfig.generate.clients
+    self.message = buildPluginConfig.generate.messages
+    // Use path to underscores as it ensures output files are unique (files generated from
+    // "foo/bar.proto" won't collide with those generated from "bar/bar.proto" as they'll be
+    // uniquely named "foo_bar.(grpc|pb).swift" and "bar_bar.(grpc|pb).swift".
+    self.fileNaming = .pathToUnderscores
+    self.visibility = buildPluginConfig.generatedSource.accessLevel
     self.accessLevelOnImports = buildPluginConfig.generatedSource.accessLevelOnImports
     // Generate absolute paths for the imports relative to the config file in which they are specified
     self.importPaths = buildPluginConfig.protoc.importPaths.map { relativePath in
