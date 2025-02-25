@@ -105,7 +105,9 @@ function generate_test_service_descriptor_set {
   proto_path="$(dirname "$proto")"
   output="$root/Tests/GRPCProtobufCodeGenTests/Generated/test-service.pb"
 
-  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" --include_source_info
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_imports \
+    --include_source_info
 }
 
 function generate_foo_service_descriptor_set {
