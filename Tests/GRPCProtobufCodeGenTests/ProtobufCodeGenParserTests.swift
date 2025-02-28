@@ -62,7 +62,7 @@ struct ProtobufCodeGenParserTests {
     func dependencies() {
       let expected: [GRPCCodeGen.Dependency] = [
         .init(module: "GRPCProtobuf", accessLevel: .internal),  // Always an internal import
-        .init(module: "SwiftProtobuf", accessLevel: .internal)
+        .init(module: "SwiftProtobuf", accessLevel: .internal),
       ]
       #expect(self.codeGen.dependencies == expected)
     }
