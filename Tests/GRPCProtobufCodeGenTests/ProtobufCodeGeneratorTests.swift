@@ -64,6 +64,7 @@ struct ProtobufCodeGeneratorTests {
 
         import GRPCCore
         import GRPCProtobuf
+        import SwiftProtobuf
 
         // MARK: - test.TestService
 
