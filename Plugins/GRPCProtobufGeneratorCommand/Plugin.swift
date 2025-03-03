@@ -17,7 +17,6 @@
 import Foundation
 import PackagePlugin
 
-
 extension GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
   /// Perform command, the entry-point when using a Package manifest.
   func performCommand(context: PluginContext, arguments: [String]) async throws {
@@ -48,7 +47,11 @@ extension GRPCProtobufGeneratorCommandPlugin: XcodeCommandPlugin {
 @main
 struct GRPCProtobufGeneratorCommandPlugin {
   /// Command plugin code common to both invocation types: package manifest Xcode project
-  func performCommand(arguments: [String], tool: (String) throws -> PluginContext.Tool, pluginWorkDirectoryURL: URL) throws {
+  func performCommand(
+    arguments: [String],
+    tool: (String) throws -> PluginContext.Tool,
+    pluginWorkDirectoryURL: URL
+  ) throws {
     let groups = arguments.split(separator: "--")
     let flagsAndOptions: [String]
     let inputFiles: [String]
@@ -73,7 +76,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
       inputFiles = Array(groups[1])
 
     default:
-        throw CommandPluginError.tooManyParameterSeparators
+      throw CommandPluginError.tooManyParameterSeparators
     }
 
     var argExtractor = ArgumentExtractor(flagsAndOptions)

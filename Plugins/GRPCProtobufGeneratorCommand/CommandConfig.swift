@@ -64,7 +64,10 @@ extension CommandConfig {
         let servers = argExtractor.extractFlag(named: OptionsAndFlags.servers.rawValue)
         let noServers = argExtractor.extractFlag(named: OptionsAndFlags.noServers.rawValue)
         if servers > 0 && noServers > 0 {
-          throw CommandPluginError.conflictingFlags(OptionsAndFlags.servers.rawValue, OptionsAndFlags.noServers.rawValue)
+          throw CommandPluginError.conflictingFlags(
+            OptionsAndFlags.servers.rawValue,
+            OptionsAndFlags.noServers.rawValue
+          )
         } else if servers > 0 {
           config.common.servers = true
         } else if noServers > 0 {
@@ -78,7 +81,10 @@ extension CommandConfig {
         let clients = argExtractor.extractFlag(named: OptionsAndFlags.clients.rawValue)
         let noClients = argExtractor.extractFlag(named: OptionsAndFlags.noClients.rawValue)
         if clients > 0 && noClients > 0 {
-          throw CommandPluginError.conflictingFlags(OptionsAndFlags.clients.rawValue, OptionsAndFlags.noClients.rawValue)
+          throw CommandPluginError.conflictingFlags(
+            OptionsAndFlags.clients.rawValue,
+            OptionsAndFlags.noClients.rawValue
+          )
         } else if clients > 0 {
           config.common.clients = true
         } else if noClients > 0 {
@@ -92,7 +98,10 @@ extension CommandConfig {
         let messages = argExtractor.extractFlag(named: OptionsAndFlags.messages.rawValue)
         let noMessages = argExtractor.extractFlag(named: OptionsAndFlags.noMessages.rawValue)
         if messages > 0 && noMessages > 0 {
-          throw CommandPluginError.conflictingFlags(OptionsAndFlags.messages.rawValue, OptionsAndFlags.noMessages.rawValue)
+          throw CommandPluginError.conflictingFlags(
+            OptionsAndFlags.messages.rawValue,
+            OptionsAndFlags.noMessages.rawValue
+          )
         } else if messages > 0 {
           config.common.messages = true
         } else if noMessages > 0 {
@@ -124,7 +133,9 @@ extension CommandConfig {
         config.common.protocPath = argExtractor.extractSingleOption(named: flag.rawValue)
 
       case .outputPath:
-        config.common.outputPath = argExtractor.extractSingleOption(named: flag.rawValue) ?? pluginWorkDirectory.absoluteStringNoScheme
+        config.common.outputPath =
+          argExtractor.extractSingleOption(named: flag.rawValue)
+          ?? pluginWorkDirectory.absoluteStringNoScheme
 
       case .verbose:
         let verbose = argExtractor.extractFlag(named: flag.rawValue)
