@@ -17,27 +17,80 @@
 import Foundation
 import PackagePlugin
 
-@main
-struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
+
+extension GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
   /// Perform command, the entry-point when using a Package manifest.
   func performCommand(context: PluginContext, arguments: [String]) async throws {
-    var argExtractor = ArgumentExtractor(arguments)
+    try self.performCommand(
+      arguments: arguments,
+      tool: context.tool,
+      pluginWorkDirectoryURL: context.pluginWorkDirectoryURL
+    )
+  }
+}
 
-    if CommandConfig.helpRequested(argumentExtractor: &argExtractor) {
+#if canImport(XcodeProjectPlugin)
+import XcodeProjectPlugin
+
+// Entry-point when using Xcode projects
+extension GRPCProtobufGeneratorCommandPlugin: XcodeCommandPlugin {
+  /// Perform command, the entry-point when using an Xcode project.
+  func performCommand(context: XcodeProjectPlugin.XcodePluginContext, arguments: [String]) throws {
+    try self.performCommand(
+      arguments: arguments,
+      tool: context.tool,
+      pluginWorkDirectoryURL: context.pluginWorkDirectoryURL
+    )
+  }
+}
+#endif
+
+@main
+struct GRPCProtobufGeneratorCommandPlugin {
+  /// Command plugin code common to both invocation types: package manifest Xcode project
+  func performCommand(arguments: [String], tool: (String) throws -> PluginContext.Tool, pluginWorkDirectoryURL: URL) throws {
+    let groups = arguments.split(separator: "--")
+    let flagsAndOptions: [String]
+    let inputFiles: [String]
+    switch groups.count {
+    case 0:
+      OptionsAndFlags.printHelp(requested: false)
+      return
+
+    case 1:
+      inputFiles = Array(groups[0])
+      flagsAndOptions = []
+
+      var argExtractor = ArgumentExtractor(inputFiles)
+      // check if help requested
+      if argExtractor.extractFlag(named: OptionsAndFlags.help.rawValue) > 0 {
+        OptionsAndFlags.printHelp(requested: true)
+        return
+      }
+
+    case 2:
+      flagsAndOptions = Array(groups[0])
+      inputFiles = Array(groups[1])
+
+    default:
+        throw CommandPluginError.tooManyParameterSeparators
+    }
+
+    var argExtractor = ArgumentExtractor(flagsAndOptions)
+    // help requested
+    if argExtractor.extractFlag(named: OptionsAndFlags.help.rawValue) > 0 {
       OptionsAndFlags.printHelp(requested: true)
       return
     }
 
     // MARK: Configuration
     let commandConfig: CommandConfig
-    let inputFiles: [String]
     do {
-      (commandConfig, inputFiles) = try CommandConfig.parse(
+      commandConfig = try CommandConfig.parse(
         argumentExtractor: &argExtractor,
-        pluginWorkDirectory: context.pluginWorkDirectoryURL
+        pluginWorkDirectory: pluginWorkDirectoryURL
       )
     } catch {
-      OptionsAndFlags.printHelp(requested: false)
       throw error
     }
 
@@ -46,9 +99,9 @@ struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
     }
 
     let config = commandConfig.common
-    let protocPath = try deriveProtocPath(using: config, tool: context.tool)
-    let protocGenGRPCSwiftPath = try context.tool(named: "protoc-gen-grpc-swift").url
-    let protocGenSwiftPath = try context.tool(named: "protoc-gen-swift").url
+    let protocPath = try deriveProtocPath(using: config, tool: tool)
+    let protocGenGRPCSwiftPath = try tool("protoc-gen-grpc-swift").url
+    let protocGenSwiftPath = try tool("protoc-gen-swift").url
 
     let outputDirectory = URL(fileURLWithPath: config.outputPath)
     if commandConfig.verbose {
@@ -83,7 +136,7 @@ struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
           }
         } else {
           let problem = "\(process.terminationReason):\(process.terminationStatus)"
-          Diagnostics.error("Generating gRPC Swift files failed: \(problem)")
+          throw CommandPluginError.generationFailure
         }
       }
     }
@@ -112,7 +165,7 @@ struct GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
           )
         } else {
           let problem = "\(process.terminationReason):\(process.terminationStatus)"
-          Diagnostics.error("Generating Protobuf message Swift files failed: \(problem)")
+          throw CommandPluginError.generationFailure
         }
       }
     }

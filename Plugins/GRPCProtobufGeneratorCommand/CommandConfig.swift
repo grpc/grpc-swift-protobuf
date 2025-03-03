@@ -40,68 +40,77 @@ struct CommandConfig {
 }
 
 extension CommandConfig {
-  static func helpRequested(
-    argumentExtractor: inout ArgumentExtractor
-  ) -> Bool {
-    let help = argumentExtractor.extractFlag(named: OptionsAndFlags.help.rawValue)
-    return help != 0
-  }
-
   static func parse(
     argumentExtractor argExtractor: inout ArgumentExtractor,
     pluginWorkDirectory: URL
-  ) throws -> (CommandConfig, [String]) {
+  ) throws -> CommandConfig {
     var config = CommandConfig.defaults
 
     for flag in OptionsAndFlags.allCases {
       switch flag {
       case .accessLevel:
-        let accessLevel = argExtractor.extractOption(named: flag.rawValue)
-        if let value = extractSingleValue(flag, values: accessLevel) {
+        if let value = argExtractor.extractSingleOption(named: flag.rawValue) {
           if let accessLevel = GenerationConfig.AccessLevel(rawValue: value) {
             config.common.accessLevel = accessLevel
           } else {
-            Diagnostics.error("Unknown access level '--\(flag.rawValue)' \(value)")
+            throw CommandPluginError.unknownAccessLevel(value)
           }
         }
 
-      case .servers, .noServers:
-        if flag == .noServers { continue }  // only process this once
+      case .noServers:
+        // Handled by `.servers`
+        continue
+      case .servers:
         let servers = argExtractor.extractFlag(named: OptionsAndFlags.servers.rawValue)
         let noServers = argExtractor.extractFlag(named: OptionsAndFlags.noServers.rawValue)
-        if noServers > servers {
+        if servers > 0 && noServers > 0 {
+          throw CommandPluginError.conflictingFlags(OptionsAndFlags.servers.rawValue, OptionsAndFlags.noServers.rawValue)
+        } else if servers > 0 {
+          config.common.servers = true
+        } else if noServers > 0 {
           config.common.servers = false
         }
 
-      case .clients, .noClients:
-        if flag == .noClients { continue }  // only process this once
+      case .noClients:
+        // Handled by `.clients`
+        continue
+      case .clients:
         let clients = argExtractor.extractFlag(named: OptionsAndFlags.clients.rawValue)
         let noClients = argExtractor.extractFlag(named: OptionsAndFlags.noClients.rawValue)
-        if noClients > clients {
+        if clients > 0 && noClients > 0 {
+          throw CommandPluginError.conflictingFlags(OptionsAndFlags.clients.rawValue, OptionsAndFlags.noClients.rawValue)
+        } else if clients > 0 {
+          config.common.clients = true
+        } else if noClients > 0 {
           config.common.clients = false
         }
 
-      case .messages, .noMessages:
-        if flag == .noMessages { continue }  // only process this once
+      case .noMessages:
+        // Handled by `.messages`
+        continue
+      case .messages:
         let messages = argExtractor.extractFlag(named: OptionsAndFlags.messages.rawValue)
         let noMessages = argExtractor.extractFlag(named: OptionsAndFlags.noMessages.rawValue)
-        if noMessages > messages {
+        if messages > 0 && noMessages > 0 {
+          throw CommandPluginError.conflictingFlags(OptionsAndFlags.messages.rawValue, OptionsAndFlags.noMessages.rawValue)
+        } else if messages > 0 {
+          config.common.messages = true
+        } else if noMessages > 0 {
           config.common.messages = false
         }
 
       case .fileNaming:
-        let fileNaming = argExtractor.extractOption(named: flag.rawValue)
-        if let value = extractSingleValue(flag, values: fileNaming) {
+
+        if let value = argExtractor.extractSingleOption(named: flag.rawValue) {
           if let fileNaming = GenerationConfig.FileNaming(rawValue: value) {
             config.common.fileNaming = fileNaming
           } else {
-            Diagnostics.error("Unknown file naming strategy '--\(flag.rawValue)' \(value)")
+            throw CommandPluginError.unknownFileNamingStrategy(value)
           }
         }
 
       case .accessLevelOnImports:
-        let accessLevelOnImports = argExtractor.extractOption(named: flag.rawValue)
-        if let value = extractSingleValue(flag, values: accessLevelOnImports) {
+        if let value = argExtractor.extractSingleOption(named: flag.rawValue) {
           guard let accessLevelOnImports = Bool(value) else {
             throw CommandPluginError.invalidArgumentValue(name: flag.rawValue, value: value)
           }
@@ -112,13 +121,10 @@ extension CommandConfig {
         config.common.importPaths = argExtractor.extractOption(named: flag.rawValue)
 
       case .protocPath:
-        let protocPath = argExtractor.extractOption(named: flag.rawValue)
-        config.common.protocPath = extractSingleValue(flag, values: protocPath)
+        config.common.protocPath = argExtractor.extractSingleOption(named: flag.rawValue)
 
-      case .output:
-        let output = argExtractor.extractOption(named: flag.rawValue)
-        config.common.outputPath =
-          extractSingleValue(flag, values: output) ?? pluginWorkDirectory.absoluteStringNoScheme
+      case .outputPath:
+        config.common.outputPath = argExtractor.extractSingleOption(named: flag.rawValue) ?? pluginWorkDirectory.absoluteStringNoScheme
 
       case .verbose:
         let verbose = argExtractor.extractFlag(named: flag.rawValue)
@@ -133,27 +139,24 @@ extension CommandConfig {
       }
     }
 
-    if argExtractor.remainingArguments.isEmpty {
-      throw CommandPluginError.missingInputFile
+    if let argument = argExtractor.remainingArguments.first {
+      throw CommandPluginError.unknownOption(argument)
     }
 
-    for argument in argExtractor.remainingArguments {
-      if argument.hasPrefix("--") {
-        throw CommandPluginError.unknownOption(argument)
-      }
-    }
-
-    return (config, argExtractor.remainingArguments)
+    return config
   }
 }
 
-func extractSingleValue(_ flag: OptionsAndFlags, values: [String]) -> String? {
-  if values.count > 1 {
-    Stderr.print(
-      "Warning: '--\(flag.rawValue)' was unexpectedly repeated, the first value will be used."
-    )
+extension ArgumentExtractor {
+  mutating func extractSingleOption(named optionName: String) -> String? {
+    let values = self.extractOption(named: optionName)
+    if values.count > 1 {
+      Diagnostics.warning(
+        "'--\(optionName)' was unexpectedly repeated, the first value will be used."
+      )
+    }
+    return values.first
   }
-  return values.first
 }
 
 /// All valid input options/flags
@@ -169,7 +172,7 @@ enum OptionsAndFlags: String, CaseIterable {
   case accessLevelOnImports = "access-level-on-imports"
   case importPath = "import-path"
   case protocPath = "protoc-path"
-  case output
+  case outputPath = "output-path"
   case verbose
   case dryRun = "dry-run"
 
@@ -205,7 +208,7 @@ extension OptionsAndFlags {
       return "The path to the protoc binary."
     case .dryRun:
       return "Print but do not execute the protoc commands."
-    case .output:
+    case .outputPath:
       return "The path into which the generated source files are created."
     case .verbose:
       return "Emit verbose output."
@@ -222,7 +225,7 @@ extension OptionsAndFlags {
       printMessage = Stderr.print
     }
 
-    printMessage("Usage: swift package generate-grpc-code-from-protos [flags] [input files]")
+    printMessage("Usage: swift package generate-grpc-code-from-protos [flags] [--] [input files]")
     printMessage("")
     printMessage("Flags:")
     printMessage("")
