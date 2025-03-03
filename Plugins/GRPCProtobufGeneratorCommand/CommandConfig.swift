@@ -219,7 +219,7 @@ extension OptionsAndFlags {
     case .dryRun:
       return "Print but do not execute the protoc commands."
     case .outputPath:
-      return "The path into which the generated source files are created."
+      return "The directory into which the generated source files are created."
     case .verbose:
       return "Emit verbose output."
     case .help:
