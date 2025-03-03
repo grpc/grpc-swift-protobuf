@@ -109,7 +109,6 @@ extension CommandConfig {
         }
 
       case .fileNaming:
-
         if let value = argExtractor.extractSingleOption(named: flag.rawValue) {
           if let fileNaming = GenerationConfig.FileNaming(rawValue: value) {
             config.common.fileNaming = fileNaming
