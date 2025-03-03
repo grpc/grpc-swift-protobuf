@@ -36,15 +36,18 @@ package struct ProtobufCodeGenParser {
   let extraModuleImports: [String]
   let protoToModuleMappings: ProtoFileToModuleMappings
   let accessLevel: CodeGenerator.Config.AccessLevel
+  let moduleNames: ProtobufCodeGenerator.Config.ModuleNames
 
   package init(
     protoFileModuleMappings: ProtoFileToModuleMappings,
     extraModuleImports: [String],
-    accessLevel: CodeGenerator.Config.AccessLevel
+    accessLevel: CodeGenerator.Config.AccessLevel,
+    moduleNames: ProtobufCodeGenerator.Config.ModuleNames
   ) {
     self.extraModuleImports = extraModuleImports
     self.protoToModuleMappings = protoFileModuleMappings
     self.accessLevel = accessLevel
+    self.moduleNames = moduleNames
   }
 
   package func parse(descriptor: FileDescriptor) throws -> CodeGenerationRequest {
@@ -86,10 +89,10 @@ package struct ProtobufCodeGenParser {
       dependencies: self.codeDependencies(file: descriptor),
       services: services,
       makeSerializerCodeSnippet: { messageType in
-        "GRPCProtobuf.ProtobufSerializer<\(messageType)>()"
+        "\(self.moduleNames.grpcProtobuf).ProtobufSerializer<\(messageType)>()"
       },
       makeDeserializerCodeSnippet: { messageType in
-        "GRPCProtobuf.ProtobufDeserializer<\(messageType)>()"
+        "\(self.moduleNames.grpcProtobuf).ProtobufDeserializer<\(messageType)>()"
       }
     )
   }
@@ -102,7 +105,7 @@ extension ProtobufCodeGenParser {
     }
 
     var codeDependencies: [Dependency] = [
-      Dependency(module: "GRPCProtobuf", accessLevel: .internal)
+      Dependency(module: self.moduleNames.grpcProtobuf, accessLevel: .internal)
     ]
     // If there's a dependency on a bundled proto then add the SwiftProtobuf import.
     //
@@ -113,7 +116,11 @@ extension ProtobufCodeGenParser {
     }
 
     if dependsOnBundledProto {
-      codeDependencies.append(Dependency(module: "SwiftProtobuf", accessLevel: self.accessLevel))
+      let dependency = Dependency(
+        module: self.moduleNames.swiftProtobuf,
+        accessLevel: self.accessLevel
+      )
+      codeDependencies.append(dependency)
     }
 
     // Adding as dependencies the modules containing generated code or types for

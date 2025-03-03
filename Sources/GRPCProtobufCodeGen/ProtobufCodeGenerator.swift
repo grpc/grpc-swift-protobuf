@@ -18,10 +18,10 @@ package import GRPCCodeGen
 package import SwiftProtobufPluginLibrary
 
 package struct ProtobufCodeGenerator {
-  internal var config: GRPCCodeGen.CodeGenerator.Config
+  internal var config: ProtobufCodeGenerator.Config
 
   package init(
-    config: GRPCCodeGen.CodeGenerator.Config
+    config: ProtobufCodeGenerator.Config
   ) {
     self.config = config
   }
@@ -34,12 +34,58 @@ package struct ProtobufCodeGenerator {
     let parser = ProtobufCodeGenParser(
       protoFileModuleMappings: protoFileModuleMappings,
       extraModuleImports: extraModuleImports,
-      accessLevel: self.config.accessLevel
+      accessLevel: self.config.accessLevel,
+      moduleNames: self.config.moduleNames
     )
-    let codeGenerator = GRPCCodeGen.CodeGenerator(config: self.config)
+
+    var codeGeneratorConfig = GRPCCodeGen.CodeGenerator.Config(
+      accessLevel: self.config.accessLevel,
+      accessLevelOnImports: self.config.accessLevelOnImports,
+      client: self.config.generateClient,
+      server: self.config.generateServer,
+      indentation: self.config.indentation
+    )
+    codeGeneratorConfig.grpcCoreModuleName = self.config.moduleNames.grpcCore
+    let codeGenerator = GRPCCodeGen.CodeGenerator(config: codeGeneratorConfig)
 
     let codeGenerationRequest = try parser.parse(descriptor: fileDescriptor)
     let sourceFile = try codeGenerator.generate(codeGenerationRequest)
     return sourceFile.contents
+  }
+}
+
+extension ProtobufCodeGenerator {
+  package struct Config {
+    package var accessLevel: GRPCCodeGen.CodeGenerator.Config.AccessLevel
+    package var accessLevelOnImports: Bool
+
+    package var generateClient: Bool
+    package var generateServer: Bool
+
+    package var indentation: Int
+    package var moduleNames: ModuleNames
+
+    package struct ModuleNames {
+      package var grpcCore: String
+      package var grpcProtobuf: String
+      package var swiftProtobuf: String
+
+      package static let defaults = Self(
+        grpcCore: "GRPCCore",
+        grpcProtobuf: "GRPCProtobuf",
+        swiftProtobuf: "SwiftProtobuf"
+      )
+    }
+
+    package static var defaults: Self {
+      Self(
+        accessLevel: .internal,
+        accessLevelOnImports: false,
+        generateClient: true,
+        generateServer: true,
+        indentation: 4,
+        moduleNames: .defaults
+      )
+    }
   }
 }

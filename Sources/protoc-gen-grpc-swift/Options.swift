@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import GRPCCodeGen
+import GRPCProtobufCodeGen
 import SwiftProtobufPluginLibrary
 
 enum GenerationError: Error, CustomStringConvertible {
@@ -43,35 +45,13 @@ enum FileNaming: String {
 }
 
 struct GeneratorOptions {
-  enum Visibility: String {
-    case `internal` = "Internal"
-    case `public` = "Public"
-    case `package` = "Package"
-
-    var sourceSnippet: String {
-      switch self {
-      case .internal:
-        return "internal"
-      case .public:
-        return "public"
-      case .package:
-        return "package"
-      }
-    }
-  }
-
-  private(set) var visibility = Visibility.internal
-
-  private(set) var generateServer = true
-  private(set) var generateClient = true
-
   private(set) var protoToModuleMappings = ProtoFileToModuleMappings()
   private(set) var fileNaming = FileNaming.fullPath
   private(set) var extraModuleImports: [String] = []
-  private(set) var gRPCModuleName = "GRPC"
-  private(set) var swiftProtobufModuleName = "SwiftProtobuf"
+
   private(set) var generateReflectionData = false
-  private(set) var useAccessLevelOnImports = false
+
+  private(set) var config: ProtobufCodeGenerator.Config = .defaults
 
   init(parameter: any CodeGeneratorParameter) throws {
     try self.init(pairs: parameter.parsedPairs)
@@ -81,22 +61,22 @@ struct GeneratorOptions {
     for pair in pairs {
       switch pair.key {
       case "Visibility":
-        if let value = Visibility(rawValue: pair.value) {
-          self.visibility = value
+        if let value = GRPCCodeGen.CodeGenerator.Config.AccessLevel(protocOption: pair.value) {
+          self.config.accessLevel = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
 
       case "Server":
         if let value = Bool(pair.value.lowercased()) {
-          self.generateServer = value
+          self.config.generateServer = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
 
       case "Client":
         if let value = Bool(pair.value.lowercased()) {
-          self.generateClient = value
+          self.config.generateClient = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
@@ -129,14 +109,21 @@ struct GeneratorOptions {
 
       case "GRPCModuleName":
         if !pair.value.isEmpty {
-          self.gRPCModuleName = pair.value
+          self.config.moduleNames.grpcCore = pair.value
+        } else {
+          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
+        }
+
+      case "GRPCProtobufModuleName":
+        if !pair.value.isEmpty {
+          self.config.moduleNames.grpcProtobuf = pair.value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
 
       case "SwiftProtobufModuleName":
         if !pair.value.isEmpty {
-          self.swiftProtobufModuleName = pair.value
+          self.config.moduleNames.swiftProtobuf = pair.value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
@@ -150,7 +137,7 @@ struct GeneratorOptions {
 
       case "UseAccessLevelOnImports":
         if let value = Bool(pair.value.lowercased()) {
-          self.useAccessLevelOnImports = value
+          self.config.accessLevelOnImports = value
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }
@@ -192,5 +179,20 @@ extension String.SubSequence {
     let trimmedSuffix = self.drop(while: { $0.isNewline || $0.isWhitespace })
     let trimmed = trimmedSuffix.trimmingPrefix(while: { $0.isNewline || $0.isWhitespace })
     return String(trimmed)
+  }
+}
+
+extension GRPCCodeGen.CodeGenerator.Config.AccessLevel {
+  fileprivate init?(protocOption value: String) {
+    switch value {
+    case "Internal":
+      self = .internal
+    case "Public":
+      self = .public
+    case "Package":
+      self = .package
+    default:
+      return nil
+    }
   }
 }

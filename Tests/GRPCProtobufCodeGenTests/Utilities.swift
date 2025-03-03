@@ -76,7 +76,8 @@ func parseDescriptor(
   let parser = ProtobufCodeGenParser(
     protoFileModuleMappings: .init(),
     extraModuleImports: extraModuleImports,
-    accessLevel: accessLevel
+    accessLevel: accessLevel,
+    moduleNames: .defaults
   )
   return try parser.parse(descriptor: descriptor)
 }
