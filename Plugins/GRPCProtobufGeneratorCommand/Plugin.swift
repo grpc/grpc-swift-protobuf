@@ -129,7 +129,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
         dryRun: commandConfig.dryRun
       )
 
-      if !commandConfig.dryRun {
+      if !commandConfig.dryRun, commandConfig.verbose {
         Stderr.print("Generated gRPC Swift files for \(inputFiles.joined(separator: ", ")).")
       }
     }
@@ -152,7 +152,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
         dryRun: commandConfig.dryRun
       )
 
-      if !commandConfig.dryRun {
+      if !commandConfig.dryRun, commandConfig.verbose {
         Stderr.print(
           "Generated protobuf message Swift files for \(inputFiles.joined(separator: ", "))."
         )
@@ -212,21 +212,23 @@ func executeProtocInvocation(
 
   try printProtocOutput(outputPipe, verbose: verbose)
 
-  guard process.terminationReason == .exit && process.terminationStatus == 0 else {
-    let stdErr: String?
-    if let errorData = try errorPipe.fileHandleForReading.readToEnd() {
-      stdErr = String(decoding: errorData, as: UTF8.self)
-    } else {
-      stdErr = nil
-    }
-    let problem = "\(process.terminationReason):\(process.terminationStatus)"
-    throw CommandPluginError.generationFailure(
-      errorDescription: problem,
-      executable: executableURL.absoluteStringNoScheme,
-      arguments: arguments,
-      stdErr: stdErr
-    )
+  if process.terminationReason == .exit && process.terminationStatus == 0 {
+    return
   }
+
+  let stdErr: String?
+  if let errorData = try errorPipe.fileHandleForReading.readToEnd() {
+    stdErr = String(decoding: errorData, as: UTF8.self)
+  } else {
+    stdErr = nil
+  }
+  let problem = "\(process.terminationReason):\(process.terminationStatus)"
+  throw CommandPluginError.generationFailure(
+    errorDescription: problem,
+    executable: executableURL.absoluteStringNoScheme,
+    arguments: arguments,
+    stdErr: stdErr
+  )
 
   return
 }

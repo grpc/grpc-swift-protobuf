@@ -23,8 +23,8 @@ enum CommandPluginError: Error {
   case conflictingFlags(String, String)
   case generationFailure(
     errorDescription: String,
-    executable: String?,
-    arguments: [String]?,
+    executable: String,
+    arguments: [String],
     stdErr: String?
   )
   case tooManyParameterSeparators
@@ -46,16 +46,16 @@ extension CommandPluginError: CustomStringConvertible {
     case .conflictingFlags(let flag1, let flag2):
       return "Provided flags conflict: '\(flag1)' and '\(flag2)'."
     case .generationFailure(let errorDescription, let executable, let arguments, let stdErr):
-      var message = "Code generation failed with: \(errorDescription)."
-      if let executable {
-        message += "\n\tExecutable: \(executable)"
-      }
-      if let arguments {
-        message += "\n\tArguments: \(arguments.joined(separator: " "))"
-      }
+      var message = """
+        Code generation failed with: \(errorDescription).
+        \tExecutable: \(executable)
+        \tArguments: \(arguments.joined(separator: " "))
+        """
       if let stdErr {
-        message += "\n\tprotoc error output:"
-        message += "\n\t\(stdErr)"
+        message += """
+          \n\tprotoc error output:
+          \t\(stdErr)
+          """
       }
       return message
     case .tooManyParameterSeparators:
