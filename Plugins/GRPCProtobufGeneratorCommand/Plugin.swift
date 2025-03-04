@@ -18,7 +18,6 @@ import Foundation
 import PackagePlugin
 
 extension GRPCProtobufGeneratorCommandPlugin: CommandPlugin {
-  /// Perform command, the entry-point when using a Package manifest.
   func performCommand(context: PluginContext, arguments: [String]) async throws {
     try self.performCommand(
       arguments: arguments,
@@ -33,7 +32,6 @@ import XcodeProjectPlugin
 
 // Entry-point when using Xcode projects
 extension GRPCProtobufGeneratorCommandPlugin: XcodeCommandPlugin {
-  /// Perform command, the entry-point when using an Xcode project.
   func performCommand(context: XcodeProjectPlugin.XcodePluginContext, arguments: [String]) throws {
     try self.performCommand(
       arguments: arguments,
@@ -46,7 +44,7 @@ extension GRPCProtobufGeneratorCommandPlugin: XcodeCommandPlugin {
 
 @main
 struct GRPCProtobufGeneratorCommandPlugin {
-  /// Command plugin code common to both invocation types: package manifest Xcode project
+  /// Command plugin common code
   func performCommand(
     arguments: [String],
     tool: (String) throws -> PluginContext.Tool,
@@ -169,7 +167,6 @@ struct GRPCProtobufGeneratorCommandPlugin {
 ///   - arguments: The arguments to be passed to `protoc`.
 ///   - verbose: Whether or not to print verbose output
 ///   - dryRun: If this invocation is a dry-run, i.e. will not actually be executed
-
 func executeProtocInvocation(
   executableURL: URL,
   arguments: [String],

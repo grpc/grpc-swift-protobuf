@@ -19,7 +19,6 @@ import PackagePlugin
 
 // Entry-point when using Package manifest
 extension GRPCProtobufGenerator: BuildToolPlugin {
-  /// Create build commands, the entry-point when using a Package manifest.
   func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
     guard let swiftTarget = target as? SwiftSourceModuleTarget else {
       throw BuildPluginError.incompatibleTarget(target.name)
@@ -41,7 +40,6 @@ import XcodeProjectPlugin
 
 // Entry-point when using Xcode projects
 extension GRPCProtobufGenerator: XcodeBuildToolPlugin {
-  /// Create build commands, the entry-point when using an Xcode project.
   func createBuildCommands(context: XcodePluginContext, target: XcodeTarget) throws -> [Command] {
     let configFiles = target.inputFiles.filter {
       $0.url.lastPathComponent == configFileName
@@ -62,7 +60,7 @@ extension GRPCProtobufGenerator: XcodeBuildToolPlugin {
 
 @main
 struct GRPCProtobufGenerator {
-  /// Build plugin code common to both invocation types: package manifest Xcode project
+  /// Build plugin common code
   func createBuildCommands(
     pluginWorkDirectory: URL,
     tool: (String) throws -> PluginContext.Tool,
