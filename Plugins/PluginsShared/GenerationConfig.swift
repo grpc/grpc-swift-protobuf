@@ -32,7 +32,7 @@ struct GenerationConfig {
   /// - `FullPath`: `foo/bar/baz.grpc.swift`
   /// - `PathToUnderscore`: `foo_bar_baz.grpc.swift`
   /// - `DropPath`: `baz.grpc.swift`
-  enum FileNaming: String, Codable {
+  enum FileNaming: String {
     /// Replicate the input file path with the output file(s).
     case fullPath = "FullPath"
     /// Convert path directory delimiters to underscores.
@@ -42,13 +42,13 @@ struct GenerationConfig {
   }
 
   /// The visibility of the generated files.
-  var visibility: AccessLevel
+  var accessLevel: AccessLevel
   /// Whether server code is generated.
-  var server: Bool
+  var servers: Bool
   /// Whether client code is generated.
-  var client: Bool
+  var clients: Bool
   /// Whether message code is generated.
-  var message: Bool
+  var messages: Bool
   /// The naming of output files with respect to the path of the source file.
   var fileNaming: FileNaming
   /// Whether imports should have explicit access levels.
@@ -78,6 +78,21 @@ extension GenerationConfig.AccessLevel: Codable {
       self = .public
     case "package":
       self = .package
+    default:
+      return nil
+    }
+  }
+}
+
+extension GenerationConfig.FileNaming: Codable {
+  init?(rawValue: String) {
+    switch rawValue.lowercased() {
+    case "fullpath":
+      self = .fullPath
+    case "pathtounderscores":
+      self = .pathToUnderscores
+    case "droppath":
+      self = .dropPath
     default:
       return nil
     }

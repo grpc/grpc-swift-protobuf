@@ -19,10 +19,9 @@ import PackagePlugin
 
 // Entry-point when using Package manifest
 extension GRPCProtobufGenerator: BuildToolPlugin {
-  /// Create build commands, the entry-point when using a Package manifest.
   func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
     guard let swiftTarget = target as? SwiftSourceModuleTarget else {
-      throw PluginError.incompatibleTarget(target.name)
+      throw BuildPluginError.incompatibleTarget(target.name)
     }
     let configFiles = swiftTarget.sourceFiles(withSuffix: configFileName).map { $0.url }
     let inputFiles = swiftTarget.sourceFiles(withSuffix: ".proto").map { $0.url }
@@ -41,7 +40,6 @@ import XcodeProjectPlugin
 
 // Entry-point when using Xcode projects
 extension GRPCProtobufGenerator: XcodeBuildToolPlugin {
-  /// Create build commands, the entry-point when using an Xcode project.
   func createBuildCommands(context: XcodePluginContext, target: XcodeTarget) throws -> [Command] {
     let configFiles = target.inputFiles.filter {
       $0.url.lastPathComponent == configFileName
@@ -62,7 +60,7 @@ extension GRPCProtobufGenerator: XcodeBuildToolPlugin {
 
 @main
 struct GRPCProtobufGenerator {
-  /// Build plugin code common to both invocation types: package manifest Xcode project
+  /// Build plugin common code
   func createBuildCommands(
     pluginWorkDirectory: URL,
     tool: (String) throws -> PluginContext.Tool,
@@ -78,7 +76,7 @@ struct GRPCProtobufGenerator {
     var commands: [Command] = []
     for inputFile in inputFiles {
       guard let (configFilePath, config) = configs.findApplicableConfig(for: inputFile) else {
-        throw PluginError.noConfigFilesFound
+        throw BuildPluginError.noConfigFilesFound
       }
 
       let protocPath = try deriveProtocPath(using: config, tool: tool)
@@ -90,7 +88,7 @@ struct GRPCProtobufGenerator {
       }
 
       // unless *explicitly* opted-out
-      if config.client || config.server {
+      if config.clients || config.servers {
         let grpcCommand = try protocGenGRPCSwiftCommand(
           inputFile: inputFile,
           config: config,
@@ -104,7 +102,7 @@ struct GRPCProtobufGenerator {
       }
 
       // unless *explicitly* opted-out
-      if config.message {
+      if config.messages {
         let protoCommand = try protocGenSwiftCommand(
           inputFile: inputFile,
           config: config,
