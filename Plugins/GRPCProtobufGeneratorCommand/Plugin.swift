@@ -53,7 +53,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
     let flagsAndOptions: [String]
     let inputFiles: [String]
 
-    let separatorCount = arguments.filter { $0 == CommandConfig.parameterGroupSeparator }.count
+    let separatorCount = arguments.count { $0 == CommandConfig.parameterGroupSeparator }
     switch separatorCount {
     case 0:
       var argExtractor = ArgumentExtractor(arguments)
