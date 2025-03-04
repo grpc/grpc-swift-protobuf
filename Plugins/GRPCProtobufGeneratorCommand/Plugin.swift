@@ -232,14 +232,12 @@ func executeProtocInvocation(
 }
 
 func printProtocOutput(_ stdOut: Pipe, verbose: Bool) throws {
-  let prefix = "\t"
-
   if verbose, let outputData = try stdOut.fileHandleForReading.readToEnd() {
     let output = String(decoding: outputData, as: UTF8.self)
     let lines = output.split { $0.isNewline }
     print("protoc output:")
     for line in lines {
-      print("\(prefix)\(line)")
+      print("\t\(line)")
     }
   }
 }
