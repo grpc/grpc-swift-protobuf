@@ -15,38 +15,51 @@
  */
 
 enum CommandPluginError: Error {
-  case missingArgumentValue
   case invalidArgumentValue(name: String, value: String)
   case missingInputFile
   case unknownOption(String)
   case unknownAccessLevel(String)
   case unknownFileNamingStrategy(String)
   case conflictingFlags(String, String)
-  case generationFailure
+  case generationFailure(
+    errorDescription: String,
+    executable: String?,
+    arguments: [String]?,
+    stdErr: String?
+  )
   case tooManyParameterSeparators
 }
 
 extension CommandPluginError: CustomStringConvertible {
   var description: String {
     switch self {
-    case .missingArgumentValue:
-      "Provided option does not have a value."
     case .invalidArgumentValue(let name, let value):
-      "Invalid value '\(value)', for '\(name)'."
+      return "Invalid value '\(value)', for '\(name)'."
     case .missingInputFile:
-      "No input file(s) specified."
-    case .unknownOption(let value):
-      "Provided option is unknown: \(value)."
+      return "No input file(s) specified."
+    case .unknownOption(let name):
+      return "Provided option is unknown: \(name)."
     case .unknownAccessLevel(let value):
-      "Provided access level is unknown: \(value)."
+      return "Provided access level is unknown: \(value)."
     case .unknownFileNamingStrategy(let value):
-      "Provided file naming strategy is unknown: \(value)."
+      return "Provided file naming strategy is unknown: \(value)."
     case .conflictingFlags(let flag1, let flag2):
-      "Provided flags conflict: '\(flag1)' and '\(flag2)'."
-    case .generationFailure:
-      "Code generation failed."
+      return "Provided flags conflict: '\(flag1)' and '\(flag2)'."
+    case .generationFailure(let errorDescription, let executable, let arguments, let stdErr):
+      var message = "Code generation failed with: \(errorDescription)."
+      if let executable {
+        message += "\n\tExecutable: \(executable)"
+      }
+      if let arguments {
+        message += "\n\tArguments: \(arguments.joined(separator: " "))"
+      }
+      if let stdErr {
+        message += "\n\tprotoc error output:"
+        message += "\n\t\(stdErr)"
+      }
+      return message
     case .tooManyParameterSeparators:
-      "Unexpected parameter structure, too many '--' separators."
+      return "Unexpected parameter structure, too many '--' separators."
     }
   }
 }

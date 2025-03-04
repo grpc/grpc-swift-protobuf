@@ -52,28 +52,26 @@ struct GRPCProtobufGeneratorCommandPlugin {
     tool: (String) throws -> PluginContext.Tool,
     pluginWorkDirectoryURL: URL
   ) throws {
-    let groups = arguments.split(separator: "--")
     let flagsAndOptions: [String]
     let inputFiles: [String]
-    switch groups.count {
+
+    let separatorCount = arguments.filter { $0 == CommandConfig.parameterGroupSeparator }.count
+    switch separatorCount {
     case 0:
-      OptionsAndFlags.printHelp(requested: false)
-      return
-
-    case 1:
-      inputFiles = Array(groups[0])
-      flagsAndOptions = []
-
-      var argExtractor = ArgumentExtractor(inputFiles)
+      var argExtractor = ArgumentExtractor(arguments)
       // check if help requested
       if argExtractor.extractFlag(named: OptionsAndFlags.help.rawValue) > 0 {
         OptionsAndFlags.printHelp(requested: true)
         return
       }
 
-    case 2:
-      flagsAndOptions = Array(groups[0])
-      inputFiles = Array(groups[1])
+      inputFiles = arguments
+      flagsAndOptions = []
+
+    case 1:
+      let splitIndex = arguments.firstIndex(of: CommandConfig.parameterGroupSeparator)!
+      flagsAndOptions = Array(arguments[..<splitIndex])
+      inputFiles = Array(arguments[(splitIndex).advanced(by: 1)...])
 
     default:
       throw CommandPluginError.tooManyParameterSeparators
@@ -126,21 +124,15 @@ struct GRPCProtobufGeneratorCommandPlugin {
         outputDirectory: outputDirectory
       )
 
-      if commandConfig.verbose || commandConfig.dryRun {
-        printProtocInvocation(protocPath, arguments)
-      }
-      if !commandConfig.dryRun {
-        let process = try Process.run(protocPath, arguments: arguments)
-        process.waitUntilExit()
+      try executeProtocInvocation(
+        executableURL: protocPath,
+        arguments: arguments,
+        verbose: commandConfig.verbose,
+        dryRun: commandConfig.dryRun
+      )
 
-        if process.terminationReason == .exit, process.terminationStatus == 0 {
-          if commandConfig.verbose {
-            Stderr.print("Generated gRPC Swift files for \(inputFiles.joined(separator: ", ")).")
-          }
-        } else {
-          let problem = "\(process.terminationReason):\(process.terminationStatus)"
-          throw CommandPluginError.generationFailure
-        }
+      if !commandConfig.dryRun {
+        Stderr.print("Generated gRPC Swift files for \(inputFiles.joined(separator: ", ")).")
       }
     }
 
@@ -155,31 +147,102 @@ struct GRPCProtobufGeneratorCommandPlugin {
         outputDirectory: outputDirectory
       )
 
-      if commandConfig.verbose || commandConfig.dryRun {
-        printProtocInvocation(protocPath, arguments)
-      }
-      if !commandConfig.dryRun {
-        let process = try Process.run(protocPath, arguments: arguments)
-        process.waitUntilExit()
+      let completionStatus = try executeProtocInvocation(
+        executableURL: protocPath,
+        arguments: arguments,
+        verbose: commandConfig.verbose,
+        dryRun: commandConfig.dryRun
+      )
 
-        if process.terminationReason == .exit, process.terminationStatus == 0 {
-          Stderr.print(
-            "Generated protobuf message Swift files for \(inputFiles.joined(separator: ", "))."
-          )
-        } else {
-          let problem = "\(process.terminationReason):\(process.terminationStatus)"
-          throw CommandPluginError.generationFailure
-        }
+      if !commandConfig.dryRun {
+        Stderr.print(
+          "Generated protobuf message Swift files for \(inputFiles.joined(separator: ", "))."
+        )
       }
     }
   }
 }
 
-/// Print a single invocation of `protoc`
+/// Execute a single invocation of `protoc`, printing output and if in verbose mode the invocation
 /// - Parameters:
 ///   - executableURL: The path to the `protoc` executable.
 ///   - arguments: The arguments to be passed to `protoc`.
-func printProtocInvocation(_ executableURL: URL, _ arguments: [String]) {
-  Stderr.print("\(executableURL.absoluteStringNoScheme) \\")
-  Stderr.print("  \(arguments.joined(separator: " \\\n  "))")
+///   - verbose: Whether or not to print verbose output
+///   - dryRun: If this invocation is a dry-run, i.e. will not actually be executed
+
+func executeProtocInvocation(
+  executableURL: URL,
+  arguments: [String],
+  verbose: Bool,
+  dryRun: Bool
+) throws {
+  if verbose {
+    Stderr.print("\(executableURL.absoluteStringNoScheme) \\")
+    Stderr.print("  \(arguments.joined(separator: " \\\n  "))")
+  }
+
+  if dryRun {
+    return
+  }
+
+  let process = Process()
+  process.executableURL = executableURL
+  process.arguments = arguments
+
+  let outputPipe = Pipe()
+  let errorPipe = Pipe()
+  process.standardOutput = outputPipe
+  process.standardError = errorPipe
+
+  do {
+    try process.run()
+  } catch {
+    try printProtocOutput(outputPipe, verbose: verbose)
+    let stdErr: String?
+    if let errorData = try errorPipe.fileHandleForReading.readToEnd() {
+      stdErr = String(decoding: errorData, as: UTF8.self)
+    } else {
+      stdErr = nil
+    }
+    throw CommandPluginError.generationFailure(
+      errorDescription: "\(error)",
+      executable: executableURL.absoluteStringNoScheme,
+      arguments: arguments,
+      stdErr: stdErr
+    )
+  }
+  process.waitUntilExit()
+
+  try printProtocOutput(outputPipe, verbose: verbose)
+
+  guard process.terminationReason == .exit && process.terminationStatus == 0 else {
+    let stdErr: String?
+    if let errorData = try errorPipe.fileHandleForReading.readToEnd() {
+      stdErr = String(decoding: errorData, as: UTF8.self)
+    } else {
+      stdErr = nil
+    }
+    let problem = "\(process.terminationReason):\(process.terminationStatus)"
+    throw CommandPluginError.generationFailure(
+      errorDescription: problem,
+      executable: executableURL.absoluteStringNoScheme,
+      arguments: arguments,
+      stdErr: stdErr
+    )
+  }
+
+  return
+}
+
+func printProtocOutput(_ stdOut: Pipe, verbose: Bool) throws {
+  let prefix = "\t"
+
+  if verbose, let outputData = try stdOut.fileHandleForReading.readToEnd() {
+    let output = String(decoding: outputData, as: UTF8.self)
+    let lines = output.split { $0.isNewline }
+    print("protoc output:")
+    for line in lines {
+      print("\(prefix)\(line)")
+    }
+  }
 }
