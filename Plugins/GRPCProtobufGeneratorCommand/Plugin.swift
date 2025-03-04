@@ -69,7 +69,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
     case 1:
       let splitIndex = arguments.firstIndex(of: CommandConfig.parameterGroupSeparator)!
       flagsAndOptions = Array(arguments[..<splitIndex])
-      inputFiles = Array(arguments[(splitIndex).advanced(by: 1)...])
+      inputFiles = Array(arguments[splitIndex.advanced(by: 1)...])
 
     default:
       throw CommandPluginError.tooManyParameterSeparators
