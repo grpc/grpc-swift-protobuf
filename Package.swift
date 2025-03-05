@@ -30,6 +30,10 @@ let products: [Product] = [
     name: "GRPCProtobufGenerator",
     targets: ["GRPCProtobufGenerator"]
   ),
+  .plugin(
+    name: "generate-grpc-code-from-protos",
+    targets: ["generate-grpc-code-from-protos"]
+  ),
 ]
 
 let dependencies: [Package.Dependency] = [
@@ -118,7 +122,7 @@ let targets: [Target] = [
 
   // Code generator SwiftPM command
   .plugin(
-    name: "GRPCProtobufGeneratorCommand",
+    name: "generate-grpc-code-from-protos",
     capability: .command(
       intent: .custom(
         verb: "generate-grpc-code-from-protos",
@@ -134,7 +138,8 @@ let targets: [Target] = [
     dependencies: [
       .target(name: "protoc-gen-grpc-swift"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
-    ]
+    ],
+    path: "Plugins/GRPCProtobufGeneratorCommand"
   ),
 ]
 
