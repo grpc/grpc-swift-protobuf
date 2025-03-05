@@ -145,7 +145,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
         outputDirectory: outputDirectory
       )
 
-      let completionStatus = try executeProtocInvocation(
+      try executeProtocInvocation(
         executableURL: protocPath,
         arguments: arguments,
         verbose: commandConfig.verbose,
@@ -229,8 +229,6 @@ func executeProtocInvocation(
     arguments: arguments,
     stdErr: stdErr
   )
-
-  return
 }
 
 func printProtocOutput(_ stdOut: Pipe, verbose: Bool) throws {
