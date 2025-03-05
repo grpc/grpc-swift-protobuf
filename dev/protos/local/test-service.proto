@@ -3,6 +3,9 @@ syntax = "proto3";
 
 package test;
 
+// Using a WKT forces an "SwiftProtobuf" to be imported in generated code.
+import "google/protobuf/any.proto";
+
 // Service docs.
 service TestService {
   // Unary docs.
@@ -15,5 +18,8 @@ service TestService {
   rpc BidirectionalStreaming (stream TestInput) returns (stream TestOutput) {}
 }
 
-message TestInput {}
+message TestInput {
+  google.protobuf.Any any = 1;
+}
+
 message TestOutput {}

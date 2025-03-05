@@ -27,15 +27,10 @@ struct ProtobufCodeGeneratorTests {
 
     @Test("Generate", arguments: [CodeGenerator.Config.AccessLevel.internal])
     func generate(accessLevel: GRPCCodeGen.CodeGenerator.Config.AccessLevel) throws {
-      let generator = ProtobufCodeGenerator(
-        config: CodeGenerator.Config(
-          accessLevel: accessLevel,
-          accessLevelOnImports: false,
-          client: true,
-          server: true,
-          indentation: 2
-        )
-      )
+      var config = ProtobufCodeGenerator.Config.defaults
+      config.accessLevel = accessLevel
+      config.indentation = 2
+      let generator = ProtobufCodeGenerator(config: config)
 
       let access: String
       switch accessLevel {
@@ -69,6 +64,7 @@ struct ProtobufCodeGeneratorTests {
 
         import GRPCCore
         import GRPCProtobuf
+        import SwiftProtobuf
 
         // MARK: - test.TestService
 
@@ -1062,6 +1058,35 @@ struct ProtobufCodeGeneratorTests {
 
       #expect(generated == expected)
     }
+
+    @Test("Generate with different module names")
+    func generateWithDifferentModuleNames() throws {
+      var config = ProtobufCodeGenerator.Config.defaults
+      let defaultNames = config.moduleNames
+
+      config.accessLevel = .public
+      config.indentation = 2
+      config.moduleNames.grpcCore = String(config.moduleNames.grpcCore.reversed())
+      config.moduleNames.grpcProtobuf = String(config.moduleNames.grpcProtobuf.reversed())
+      config.moduleNames.swiftProtobuf = String(config.moduleNames.swiftProtobuf.reversed())
+
+      let generator = ProtobufCodeGenerator(config: config)
+      let generated = try generator.generateCode(
+        fileDescriptor: Self.fileDescriptor,
+        protoFileModuleMappings: ProtoFileToModuleMappings(),
+        extraModuleImports: []
+      )
+
+      // Mustn't contain the default names.
+      #expect(!generated.contains(defaultNames.grpcCore))
+      #expect(!generated.contains(defaultNames.grpcProtobuf))
+      #expect(!generated.contains(defaultNames.swiftProtobuf))
+
+      // Must contain the configured names.
+      #expect(generated.contains(config.moduleNames.grpcCore))
+      #expect(generated.contains(config.moduleNames.grpcProtobuf))
+      #expect(generated.contains(config.moduleNames.swiftProtobuf))
+    }
   }
 
   @Suite("File-without-services (foo-messages.proto)")
@@ -1071,15 +1096,11 @@ struct ProtobufCodeGeneratorTests {
 
     @Test("Generate")
     func generate() throws {
-      let generator = ProtobufCodeGenerator(
-        config: CodeGenerator.Config(
-          accessLevel: .public,
-          accessLevelOnImports: false,
-          client: true,
-          server: true,
-          indentation: 2
-        )
-      )
+      var config: ProtobufCodeGenerator.Config = .defaults
+      config.accessLevel = .public
+      config.indentation = 2
+
+      let generator = ProtobufCodeGenerator(config: config)
 
       let generated = try generator.generateCode(
         fileDescriptor: Self.fileDescriptor,

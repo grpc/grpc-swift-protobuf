@@ -96,8 +96,7 @@ final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
       fileNamingOption: options.fileNaming
     )
 
-    let config = CodeGenerator.Config(options: options)
-    let fileGenerator = ProtobufCodeGenerator(config: config)
+    let fileGenerator = ProtobufCodeGenerator(config: options.config)
     let contents = try fileGenerator.generateCode(
       fileDescriptor: descriptor,
       protoFileModuleMappings: options.protoToModuleMappings,
@@ -180,25 +179,4 @@ private func splitPath(pathname: String) -> (dir: String, base: String, suffix: 
     suffix = ""
   }
   return (dir: dir, base: base, suffix: suffix)
-}
-
-extension GRPCCodeGen.CodeGenerator.Config {
-  init(options: GeneratorOptions) {
-    let accessLevel: GRPCCodeGen.CodeGenerator.Config.AccessLevel
-    switch options.visibility {
-    case .internal:
-      accessLevel = .internal
-    case .package:
-      accessLevel = .package
-    case .public:
-      accessLevel = .public
-    }
-
-    self.init(
-      accessLevel: accessLevel,
-      accessLevelOnImports: options.useAccessLevelOnImports,
-      client: options.generateClient,
-      server: options.generateServer
-    )
-  }
 }
