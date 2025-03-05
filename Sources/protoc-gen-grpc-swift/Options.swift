@@ -25,6 +25,8 @@ enum GenerationError: Error, CustomStringConvertible {
   case invalidParameterValue(name: String, value: String)
   /// Raised to wrap another error but provide a context message.
   case wrappedError(message: String, error: any Error)
+  /// The parameter isn't supported.
+  case unsupportedParameter(name: String, message: String)
 
   var description: String {
     switch self {
@@ -34,6 +36,8 @@ enum GenerationError: Error, CustomStringConvertible {
       return "Unknown value for generation parameter '\(name)': '\(value)'"
     case let .wrappedError(message, error):
       return "\(message): \(error)"
+    case let .unsupportedParameter(name, message):
+      return "Unsupported parameter '\(name)': \(message)"
     }
   }
 }
@@ -48,8 +52,6 @@ struct GeneratorOptions {
   private(set) var protoToModuleMappings = ProtoFileToModuleMappings()
   private(set) var fileNaming = FileNaming.fullPath
   private(set) var extraModuleImports: [String] = []
-
-  private(set) var generateReflectionData = false
 
   private(set) var config: ProtobufCodeGenerator.Config = .defaults
 
@@ -129,11 +131,13 @@ struct GeneratorOptions {
         }
 
       case "ReflectionData":
-        if let value = Bool(pair.value.lowercased()) {
-          self.generateReflectionData = value
-        } else {
-          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
-        }
+        throw GenerationError.unsupportedParameter(
+          name: pair.key,
+          message: """
+            The reflection service uses descriptor sets. Refer to the protoc docs and the \
+            '--descriptor_set_out' option for more information.
+            """
+        )
 
       case "UseAccessLevelOnImports":
         if let value = Bool(pair.value.lowercased()) {

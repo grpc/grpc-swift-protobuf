@@ -55,35 +55,8 @@ final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
     let options = try GeneratorOptions(parameter: parameter)
 
     for descriptor in fileDescriptors {
-      if options.generateReflectionData {
-        try self.generateReflectionData(
-          descriptor,
-          options: options,
-          outputs: outputs
-        )
-      }
-
       try self.generateV2Stubs(descriptor, options: options, outputs: outputs)
     }
-  }
-
-  private func generateReflectionData(
-    _ descriptor: FileDescriptor,
-    options: GeneratorOptions,
-    outputs: any GeneratorOutputs
-  ) throws {
-    let fileName = self.uniqueOutputFileName(
-      fileDescriptor: descriptor,
-      fileNamingOption: options.fileNaming,
-      extension: "reflection"
-    )
-
-    var options = ExtractProtoOptions()
-    options.includeSourceCodeInfo = true
-    let proto = descriptor.extractProto(options: options)
-    let serializedProto = try proto.serializedData()
-    let reflectionData = serializedProto.base64EncodedString()
-    try outputs.add(fileName: fileName, contents: reflectionData)
   }
 
   private func generateV2Stubs(
