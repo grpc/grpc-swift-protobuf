@@ -79,7 +79,7 @@ extension GoogleRPCStatus {
   /// containing a serialized message in Protocol Buffer binary format.
   ///
   /// - Parameters:
-  ///   - serializedBytes: The binary-encoded message data to decode.
+  ///   - bytes: The binary-encoded message data to decode.
   ///   - extensions: An `ExtensionMap` used to look up and decode any
   ///     extensions in this message or messages nested within this message's
   ///     fields.
