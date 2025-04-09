@@ -15,7 +15,7 @@
  */
 
 public import GRPCCore
-internal import SwiftProtobuf
+public import SwiftProtobuf
 
 /// An error containing structured details which can be delivered to the client.
 ///
@@ -74,13 +74,32 @@ public struct GoogleRPCStatus: Error {
   }
 }
 
-extension GoogleRPCStatus: GoogleProtobufAnyPackable {
-  // See https://protobuf.dev/programming-guides/proto3/#any
-  internal static var typeURL: String { "type.googleapis.com/google.rpc.Status" }
-
-  init?(unpacking any: Google_Protobuf_Any) throws {
-    guard any.isA(Google_Rpc_Status.self) else { return nil }
-    let status = try Google_Rpc_Status(serializedBytes: any.value)
+extension GoogleRPCStatus {
+  /// Creates a new message by decoding the given `SwiftProtobufContiguousBytes` value
+  /// containing a serialized message in Protocol Buffer binary format.
+  ///
+  /// - Parameters:
+  ///   - bytes: The binary-encoded message data to decode.
+  ///   - extensions: An `ExtensionMap` used to look up and decode any
+  ///     extensions in this message or messages nested within this message's
+  ///     fields.
+  ///   - partial: If `false` (the default), this method will check if the `Message`
+  ///      is initialized after decoding to verify that all required fields are present.
+  ///      If any are missing, this method throws `BinaryDecodingError`.
+  ///   - options: The `BinaryDecodingOptions` to use.
+  /// - Throws: `BinaryDecodingError` if decoding fails.
+  public init<Bytes: SwiftProtobufContiguousBytes>(
+    serializedBytes bytes: Bytes,
+    extensions: (any ExtensionMap)? = nil,
+    partial: Bool = false,
+    options: BinaryDecodingOptions = BinaryDecodingOptions()
+  ) throws {
+    let status = try Google_Rpc_Status(
+      serializedBytes: bytes,
+      extensions: extensions,
+      partial: partial,
+      options: options
+    )
 
     let statusCode = Status.Code(rawValue: Int(status.code))
     self.code = statusCode.flatMap { RPCError.Code($0) } ?? .unknown
@@ -88,17 +107,30 @@ extension GoogleRPCStatus: GoogleProtobufAnyPackable {
     self.details = try status.details.map { try ErrorDetails(unpacking: $0) }
   }
 
-  func pack() throws -> Google_Protobuf_Any {
+  /// Returns a `SwiftProtobufContiguousBytes` instance containing the Protocol Buffer binary
+  /// format serialization of the message.
+  ///
+  /// - Parameters:
+  ///   - partial: If `false` (the default), this method will check
+  ///     `Message.isInitialized` before encoding to verify that all required
+  ///     fields are present. If any are missing, this method throws.
+  ///     `BinaryEncodingError/missingRequiredFields`.
+  ///   - options: The `BinaryEncodingOptions` to use.
+  /// - Returns: A `SwiftProtobufContiguousBytes` instance containing the binary serialization
+  /// of the message.
+  ///
+  /// - Throws: `SwiftProtobufError` or `BinaryEncodingError` if encoding fails.
+  public func serializedBytes<Bytes: SwiftProtobufContiguousBytes>(
+    partial: Bool = false,
+    options: BinaryEncodingOptions = BinaryEncodingOptions()
+  ) throws -> Bytes {
     let status = try Google_Rpc_Status.with {
       $0.code = Int32(self.code.rawValue)
       $0.message = self.message
       $0.details = try self.details.map { try $0.pack() }
     }
 
-    return try .with {
-      $0.typeURL = Self.typeURL
-      $0.value = try status.serializedBytes()
-    }
+    return try status.serializedBytes(partial: partial, options: options)
   }
 }
 
@@ -107,8 +139,7 @@ extension GoogleRPCStatus: RPCErrorConvertible {
   public var rpcErrorMessage: String { self.message }
   public var rpcErrorMetadata: Metadata {
     do {
-      let any = try self.pack()
-      let bytes: [UInt8] = try any.serializedBytes()
+      let bytes: [UInt8] = try self.serializedBytes()
       return [Metadata.statusDetailsBinKey: .binary(bytes)]
     } catch {
       // Failed to serialize error details. Not a lot can be done here.
