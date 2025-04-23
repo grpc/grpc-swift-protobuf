@@ -133,19 +133,19 @@ protoc \
 
 #### Generator options
 
-| Name                      | Possible Values                            | Default    | Description                                              |
-|---------------------------|--------------------------------------------|------------|----------------------------------------------------------|
-| `Visibility`              | `Public`, `Package`, `Internal`            | `Internal` | Access level for generated stubs                         |
-| `Server`                  | `True`, `False`                            | `True`     | Generate server stubs                                    |
-| `Client`                  | `True`, `False`                            | `True`     | Generate client stubs                                    |
-| `FileNaming`              | `FullPath`, `PathToUnderscore`, `DropPath` | `FullPath` | How generated source files should be named. (See below.) |
-| `ProtoPathModuleMappings` |                                            |            | Path to module map `.asciipb` file. (See below.)         |
-| `UseAccessLevelOnImports` | `True`, `False`                            | `False`    | Whether imports should have explicit access levels.      |
+| Name                      | Possible Values                             | Default    | Description                                              |
+|---------------------------|---------------------------------------------|------------|----------------------------------------------------------|
+| `Visibility`              | `Public`, `Package`, `Internal`             | `Internal` | Access level for generated stubs                         |
+| `Server`                  | `True`, `False`                             | `True`     | Generate server stubs                                    |
+| `Client`                  | `True`, `False`                             | `True`     | Generate client stubs                                    |
+| `FileNaming`              | `FullPath`, `PathToUnderscores`, `DropPath` | `FullPath` | How generated source files should be named. (See below.) |
+| `ProtoPathModuleMappings` |                                             |            | Path to module map `.asciipb` file. (See below.)         |
+| `UseAccessLevelOnImports` | `True`, `False`                             | `False`    | Whether imports should have explicit access levels.      |
 
 The `FileNaming` option has three possible values, for an input of `foo/bar/baz.proto` the following
 output file will be generated:
 - `FullPath`: `foo/bar/baz.grpc.swift`.
-- `PathToUnderscore`: `foo_bar_baz.grpc.swift`
+- `PathToUnderscores`: `foo_bar_baz.grpc.swift`
 - `DropPath`: `baz.grpc.swift`
 
 The code generator assumes all inputs are generated into the same module, `ProtoPathModuleMappings`
