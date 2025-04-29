@@ -33,10 +33,9 @@ public import SwiftProtobuf
 /// >
 /// > The error information is transmitted to clients in the trailing metadata of an RPC. It is
 /// > inserted into the metadata keyed by "grpc-status-details-bin". The value of the metadata is
-/// > the serialized bytes of a "google.protobuf.Any" protocol buffers message. The content of which
-/// > is a "google.rpc.Status" protocol buffers message containing the status code, message, and
-/// > details.
-public struct GoogleRPCStatus: Error {
+/// > the serialized bytes of a "google.rpc.Status" protocol buffers message containing the status
+/// > code, message, and details.
+public struct GoogleRPCStatus: Error, Hashable {
   /// A code representing the high-level domain of the error.
   public var code: RPCError.Code
 
