@@ -31,8 +31,6 @@ extension RPCError {
   public func unpackGoogleRPCStatus() throws -> GoogleRPCStatus? {
     let values = self.metadata[binaryValues: Metadata.statusDetailsBinKey]
     guard let bytes = values.first(where: { _ in true }) else { return nil }
-
-    let any = try Google_Protobuf_Any(serializedBytes: bytes)
-    return try GoogleRPCStatus(unpacking: any)
+    return try GoogleRPCStatus(serializedBytes: bytes)
   }
 }

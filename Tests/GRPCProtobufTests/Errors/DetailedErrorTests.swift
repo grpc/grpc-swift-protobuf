@@ -98,6 +98,19 @@ struct DetailedErrorTests {
   func errorInfoDescription(_ details: ErrorDetails, expected: String) {
     #expect(String(describing: details) == expected)
   }
+
+  @Test("Round-trip encoding of GoogleRPCStatus")
+  func googleRPCStatusRoundTripCoding() throws {
+    let detail = ErrorDetails.BadRequest(violations: [.init(field: "foo", description: "bar")])
+    let status = GoogleRPCStatus(code: .dataLoss, message: "Uh oh", details: [.badRequest(detail)])
+
+    let serialized: [UInt8] = try status.serializedBytes()
+    let deserialized = try GoogleRPCStatus(serializedBytes: serialized)
+    #expect(deserialized.code == status.code)
+    #expect(deserialized.message == status.message)
+    #expect(deserialized.details.count == status.details.count)
+    #expect(deserialized.details.first?.badRequest == detail)
+  }
 }
 
 private struct ErrorThrowingService: ErrorService.SimpleServiceProtocol {
