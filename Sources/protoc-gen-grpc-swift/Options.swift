@@ -48,6 +48,7 @@ enum FileNaming: String {
   case dropPath = "DropPath"
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 struct GeneratorOptions {
   private(set) var protoToModuleMappings = ProtoFileToModuleMappings()
   private(set) var fileNaming = FileNaming.fullPath
@@ -191,6 +192,7 @@ struct GeneratorOptions {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension String.SubSequence {
   func trimmingWhitespaceAndNewlines() -> String {
     let trimmedSuffix = self.drop(while: { $0.isNewline || $0.isWhitespace })
@@ -199,6 +201,7 @@ extension String.SubSequence {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension GRPCCodeGen.CodeGenerator.Config.AccessLevel {
   fileprivate init?(protocOption value: String) {
     switch value {

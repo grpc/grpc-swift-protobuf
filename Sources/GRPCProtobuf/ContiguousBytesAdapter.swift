@@ -24,6 +24,7 @@ public import SwiftProtobuf  // internal but @usableFromInline
 /// it'd require a dependency on Protobuf in the core package), and `GRPCContiguousBytes` can't
 /// refine `SwiftProtobufContiguousBytes` for the same reason.
 @usableFromInline
+@available(gRPCSwiftProtobuf 1.0, *)
 struct ContiguousBytesAdapter<
   Bytes: GRPCContiguousBytes
 >: GRPCContiguousBytes, SwiftProtobufContiguousBytes {

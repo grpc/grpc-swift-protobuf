@@ -19,6 +19,7 @@ import GRPCProtobuf
 import SwiftProtobuf
 import XCTest
 
+@available(gRPCSwiftProtobuf 1.0, *)
 final class ProtobufCodingTests: XCTestCase {
   func testSerializeDeserializeRoundtrip() throws {
     let message = Google_Protobuf_Timestamp.with {
@@ -73,6 +74,7 @@ final class ProtobufCodingTests: XCTestCase {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 struct TestMessage: SwiftProtobuf.Message {
   var text: String = ""
   var unknownFields = SwiftProtobuf.UnknownStorage()

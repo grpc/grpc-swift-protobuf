@@ -40,6 +40,7 @@ struct DetailedErrorTests {
       (["Help", "Help", "Help"], [.help(.testValue), .help(.testValue), .help(.testValue)]),
     ] as [([String], [ErrorDetails])]
   )
+  @available(gRPCSwiftProtobuf 1.0, *)
   func rpcStatus(details: [String], expected: [ErrorDetails]) async throws {
     let inProcess = InProcessTransport()
     try await withGRPCServer(transport: inProcess.server, services: [ErrorThrowingService()]) { _ in
@@ -95,11 +96,13 @@ struct DetailedErrorTests {
       (.localizedMessage(.testValue), #"LocalizedMessage(locale: "l", message: "m")"#),
     ] as [(ErrorDetails, String)]
   )
+  @available(gRPCSwiftProtobuf 1.0, *)
   func errorInfoDescription(_ details: ErrorDetails, expected: String) {
     #expect(String(describing: details) == expected)
   }
 
   @Test("Round-trip encoding of GoogleRPCStatus")
+  @available(gRPCSwiftProtobuf 1.0, *)
   func googleRPCStatusRoundTripCoding() throws {
     let detail = ErrorDetails.BadRequest(violations: [.init(field: "foo", description: "bar")])
     let status = GoogleRPCStatus(code: .dataLoss, message: "Uh oh", details: [.badRequest(detail)])
@@ -113,6 +116,7 @@ struct DetailedErrorTests {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 private struct ErrorThrowingService: ErrorService.SimpleServiceProtocol {
   func throwError(
     request: ThrowInput,
@@ -183,14 +187,17 @@ private struct ErrorThrowingService: ErrorService.SimpleServiceProtocol {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.ErrorInfo {
   fileprivate static let testValue = Self(reason: "r", domain: "d", metadata: ["k": "v"])
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.RetryInfo {
   fileprivate static let testValue = Self(delay: .seconds(1))
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.DebugInfo {
   fileprivate static let testValue = Self(
     stack: ["foo.foo()", "foo.bar()"],
@@ -198,6 +205,7 @@ extension ErrorDetails.DebugInfo {
   )
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.QuotaFailure {
   fileprivate static let testValue = Self(
     violations: [
@@ -206,6 +214,7 @@ extension ErrorDetails.QuotaFailure {
   )
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.PreconditionFailure {
   fileprivate static let testValue = Self(
     violations: [
@@ -214,6 +223,7 @@ extension ErrorDetails.PreconditionFailure {
   )
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.BadRequest {
   fileprivate static let testValue = Self(
     violations: [
@@ -222,14 +232,17 @@ extension ErrorDetails.BadRequest {
   )
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.RequestInfo {
   fileprivate static let testValue = Self(requestID: "id", servingData: "d")
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.ResourceInfo {
   fileprivate static let testValue = Self(type: "t", name: "n", errorDescription: "d")
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.Help {
   fileprivate static let testValue = Self(
     links: [
@@ -238,6 +251,7 @@ extension ErrorDetails.Help {
   )
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ErrorDetails.LocalizedMessage {
   fileprivate static let testValue = Self(locale: "l", message: "m")
 }

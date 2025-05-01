@@ -48,6 +48,7 @@ struct ProtobufCodeGeneratorTests {
       }
     }
 
+    @available(gRPCSwiftProtobuf 1.0, *)
     @Test(
       "Generate",
       arguments: [CodeGenerator.Config.AccessLevel.internal],
@@ -1103,6 +1104,7 @@ struct ProtobufCodeGeneratorTests {
     }
 
     @Test("Generate with different module names")
+    @available(gRPCSwiftProtobuf 1.0, *)
     func generateWithDifferentModuleNames() throws {
       var config = ProtobufCodeGenerator.Config.defaults
       let defaultNames = config.moduleNames
@@ -1138,6 +1140,7 @@ struct ProtobufCodeGeneratorTests {
     static let fileDescriptorName = "foo-messages"
 
     @Test("Generate")
+    @available(gRPCSwiftProtobuf 1.0, *)
     func generate() throws {
       var config: ProtobufCodeGenerator.Config = .defaults
       config.accessLevel = .public

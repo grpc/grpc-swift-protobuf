@@ -94,7 +94,7 @@ function generate_error_service {
   output="$root/Tests/GRPCProtobufTests/Errors/Generated"
 
   generate_message "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true"
-  generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true"
+  generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true" "Availability=gRPCSwiftProtobuf 1.0"
 }
 
 #- DESCRIPTOR SETS ------------------------------------------------------------

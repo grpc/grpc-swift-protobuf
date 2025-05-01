@@ -68,6 +68,7 @@ private func loadDescriptorSet(
   return DescriptorSet(proto: descriptorSet)
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 func parseDescriptor(
   _ descriptor: FileDescriptor,
   extraModuleImports: [String] = [],

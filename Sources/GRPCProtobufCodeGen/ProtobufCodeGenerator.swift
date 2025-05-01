@@ -17,6 +17,7 @@
 package import GRPCCodeGen
 package import SwiftProtobufPluginLibrary
 
+@available(gRPCSwiftProtobuf 1.0, *)
 package struct ProtobufCodeGenerator {
   internal var config: ProtobufCodeGenerator.Config
 
@@ -66,6 +67,7 @@ package struct ProtobufCodeGenerator {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ProtobufCodeGenerator {
   package struct Config {
     package var accessLevel: GRPCCodeGen.CodeGenerator.Config.AccessLevel

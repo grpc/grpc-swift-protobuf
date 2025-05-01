@@ -32,6 +32,7 @@ internal import struct Foundation.IndexPath
 #endif
 
 /// Parses a ``FileDescriptor`` object into a ``CodeGenerationRequest`` object.
+@available(gRPCSwiftProtobuf 1.0, *)
 package struct ProtobufCodeGenParser {
   let extraModuleImports: [String]
   let protoToModuleMappings: ProtoFileToModuleMappings
@@ -99,6 +100,7 @@ package struct ProtobufCodeGenParser {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension ProtobufCodeGenParser {
   fileprivate func codeDependencies(file: FileDescriptor) -> [Dependency] {
     guard file.services.count > 0 else {
@@ -141,6 +143,7 @@ extension ProtobufCodeGenParser {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension GRPCCodeGen.ServiceDescriptor {
   fileprivate init(
     descriptor: SwiftProtobufPluginLibrary.ServiceDescriptor,
@@ -168,6 +171,7 @@ extension GRPCCodeGen.ServiceDescriptor {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension GRPCCodeGen.MethodDescriptor {
   fileprivate init(
     descriptor: SwiftProtobufPluginLibrary.MethodDescriptor,
