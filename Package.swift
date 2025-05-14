@@ -54,12 +54,26 @@ let defaultSwiftSettings: [SwiftSetting] = [
   .enableUpcomingFeature("MemberImportVisibility"),
 ]
 
+extension Context {
+  fileprivate static var versionString: String {
+    guard let git = Self.gitInformation else { return "" }
+
+    if let tag = git.currentTag {
+      return tag
+    } else {
+      let suffix = git.hasUncommittedChanges ? " (modified)" : ""
+      return git.currentCommit + suffix
+    }
+  }
+}
+
 let targets: [Target] = [
   // protoc plugin for grpc-swift
   .executableTarget(
     name: "protoc-gen-grpc-swift",
     dependencies: [
       .target(name: "GRPCProtobufCodeGen"),
+      .target(name: "CGRPCProtobuf"),
       .product(name: "GRPCCodeGen", package: "grpc-swift"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
@@ -108,6 +122,13 @@ let targets: [Target] = [
       .copy("Generated")
     ],
     swiftSettings: defaultSwiftSettings
+  ),
+
+  .target(
+    name: "CGRPCProtobuf",
+    cSettings: [
+      .define("CGRPC_GRPC_SWIFT_PROTOBUF_VERSION", to: "\"\(Context.versionString)\"")
+    ]
   ),
 
   // Code generator build plugin

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, gRPC Authors All rights reserved.
+ * Copyright 2025, gRPC Authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-private import CGRPCProtobuf
+#ifndef CGRPC_PROTOBUF_H_
+#define CGRPC_PROTOBUF_H_
 
-internal enum Version {
-  /// The version string.
-  internal static var versionString: String {
-    String(cString: cgrprc_grpc_swift_protobuf_version())
-  }
-}
+const char *cgrprc_grpc_swift_protobuf_version();
+
+#endif  // CGRPC_PROTOBUF_H_
