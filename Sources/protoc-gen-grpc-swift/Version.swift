@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
+#if canImport(CGRPCProtobuf)
+private import CGRPCProtobuf
+#endif
+
 internal enum Version {
-  /// The major version.
-  internal static let major = 1
-
-  /// The minor version.
-  internal static let minor = 0
-
-  /// The patch version.
-  internal static let patch = 0
-
-  /// Any additional label.
-  internal static let label = "development"
-
   /// The version string.
   internal static var versionString: String {
-    let version = "\(Self.major).\(Self.minor).\(Self.patch)"
-    if Self.label.isEmpty {
-      return version
-    } else {
-      return version + "-" + Self.label
-    }
+    #if canImport(CGRPCProtobuf)
+    String(cString: cgrprc_grpc_swift_protobuf_version())
+    #else
+    "unknown"
+    #endif
   }
 }

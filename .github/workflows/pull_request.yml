@@ -11,6 +11,9 @@ jobs:
     uses: swiftlang/github-workflows/.github/workflows/soundness.yml@main
     with:
       license_header_check_project_name: "gRPC"
+      # This is done by a similar job defined in soundness.yml. It needs to be
+      # separate in order to export an environment variable.
+      api_breakage_check_enabled: false
 
   grpc-soundness:
     name: Soundness

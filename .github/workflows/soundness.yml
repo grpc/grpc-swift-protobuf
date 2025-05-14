@@ -35,3 +35,28 @@ jobs:
       - name: Check generated code
         run: |
           ./dev/check-generated-code.sh
+
+  api-breakage-check:
+    name: API breakage check
+    runs-on: ubuntu-latest
+    container:
+      image: swift:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0  # Fetching tags requires fetch-depth: 0 (https://github.com/actions/checkout/issues/1471)
+      - name: Mark the workspace as safe
+        # https://github.com/actions/checkout/issues/766
+        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+      - name: Run API breakage check
+        shell: bash
+        # See package.swift for why we set GRPC_SWIFT_PROTOBUF_NO_VERSION=1
+        run: |
+          export GRPC_SWIFT_PROTOBUF_NO_VERSION=1
+
+          git fetch ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} ${GITHUB_BASE_REF}:pull-base-ref
+          BASELINE_REF='pull-base-ref'
+          echo "Using baseline: $BASELINE_REF"
+          swift package diagnose-api-breaking-changes "$BASELINE_REF"
