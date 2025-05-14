@@ -110,7 +110,6 @@ var targets: [Target] = [
     swiftSettings: defaultSwiftSettings
   ),
 
-
   // Code generator build plugin
   .plugin(
     name: "GRPCProtobufGenerator",
