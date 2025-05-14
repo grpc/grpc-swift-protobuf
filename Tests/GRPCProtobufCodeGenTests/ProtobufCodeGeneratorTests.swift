@@ -70,6 +70,7 @@ struct ProtobufCodeGeneratorTests {
         // MARK: - test.TestService
 
         /// Namespace containing generated types for the "test.TestService" service.
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         \(access) enum Test_TestService {
           /// Service descriptor for the "test.TestService" service.
           \(access) static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService")
@@ -133,6 +134,7 @@ struct ProtobufCodeGeneratorTests {
           }
         }
 
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension GRPCCore.ServiceDescriptor {
           /// Service descriptor for the "test.TestService" service.
           \(access) static let test_TestService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService")
@@ -140,6 +142,7 @@ struct ProtobufCodeGeneratorTests {
 
         // MARK: test.TestService (server)
 
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService {
           /// Streaming variant of the service protocol for the "test.TestService" service.
           ///
@@ -401,6 +404,7 @@ struct ProtobufCodeGeneratorTests {
         }
 
         // Default implementation of 'registerMethods(with:)'.
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService.StreamingServiceProtocol {
           \(access) func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
             router.registerHandler(
@@ -451,6 +455,7 @@ struct ProtobufCodeGeneratorTests {
         }
 
         // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService.ServiceProtocol {
           \(access) func unary(
             request: GRPCCore.StreamingServerRequest<Test_TestInput>,
@@ -487,6 +492,7 @@ struct ProtobufCodeGeneratorTests {
         }
 
         // Default implementation of methods from 'ServiceProtocol'.
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService.SimpleServiceProtocol {
           \(access) func unary(
             request: GRPCCore.ServerRequest<Test_TestInput>,
@@ -551,6 +557,7 @@ struct ProtobufCodeGeneratorTests {
 
         // MARK: test.TestService (client)
 
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService {
           /// Generated client protocol for the "test.TestService" service.
           ///
@@ -809,6 +816,7 @@ struct ProtobufCodeGeneratorTests {
         }
 
         // Helpers providing default arguments to 'ClientProtocol' methods.
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService.ClientProtocol {
           /// Call the "Unary" method.
           ///
@@ -924,6 +932,7 @@ struct ProtobufCodeGeneratorTests {
         }
 
         // Helpers providing sugared APIs for 'ClientProtocol' methods.
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
         extension Test_TestService.ClientProtocol {
           /// Call the "Unary" method.
           ///
