@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
+#if canImport(CGRPCProtobuf)
 private import CGRPCProtobuf
+#endif
 
 internal enum Version {
   /// The version string.
   internal static var versionString: String {
+    #if canImport(CGRPCProtobuf)
     String(cString: cgrprc_grpc_swift_protobuf_version())
+    #else
+    "unknown"
+    #endif
   }
 }

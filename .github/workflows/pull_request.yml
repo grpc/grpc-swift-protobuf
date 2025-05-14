@@ -11,6 +11,8 @@ jobs:
     uses: swiftlang/github-workflows/.github/workflows/soundness.yml@main
     with:
       license_header_check_project_name: "gRPC"
+      # See Package.swift for an explanation of this.
+      linux_pre_build_command: "export GRPC_SWIFT_PROTOBUF_NO_VERSION=1"
 
   grpc-soundness:
     name: Soundness

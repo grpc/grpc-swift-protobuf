@@ -54,26 +54,12 @@ let defaultSwiftSettings: [SwiftSetting] = [
   .enableUpcomingFeature("MemberImportVisibility"),
 ]
 
-extension Context {
-  fileprivate static var versionString: String {
-    guard let git = Self.gitInformation else { return "" }
-
-    if let tag = git.currentTag {
-      return tag
-    } else {
-      let suffix = git.hasUncommittedChanges ? " (modified)" : ""
-      return git.currentCommit + suffix
-    }
-  }
-}
-
-let targets: [Target] = [
+var targets: [Target] = [
   // protoc plugin for grpc-swift
   .executableTarget(
     name: "protoc-gen-grpc-swift",
     dependencies: [
       .target(name: "GRPCProtobufCodeGen"),
-      .target(name: "CGRPCProtobuf"),
       .product(name: "GRPCCodeGen", package: "grpc-swift"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
@@ -124,12 +110,6 @@ let targets: [Target] = [
     swiftSettings: defaultSwiftSettings
   ),
 
-  .target(
-    name: "CGRPCProtobuf",
-    cSettings: [
-      .define("CGRPC_GRPC_SWIFT_PROTOBUF_VERSION", to: "\"\(Context.versionString)\"")
-    ]
-  ),
 
   // Code generator build plugin
   .plugin(
@@ -163,6 +143,51 @@ let targets: [Target] = [
     path: "Plugins/GRPCProtobufGeneratorCommand"
   ),
 ]
+
+// -------------------------------------------------------------------------------------------------
+
+extension Context {
+  fileprivate static var versionString: String {
+    guard let git = Self.gitInformation else { return "" }
+
+    if let tag = git.currentTag {
+      return tag
+    } else {
+      let suffix = git.hasUncommittedChanges ? " (modified)" : ""
+      return git.currentCommit + suffix
+    }
+  }
+
+  fileprivate static var buildCGRPCProtobuf: Bool {
+    let noVersion = Context.environment.keys.contains("GRPC_SWIFT_PROTOBUF_NO_VERSION")
+    return !noVersion
+  }
+}
+
+// Having a C module as a transitive dependency of a plugin seems to trip up the API breakage
+// checking tool. See also https://github.com/swiftlang/swift-package-manager/issues/8081
+//
+// The CGRPCProtobuf module (which only includes package version information) is conditionally
+// compiled and included based on an environment variable. This is set in CI only for the API
+// breakage checking job to avoid tripping up SwiftPM.
+if Context.buildCGRPCProtobuf {
+  targets.append(
+    .target(
+      name: "CGRPCProtobuf",
+      cSettings: [
+        .define("CGRPC_GRPC_SWIFT_PROTOBUF_VERSION", to: "\"\(Context.versionString)\"")
+      ]
+    )
+  )
+
+  for target in targets {
+    if target.name == "protoc-gen-grpc-swift" {
+      target.dependencies.append(.target(name: "CGRPCProtobuf"))
+    }
+  }
+}
+
+// -------------------------------------------------------------------------------------------------
 
 let package = Package(
   name: "grpc-swift-protobuf",
