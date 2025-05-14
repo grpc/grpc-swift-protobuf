@@ -30,7 +30,7 @@ struct ProtobufCodeGenParserTests {
     let codeGen: CodeGenerationRequest
 
     init() throws {
-      let descriptor = try #require(try Self.fileDescriptor)
+      let descriptor = try Self.fileDescriptor
       self.codeGen = try parseDescriptor(descriptor)
     }
 
@@ -73,7 +73,7 @@ struct ProtobufCodeGenParserTests {
       let service: GRPCCodeGen.ServiceDescriptor
 
       init() throws {
-        let request = try parseDescriptor(try #require(try TestService.fileDescriptor))
+        let request = try parseDescriptor(try TestService.fileDescriptor)
         try #require(request.services.count == 1)
         self.service = try #require(request.services.first)
       }
@@ -91,7 +91,7 @@ struct ProtobufCodeGenParserTests {
         let bidiStreaming: GRPCCodeGen.MethodDescriptor
 
         init() throws {
-          let request = try parseDescriptor(try #require(try TestService.fileDescriptor))
+          let request = try parseDescriptor(try TestService.fileDescriptor)
           #expect(request.services.count == 1)
           let service = try #require(request.services.first)
 
@@ -158,7 +158,7 @@ struct ProtobufCodeGenParserTests {
     let codeGen: CodeGenerationRequest
 
     init() throws {
-      let descriptor = try #require(try Self.fileDescriptor)
+      let descriptor = try Self.fileDescriptor
       self.codeGen = try parseDescriptor(descriptor)
     }
 
@@ -215,7 +215,7 @@ struct ProtobufCodeGenParserTests {
     let service: GRPCCodeGen.ServiceDescriptor
 
     init() throws {
-      let descriptor = try #require(try Self.fileDescriptor)
+      let descriptor = try Self.fileDescriptor
       self.codeGen = try parseDescriptor(descriptor)
       self.service = try #require(self.codeGen.services.first)
     }
@@ -234,7 +234,7 @@ struct ProtobufCodeGenParserTests {
     let codeGen: CodeGenerationRequest
 
     init() throws {
-      let descriptor = try #require(try Self.fileDescriptor)
+      let descriptor = try Self.fileDescriptor
       self.codeGen = try parseDescriptor(descriptor)
     }
 

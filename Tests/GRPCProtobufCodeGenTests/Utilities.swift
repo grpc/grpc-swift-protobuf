@@ -63,7 +63,7 @@ private func loadDescriptorSet(
   )
 
   let url = try #require(maybeURL)
-  let data = try #require(try Data(contentsOf: url))
+  let data = try Data(contentsOf: url)
   let descriptorSet = try Google_Protobuf_FileDescriptorSet(serializedBytes: data)
   return DescriptorSet(proto: descriptorSet)
 }
