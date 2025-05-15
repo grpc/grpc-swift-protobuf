@@ -39,7 +39,7 @@ let products: [Product] = [
 let dependencies: [Package.Dependency] = [
   .package(
     url: "https://github.com/grpc/grpc-swift.git",
-    branch: "main"
+    from: "2.2.1"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
