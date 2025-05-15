@@ -52,6 +52,7 @@ struct GeneratorOptions {
   private(set) var protoToModuleMappings = ProtoFileToModuleMappings()
   private(set) var fileNaming = FileNaming.fullPath
   private(set) var extraModuleImports: [String] = []
+  private(set) var availabilityOverrides: [(os: String, version: String)] = []
 
   private(set) var config: ProtobufCodeGenerator.Config = .defaults
 
@@ -126,6 +127,18 @@ struct GeneratorOptions {
       case "SwiftProtobufModuleName":
         if !pair.value.isEmpty {
           self.config.moduleNames.swiftProtobuf = pair.value
+        } else {
+          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
+        }
+
+      case "Availability":
+        if !pair.value.isEmpty {
+          let parts = pair.value.split(separator: " ", maxSplits: 1)
+          if parts.count == 2 {
+            self.availabilityOverrides.append((os: String(parts[0]), version: String(parts[1])))
+          } else {
+            throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
+          }
         } else {
           throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
         }

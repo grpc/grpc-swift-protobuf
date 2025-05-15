@@ -133,25 +133,34 @@ protoc \
 
 #### Generator options
 
-| Name                      | Possible Values                             | Default    | Description                                              |
-|---------------------------|---------------------------------------------|------------|----------------------------------------------------------|
-| `Visibility`              | `Public`, `Package`, `Internal`             | `Internal` | Access level for generated stubs                         |
-| `Server`                  | `True`, `False`                             | `True`     | Generate server stubs                                    |
-| `Client`                  | `True`, `False`                             | `True`     | Generate client stubs                                    |
-| `FileNaming`              | `FullPath`, `PathToUnderscores`, `DropPath` | `FullPath` | How generated source files should be named. (See below.) |
-| `ProtoPathModuleMappings` |                                             |            | Path to module map `.asciipb` file. (See below.)         |
-| `UseAccessLevelOnImports` | `True`, `False`                             | `False`    | Whether imports should have explicit access levels.      |
+| Name                      | Possible Values                             | Default         | Description                                              |
+|---------------------------|---------------------------------------------|-----------------|----------------------------------------------------------|
+| `Visibility`              | `Public`, `Package`, `Internal`             | `Internal`      | Access level for generated stubs                         |
+| `Server`                  | `True`, `False`                             | `True`          | Generate server stubs                                    |
+| `Client`                  | `True`, `False`                             | `True`          | Generate client stubs                                    |
+| `FileNaming`              | `FullPath`, `PathToUnderscores`, `DropPath` | `FullPath`      | How generated source files should be named. †            |
+| `ProtoPathModuleMappings` |                                             |                 | Path to module map `.asciipb` file. ‡                    |
+| `UseAccessLevelOnImports` | `True`, `False`                             | `False`         | Whether imports should have explicit access levels.      |
+| `GRPCModuleName`          |                                             | `GRPCCore`      | The name of the `GRPCCore` module.                       |
+| `GRPCProtobufModuleName`  |                                             | `GRPCProtobuf`  | The name of the `GRPCProtobuf` module.                   |
+| `SwiftProtobufModuleName` |                                             | `SwiftProtobuf` | The name of the `SwiftProtobuf` module.                  |
+| `Availability`            | String, in the form `OS Version`            |                 | Platform availability to use in generated code. §        |
 
-The `FileNaming` option has three possible values, for an input of `foo/bar/baz.proto` the following
+† The `FileNaming` option has three possible values, for an input of `foo/bar/baz.proto` the following
 output file will be generated:
 - `FullPath`: `foo/bar/baz.grpc.swift`.
 - `PathToUnderscores`: `foo_bar_baz.grpc.swift`
 - `DropPath`: `baz.grpc.swift`
 
-The code generator assumes all inputs are generated into the same module, `ProtoPathModuleMappings`
+‡ The code generator assumes all inputs are generated into the same module, `ProtoPathModuleMappings`
 allows you to specify a mapping from `.proto` files to the Swift module they are generated in. This
 allows the code generator to add appropriate imports to your generated stubs. This is described in
 more detail in the [SwiftProtobuf documentation](https://github.com/apple/swift-protobuf/blob/main/Documentation/PLUGIN.md).
+
+§ If unspecified the following availability is used: macOS 15, iOS 18, tvOS 18,
+watchOS 11, visionOS 2. The `Availability` option may be specified multiple
+times, where each value is a space delimited pair of platform and version, e.g.
+`Availability=macOS 15.0`.
 
 #### Building the protoc plugin
 
