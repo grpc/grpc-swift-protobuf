@@ -73,7 +73,8 @@ final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
     let contents = try fileGenerator.generateCode(
       fileDescriptor: descriptor,
       protoFileModuleMappings: options.protoToModuleMappings,
-      extraModuleImports: options.extraModuleImports
+      extraModuleImports: options.extraModuleImports,
+      availabilityOverrides: options.availabilityOverrides
     )
 
     try outputs.add(fileName: fileName, contents: contents)

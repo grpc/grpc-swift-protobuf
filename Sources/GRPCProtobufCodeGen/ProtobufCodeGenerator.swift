@@ -29,7 +29,8 @@ package struct ProtobufCodeGenerator {
   package func generateCode(
     fileDescriptor: FileDescriptor,
     protoFileModuleMappings: ProtoFileToModuleMappings,
-    extraModuleImports: [String]
+    extraModuleImports: [String],
+    availabilityOverrides: [(os: String, version: String)] = []
   ) throws -> String {
     let parser = ProtobufCodeGenParser(
       protoFileModuleMappings: protoFileModuleMappings,
@@ -46,6 +47,17 @@ package struct ProtobufCodeGenerator {
       indentation: self.config.indentation
     )
     codeGeneratorConfig.grpcCoreModuleName = self.config.moduleNames.grpcCore
+
+    if availabilityOverrides.isEmpty {
+      codeGeneratorConfig.availability = .default
+    } else {
+      codeGeneratorConfig.availability = .custom(
+        availabilityOverrides.map { (os, version) in
+          .init(os: os, version: version)
+        }
+      )
+    }
+
     let codeGenerator = GRPCCodeGen.CodeGenerator(config: codeGeneratorConfig)
 
     let codeGenerationRequest = try parser.parse(descriptor: fileDescriptor)
