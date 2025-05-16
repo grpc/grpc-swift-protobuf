@@ -26,6 +26,7 @@ import Foundation
 #endif
 
 @main
+@available(gRPCSwiftProtobuf 1.0, *)
 final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
   var version: String? {
     Version.versionString
@@ -81,6 +82,7 @@ final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
   }
 }
 
+@available(gRPCSwiftProtobuf 1.0, *)
 extension GenerateGRPC {
   private func uniqueOutputFileName(
     fileDescriptor: FileDescriptor,
