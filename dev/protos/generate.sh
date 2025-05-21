@@ -21,12 +21,12 @@ protoc=$(which protoc)
 
 # Checkout and build the plugins.
 swift build --package-path "$root" --product protoc-gen-swift
-swift build --package-path "$root" --product protoc-gen-grpc-swift
+swift build --package-path "$root" --product protoc-gen-grpc-swift-2
 
 # Grab the plugin paths.
 bin_path=$(swift build --package-path "$root" --show-bin-path)
 protoc_gen_swift="$bin_path/protoc-gen-swift"
-protoc_gen_grpc_swift="$bin_path/protoc-gen-grpc-swift"
+protoc_gen_grpc_swift="$bin_path/protoc-gen-grpc-swift-2"
 
 # Generates gRPC by invoking protoc with the gRPC Swift plugin.
 # Parameters:
@@ -94,7 +94,7 @@ function generate_error_service {
   output="$root/Tests/GRPCProtobufTests/Errors/Generated"
 
   generate_message "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true"
-  generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true" "Availability=gRPCSwiftProtobuf 1.0"
+  generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Internal" "UseAccessLevelOnImports=true" "Availability=gRPCSwiftProtobuf 2.0"
 }
 
 #- DESCRIPTOR SETS ------------------------------------------------------------

@@ -73,15 +73,15 @@ func constructProtocGenSwiftArguments(
   return protocArgs
 }
 
-/// Construct the arguments to be passed to `protoc` when invoking the `protoc-gen-grpc-swift` `protoc` plugin.
+/// Construct the arguments to be passed to `protoc` when invoking the `protoc-gen-grpc-swift-2` `protoc` plugin.
 /// - Parameters:
 ///   - config: The config for this operation.
 ///   - fileNaming: The file naming scheme to be used.
 ///   - inputFiles: The input `.proto` files.
 ///   - protoDirectoryPaths: The directories in which `protoc` will look for imports.
-///   - protocGenGRPCSwiftPath: The path to the `protoc-gen-grpc-swift` `protoc` plugin.
+///   - protocGenGRPCSwiftPath: The path to the `protoc-gen-grpc-swift-2` `protoc` plugin.
 ///   - outputDirectory: The directory in which generated source files are created.
-/// - Returns: The constructed arguments to be passed to `protoc` when invoking the `protoc-gen-grpc-swift` `protoc` plugin.
+/// - Returns: The constructed arguments to be passed to `protoc` when invoking the `protoc-gen-grpc-swift-2` `protoc` plugin.
 func constructProtocGenGRPCSwiftArguments(
   config: GenerationConfig,
   fileNaming: GenerationConfig.FileNaming?,

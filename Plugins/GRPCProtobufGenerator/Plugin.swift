@@ -70,7 +70,7 @@ struct GRPCProtobufGenerator {
   ) throws -> [Command] {
     let configs = try readConfigFiles(configFiles, pluginWorkDirectory: pluginWorkDirectory)
 
-    let protocGenGRPCSwiftPath = try tool("protoc-gen-grpc-swift").url
+    let protocGenGRPCSwiftPath = try tool("protoc-gen-grpc-swift-2").url
     let protocGenSwiftPath = try tool("protoc-gen-swift").url
 
     var commands: [Command] = []
@@ -165,16 +165,16 @@ extension [URL: GenerationConfig] {
   }
 }
 
-/// Construct the command to invoke `protoc` with the `protoc-gen-grpc-swift` plugin.
+/// Construct the command to invoke `protoc` with the `protoc-gen-grpc-swift-2` plugin.
 /// - Parameters:
 ///   - inputFile: The input `.proto` file.
 ///   - config: The config for this operation.
 ///   - baseDirectoryPath: The root path to the source `.proto` files used as the reference for relative path naming schemes.
 ///   - protoDirectoryPaths: The paths passed to `protoc` in which to look for imported proto files.
 ///   - protocPath: The path to `protoc`
-///   - protocGenGRPCSwiftPath: The path to `protoc-gen-grpc-swift`.
+///   - protocGenGRPCSwiftPath: The path to `protoc-gen-grpc-swift-2`.
 ///   - configFilePath: The path to the config file in use.
-/// - Returns: The command to invoke `protoc` with the `protoc-gen-grpc-swift` plugin.
+/// - Returns: The command to invoke `protoc` with the `protoc-gen-grpc-swift-2` plugin.
 func protocGenGRPCSwiftCommand(
   inputFile: URL,
   config: GenerationConfig,
@@ -222,7 +222,7 @@ func protocGenGRPCSwiftCommand(
 ///   - baseDirectoryPath: The root path to the source `.proto` files used as the reference for relative path naming schemes.
 ///   - protoDirectoryPaths: The paths passed to `protoc` in which to look for imported proto files.
 ///   - protocPath: The path to `protoc`
-///   - protocGenSwiftPath: The path to `protoc-gen-grpc-swift`.
+///   - protocGenSwiftPath: The path to `protoc-gen-grpc-swift-2`.
 ///   - configFilePath: The path to the config file in use.
 /// - Returns: The command to invoke `protoc` with the `protoc-gen-swift` plugin.
 func protocGenSwiftCommand(
@@ -266,7 +266,7 @@ func protocGenSwiftCommand(
 }
 
 /// Derive the expected output file path to match the behavior of the `protoc-gen-swift`
-/// and `protoc-gen-grpc-swift` `protoc` plugins using the `PathToUnderscores` naming scheme.
+/// and `protoc-gen-grpc-swift-2` `protoc` plugins using the `PathToUnderscores` naming scheme.
 ///
 /// This means the generated file for an input proto file called "foo/bar/baz.proto" will
 /// have the name "foo\_bar\_baz.proto".

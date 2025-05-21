@@ -87,7 +87,7 @@ The options do not need to be specified and each have default values.
 
 ‡ If you don't provide any import paths then the path to the configuration file will be used on a per-source-file basis.
 
-Many of these options map to `protoc-gen-grpc-swift` and `protoc-gen-swift` options.
+Many of these options map to `protoc-gen-grpc-swift-2` and `protoc-gen-swift` options.
 
 If you require greater flexibility you may specify more than one configuration file.
 Configuration files apply to all `.proto` files equal to or below it in the file hierarchy. A configuration file
@@ -96,7 +96,7 @@ lower in the file hierarchy supersedes one above it.
 ### Using protoc
 
 The [`grpc-swift-protobuf`](https://github.com/grpc/grpc-swift-protobuf) package provides
-`protoc-gen-grpc-swift`, a program which is a plugin for the Protocol Buffers compiler, `protoc`.
+`protoc-gen-grpc-swift-2`, a program which is a plugin for the Protocol Buffers compiler, `protoc`.
 To generate gRPC stubs for your `.proto` files directly you must run the `protoc` command with
 the `--grpc-swift_out=<DIRECTORY>` option:
 
@@ -104,18 +104,18 @@ the `--grpc-swift_out=<DIRECTORY>` option:
 protoc --grpc-swift_out=. my-service.proto
 ```
 
-> `protoc-gen-grpc-swift` only generates gRPC stubs, it doesn't generate messages. You must use
+> `protoc-gen-grpc-swift-2` only generates gRPC stubs, it doesn't generate messages. You must use
 > `protoc-gen-swift` to generate messages in addition to gRPC Stubs.
 
-The presence of `--grpc-swift_out` tells `protoc` to use the `protoc-gen-grpc-swift` plugin. By
+The presence of `--grpc-swift_out` tells `protoc` to use the `protoc-gen-grpc-swift-2` plugin. By
 default it'll look for the plugin in your `PATH`. You can also specify the path to the plugin
 explicitly:
 
 ```console
-protoc --plugin=/path/to/protoc-gen-grpc-swift --grpc-swift_out=. my-service.proto
+protoc --plugin=/path/to/protoc-gen-grpc-swift-2 --grpc-swift_out=. my-service.proto
 ```
 
-You can also specify various option the `protoc-gen-grpc-swift` via `protoc` using
+You can also specify various option the `protoc-gen-grpc-swift-2` via `protoc` using
 the `--grpc-swift_opt` argument:
 
 ```console
@@ -164,14 +164,14 @@ times, where each value is a space delimited pair of platform and version, e.g.
 
 #### Building the protoc plugin
 
-> The version of `protoc-gen-grpc-swift` you use mustn't be newer than the version of
+> The version of `protoc-gen-grpc-swift-2` you use mustn't be newer than the version of
 > the `grpc-swift-protobuf` you're using.
 
-If your package depends on `grpc-swift-protobuf` then you can get a copy of `protoc-gen-grpc-swift`
+If your package depends on `grpc-swift-protobuf` then you can get a copy of `protoc-gen-grpc-swift-2`
 by building it directly:
 
 ```console
-swift build --product protoc-gen-grpc-swift
+swift build --product protoc-gen-grpc-swift-2
 ```
 
 This command will build the plugin into `.build/debug` directory. You can get the full path using

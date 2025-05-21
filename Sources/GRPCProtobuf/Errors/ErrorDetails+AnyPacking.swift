@@ -61,7 +61,7 @@ extension Google_Protobuf_Any {
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails {
   // Note: this type isn't packable into an 'Any' protobuf so doesn't conform
   // to 'GoogleProtobufAnyPackable' despite holding types which are packable.

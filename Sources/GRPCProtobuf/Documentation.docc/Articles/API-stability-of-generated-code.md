@@ -9,7 +9,7 @@ The API of the generated code depends on three factors:
 
 - The contents of the source `.proto` file.
 - The options you use when generating the code.
-- The code generator (the `protoc-gen-grpc-swift` plugin for `protoc`).
+- The code generator (the `protoc-gen-grpc-swift-2` plugin for `protoc`).
 
 While this document applies specifically to the gRPC code generated and *not*
 code for messages used as inputs and outputs of each method, the concepts still
@@ -73,6 +73,6 @@ option.
 
 As gRPC Swift is developed the generated code may need to rely on newer
 functionality from its runtime counterparts (`GRPCCore` and `GRPCProtobuf`).
-This means that you should use the versions of `protoc-gen-grpc-swift` and
+This means that you should use the versions of `protoc-gen-grpc-swift-2` and
 `protoc-gen-swift` resolved with your package rather than getting them from an
 out-of-band (such as `homebrew`).

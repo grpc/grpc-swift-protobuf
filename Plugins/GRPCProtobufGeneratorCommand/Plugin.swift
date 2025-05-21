@@ -99,7 +99,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
 
     let config = commandConfig.common
     let protocPath = try deriveProtocPath(using: config, tool: tool)
-    let protocGenGRPCSwiftPath = try tool("protoc-gen-grpc-swift").url
+    let protocGenGRPCSwiftPath = try tool("protoc-gen-grpc-swift-2").url
     let protocGenSwiftPath = try tool("protoc-gen-swift").url
 
     let outputDirectory = URL(fileURLWithPath: config.outputPath)
@@ -111,7 +111,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
 
     let inputFileURLs = inputFiles.map { URL(fileURLWithPath: $0) }
 
-    // MARK: protoc-gen-grpc-swift
+    // MARK: protoc-gen-grpc-swift-2
     if config.clients || config.servers {
       let arguments = constructProtocGenGRPCSwiftArguments(
         config: config,

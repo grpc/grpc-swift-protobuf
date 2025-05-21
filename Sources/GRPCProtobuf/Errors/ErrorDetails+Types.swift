@@ -16,7 +16,7 @@
 
 internal import SwiftProtobuf
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails {
   /// Describes the cause of the error with structured details.
   ///

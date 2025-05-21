@@ -23,8 +23,8 @@ let products: [Product] = [
     targets: ["GRPCProtobuf"]
   ),
   .executable(
-    name: "protoc-gen-grpc-swift",
-    targets: ["protoc-gen-grpc-swift"]
+    name: "protoc-gen-grpc-swift-2",
+    targets: ["protoc-gen-grpc-swift-2"]
   ),
   .plugin(
     name: "GRPCProtobufGenerator",
@@ -38,8 +38,8 @@ let products: [Product] = [
 
 let dependencies: [Package.Dependency] = [
   .package(
-    url: "https://github.com/grpc/grpc-swift.git",
-    from: "2.2.1"
+    url: "https://github.com/grpc/grpc-swift-2.git",
+    from: "2.0.0"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
@@ -49,12 +49,12 @@ let dependencies: [Package.Dependency] = [
 
 // -------------------------------------------------------------------------------------------------
 
-// This adds some build settings which allow us to map "@available(gRPCSwiftProtobuf 1.x, *)" to
+// This adds some build settings which allow us to map "@available(gRPCSwiftProtobuf 2.x, *)" to
 // the appropriate OS platforms.
-let nextMinorVersion = 3
+let nextMinorVersion = 1
 let availabilitySettings: [SwiftSetting] = (0 ... nextMinorVersion).map { minor in
   let name = "gRPCSwiftProtobuf"
-  let version = "1.\(minor)"
+  let version = "2.\(minor)"
   let platforms = "macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"
   let setting = "AvailabilityMacro=\(name) \(version):\(platforms)"
   return .enableExperimentalFeature(setting)
@@ -71,12 +71,12 @@ let defaultSwiftSettings: [SwiftSetting] =
 // -------------------------------------------------------------------------------------------------
 
 var targets: [Target] = [
-  // protoc plugin for grpc-swift
+  // protoc plugin for grpc-swift-2
   .executableTarget(
-    name: "protoc-gen-grpc-swift",
+    name: "protoc-gen-grpc-swift-2",
     dependencies: [
       .target(name: "GRPCProtobufCodeGen"),
-      .product(name: "GRPCCodeGen", package: "grpc-swift"),
+      .product(name: "GRPCCodeGen", package: "grpc-swift-2"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
     ],
@@ -87,7 +87,7 @@ var targets: [Target] = [
   .target(
     name: "GRPCProtobuf",
     dependencies: [
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
     ],
     swiftSettings: defaultSwiftSettings
@@ -96,18 +96,18 @@ var targets: [Target] = [
     name: "GRPCProtobufTests",
     dependencies: [
       .target(name: "GRPCProtobuf"),
-      .product(name: "GRPCCore", package: "grpc-swift"),
-      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift-2"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
     ],
     swiftSettings: defaultSwiftSettings
   ),
 
-  // Code generator library for protoc-gen-grpc-swift
+  // Code generator library for protoc-gen-grpc-swift-2
   .target(
     name: "GRPCProtobufCodeGen",
     dependencies: [
-      .product(name: "GRPCCodeGen", package: "grpc-swift"),
+      .product(name: "GRPCCodeGen", package: "grpc-swift-2"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
     ],
     swiftSettings: defaultSwiftSettings
@@ -116,7 +116,7 @@ var targets: [Target] = [
     name: "GRPCProtobufCodeGenTests",
     dependencies: [
       .target(name: "GRPCProtobufCodeGen"),
-      .product(name: "GRPCCodeGen", package: "grpc-swift"),
+      .product(name: "GRPCCodeGen", package: "grpc-swift-2"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
       .product(name: "SwiftProtobufPluginLibrary", package: "swift-protobuf"),
     ],
@@ -131,7 +131,7 @@ var targets: [Target] = [
     name: "GRPCProtobufGenerator",
     capability: .buildTool(),
     dependencies: [
-      .target(name: "protoc-gen-grpc-swift"),
+      .target(name: "protoc-gen-grpc-swift-2"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
     ]
   ),
@@ -152,7 +152,7 @@ var targets: [Target] = [
       ]
     ),
     dependencies: [
-      .target(name: "protoc-gen-grpc-swift"),
+      .target(name: "protoc-gen-grpc-swift-2"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
     ],
     path: "Plugins/GRPCProtobufGeneratorCommand"
@@ -196,7 +196,7 @@ if Context.buildCGRPCProtobuf {
   )
 
   for target in targets {
-    if target.name == "protoc-gen-grpc-swift" {
+    if target.name == "protoc-gen-grpc-swift-2" {
       target.dependencies.append(.target(name: "CGRPCProtobuf"))
     }
   }
