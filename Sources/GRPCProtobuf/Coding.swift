@@ -19,6 +19,7 @@ public import SwiftProtobuf
 
 /// Serializes a Protobuf message into a sequence of bytes.
 @available(gRPCSwiftProtobuf 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct ProtobufSerializer<Message: SwiftProtobuf.Message>: GRPCCore.MessageSerializer {
   public init() {}
 
@@ -43,6 +44,7 @@ public struct ProtobufSerializer<Message: SwiftProtobuf.Message>: GRPCCore.Messa
 
 /// Deserializes a sequence of bytes into a Protobuf message.
 @available(gRPCSwiftProtobuf 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct ProtobufDeserializer<Message: SwiftProtobuf.Message>: GRPCCore.MessageDeserializer {
   public init() {}
 
