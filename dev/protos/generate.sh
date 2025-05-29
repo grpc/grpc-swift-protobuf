@@ -36,10 +36,10 @@ protoc_gen_grpc_swift="$bin_path/protoc-gen-grpc-swift-2"
 # - $4 onwards: options to forward to the plugin
 function generate_grpc {
   local proto=$1
-  local args=("--plugin=$protoc_gen_grpc_swift" "--proto_path=${2}" "--grpc-swift_out=${3}")
+  local args=("--plugin=$protoc_gen_grpc_swift" "--proto_path=${2}" "--grpc-swift-2_out=${3}")
 
   for option in "${@:4}"; do
-    args+=("--grpc-swift_opt=$option")
+    args+=("--grpc-swift-2_opt=$option")
   done
 
   invoke_protoc "${args[@]}" "$proto"
