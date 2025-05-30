@@ -27,7 +27,7 @@ struct ProtobufCodeGenParserTests {
     static let descriptorSetName = "test-service"
     static let fileDescriptorName = "test-service"
 
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     var codeGen: CodeGenerationRequest {
       get throws {
         let descriptor = try Self.fileDescriptor
@@ -36,13 +36,13 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Filename")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func fileName() throws {
       #expect(try self.codeGen.fileName == "test-service.proto")
     }
 
     @Test("Leading trivia")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func leadingTrivia() throws {
       let expected = """
         /// Leading trivia.
@@ -63,7 +63,7 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Dependencies")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func dependencies() throws {
       let expected: [GRPCCodeGen.Dependency] = [
         .init(module: "GRPCProtobuf", accessLevel: .internal),  // Always an internal import
@@ -74,7 +74,7 @@ struct ProtobufCodeGenParserTests {
 
     @Suite("Service")
     struct Service {
-      @available(gRPCSwiftProtobuf 1.0, *)
+      @available(gRPCSwiftProtobuf 2.0, *)
       var service: GRPCCodeGen.ServiceDescriptor {
         get throws {
           let request = try parseDescriptor(try TestService.fileDescriptor)
@@ -84,14 +84,14 @@ struct ProtobufCodeGenParserTests {
       }
 
       @Test("Name")
-      @available(gRPCSwiftProtobuf 1.0, *)
+      @available(gRPCSwiftProtobuf 2.0, *)
       func name() throws {
         #expect(try self.service.name.identifyingName == "test.TestService")
       }
 
       @Suite("Methods")
       struct Methods {
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         var service: GRPCCodeGen.ServiceDescriptor {
           get throws {
             let request = try parseDescriptor(try TestService.fileDescriptor)
@@ -100,25 +100,25 @@ struct ProtobufCodeGenParserTests {
           }
         }
 
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         var unary: GRPCCodeGen.MethodDescriptor {
           get throws { try self.service.methods[0] }
         }
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         var clientStreaming: GRPCCodeGen.MethodDescriptor {
           get throws { try self.service.methods[1] }
         }
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         var serverStreaming: GRPCCodeGen.MethodDescriptor {
           get throws { try self.service.methods[2] }
         }
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         var bidiStreaming: GRPCCodeGen.MethodDescriptor {
           get throws { try self.service.methods[3] }
         }
 
         @Test("Documentation")
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         func documentation() throws {
           #expect(try self.unary.documentation == "/// Unary docs.\n")
           #expect(try self.clientStreaming.documentation == "/// Client streaming docs.\n")
@@ -127,7 +127,7 @@ struct ProtobufCodeGenParserTests {
         }
 
         @Test("Name")
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         func name() throws {
           try #expect(self.unary.name.identifyingName == "Unary")
           try #expect(self.clientStreaming.name.identifyingName == "ClientStreaming")
@@ -136,7 +136,7 @@ struct ProtobufCodeGenParserTests {
         }
 
         @Test("Input")
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         func input() throws {
           #expect(try self.unary.inputType == "Test_TestInput")
           #expect(try !self.unary.isInputStreaming)
@@ -152,7 +152,7 @@ struct ProtobufCodeGenParserTests {
         }
 
         @Test("Output")
-        @available(gRPCSwiftProtobuf 1.0, *)
+        @available(gRPCSwiftProtobuf 2.0, *)
         func output() throws {
           #expect(try self.unary.outputType == "Test_TestOutput")
           #expect(try !self.unary.isOutputStreaming)
@@ -175,7 +175,7 @@ struct ProtobufCodeGenParserTests {
     static let descriptorSetName = "foo-service"
     static let fileDescriptorName = "foo-service"
 
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     var codeGen: CodeGenerationRequest {
       get throws {
         let descriptor = try Self.fileDescriptor
@@ -184,13 +184,13 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Name")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func name() throws {
       #expect(try self.codeGen.fileName == "foo-service.proto")
     }
 
     @Test("Dependencies")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func dependencies() throws {
       let expected: [GRPCCodeGen.Dependency] = [
         .init(module: "GRPCProtobuf", accessLevel: .internal)  // Always an internal import
@@ -199,7 +199,7 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Service1")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func service1() throws {
       let service = try self.codeGen.services[0]
       #expect(service.name.identifyingName == "foo.FooService1")
@@ -207,7 +207,7 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Service1.Method")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func service1Method() throws {
       let method = try self.codeGen.services[0].methods[0]
       #expect(method.name.identifyingName == "Foo")
@@ -216,7 +216,7 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Service2")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func service2() throws {
       let service = try self.codeGen.services[1]
       #expect(service.name.identifyingName == "foo.FooService2")
@@ -224,7 +224,7 @@ struct ProtobufCodeGenParserTests {
     }
 
     @Test("Service2.Method")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func service2Method() throws {
       let method = try self.codeGen.services[1].methods[0]
       #expect(method.name.identifyingName == "Foo")
@@ -239,7 +239,7 @@ struct ProtobufCodeGenParserTests {
     static var fileDescriptorName: String { "bar-service" }
 
     @Test("Service name")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func serviceName() throws {
       let descriptor = try Self.fileDescriptor
       let codeGen = try parseDescriptor(descriptor)
@@ -255,7 +255,7 @@ struct ProtobufCodeGenParserTests {
     static let fileDescriptorName = "wkt-service"
 
     @Test("Dependencies")
-    @available(gRPCSwiftProtobuf 1.0, *)
+    @available(gRPCSwiftProtobuf 2.0, *)
     func dependencies() throws {
       let descriptor = try Self.fileDescriptor
       let codeGen = try parseDescriptor(descriptor)

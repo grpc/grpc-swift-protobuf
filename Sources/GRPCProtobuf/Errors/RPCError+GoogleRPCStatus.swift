@@ -17,12 +17,12 @@
 public import GRPCCore
 internal import SwiftProtobuf
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension Metadata {
   static let statusDetailsBinKey = "grpc-status-details-bin"
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension RPCError {
   /// Unpack a ``GoogleRPCStatus`` error from the error metadata.
   ///

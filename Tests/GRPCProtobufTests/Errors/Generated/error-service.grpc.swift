@@ -30,7 +30,7 @@ internal import SwiftProtobuf
 // MARK: - ErrorService
 
 /// Namespace containing generated types for the "ErrorService" service.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 internal enum ErrorService {
     /// Service descriptor for the "ErrorService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ErrorService")
@@ -55,7 +55,7 @@ internal enum ErrorService {
     }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "ErrorService" service.
     internal static let ErrorService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ErrorService")
@@ -63,7 +63,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: ErrorService (server)
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService {
     /// Streaming variant of the service protocol for the "ErrorService" service.
     ///
@@ -137,7 +137,7 @@ extension ErrorService {
 }
 
 // Default implementation of 'registerMethods(with:)'.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService.StreamingServiceProtocol {
     internal func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -155,7 +155,7 @@ extension ErrorService.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService.ServiceProtocol {
     internal func throwError(
         request: GRPCCore.StreamingServerRequest<ThrowInput>,
@@ -170,7 +170,7 @@ extension ErrorService.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService.SimpleServiceProtocol {
     internal func throwError(
         request: GRPCCore.ServerRequest<ThrowInput>,
@@ -188,7 +188,7 @@ extension ErrorService.SimpleServiceProtocol {
 
 // MARK: ErrorService (client)
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService {
     /// Generated client protocol for the "ErrorService" service.
     ///
@@ -264,7 +264,7 @@ extension ErrorService {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService.ClientProtocol {
     /// Call the "ThrowError" method.
     ///
@@ -293,7 +293,7 @@ extension ErrorService.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorService.ClientProtocol {
     /// Call the "ThrowError" method.
     ///

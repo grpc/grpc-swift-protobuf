@@ -35,7 +35,7 @@ public import SwiftProtobuf
 /// > inserted into the metadata keyed by "grpc-status-details-bin". The value of the metadata is
 /// > the serialized bytes of a "google.rpc.Status" protocol buffers message containing the status
 /// > code, message, and details.
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 public struct GoogleRPCStatus: Error, Hashable {
   /// A code representing the high-level domain of the error.
   public var code: RPCError.Code
@@ -74,7 +74,7 @@ public struct GoogleRPCStatus: Error, Hashable {
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension GoogleRPCStatus {
   /// Creates a new message by decoding the given `SwiftProtobufContiguousBytes` value
   /// containing a serialized message in Protocol Buffer binary format.
@@ -135,7 +135,7 @@ extension GoogleRPCStatus {
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension GoogleRPCStatus: RPCErrorConvertible {
   public var rpcErrorCode: RPCError.Code { self.code }
   public var rpcErrorMessage: String { self.message }

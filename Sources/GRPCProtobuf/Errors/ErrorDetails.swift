@@ -24,7 +24,7 @@ public import SwiftProtobuf
 ///
 /// This type also allows you to provide wrap your own error details up as an "Any"
 /// protobuf (`Google_Protobuf_Any`).
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 public struct ErrorDetails: Sendable, Hashable {
   enum Wrapped: Sendable, Hashable {
     case errorInfo(ErrorInfo)
@@ -199,7 +199,7 @@ public struct ErrorDetails: Sendable, Hashable {
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails {
   /// Returns error info if set.
   public var errorInfo: ErrorInfo? {

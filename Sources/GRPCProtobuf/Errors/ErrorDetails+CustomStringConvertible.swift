@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails: CustomStringConvertible {
   public var description: String {
     switch self.wrapped {
@@ -47,63 +47,63 @@ extension ErrorDetails: CustomStringConvertible {
 // Some errors use protobuf messages as their storage so the default description isn't
 // representative
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.ErrorInfo: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(reason: \"\(self.reason)\", domain: \"\(self.domain)\", metadata: \(self.metadata))"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.DebugInfo: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(stack: \(self.stack), detail: \"\(self.detail)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.QuotaFailure.Violation: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(subject: \"\(self.subject)\", violationDescription: \"\(self.violationDescription)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.PreconditionFailure.Violation: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(subject: \"\(self.subject)\", type: \"\(self.type)\", violationDescription: \"\(self.violationDescription)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.BadRequest.FieldViolation: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(field: \"\(self.field)\", violationDescription: \"\(self.violationDescription)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.RequestInfo: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(requestID: \"\(self.requestID)\", servingData: \"\(self.servingData)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.ResourceInfo: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(name: \"\(self.name)\", owner: \"\(self.owner)\", type: \"\(self.type)\", errorDescription: \"\(self.errorDescription)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.Help.Link: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(url: \"\(self.url)\", linkDescription: \"\(self.linkDescription)\")"
   }
 }
 
-@available(gRPCSwiftProtobuf 1.0, *)
+@available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.LocalizedMessage: CustomStringConvertible {
   public var description: String {
     "\(Self.self)(locale: \"\(self.locale)\", message: \"\(self.message)\")"

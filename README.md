@@ -14,5 +14,5 @@ for [gRPC Swift][gh-grpc-swift-protobuf].
 
 [gh-swift-protobuf]: https://github.com/apple/swift-protobuf
 [gh-grpc-swift-protobuf]: https://github.com/grpc/grpc-swift-protobuf
-[spi-grpc-swift]: https://swiftpackageindex.com/grpc/grpc-swift/documentation
+[spi-grpc-swift]: https://swiftpackageindex.com/grpc/grpc-swift-2/documentation
 [spi-grpc-swift-protobuf]: https://swiftpackageindex.com/grpc/grpc-swift-protobuf/documentation
