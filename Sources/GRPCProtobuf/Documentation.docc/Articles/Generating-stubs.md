@@ -98,37 +98,37 @@ lower in the file hierarchy supersedes one above it.
 The [`grpc-swift-protobuf`](https://github.com/grpc/grpc-swift-protobuf) package provides
 `protoc-gen-grpc-swift-2`, a program which is a plugin for the Protocol Buffers compiler, `protoc`.
 To generate gRPC stubs for your `.proto` files directly you must run the `protoc` command with
-the `--grpc-swift_out=<DIRECTORY>` option:
+the `--grpc-swift-2_out=<DIRECTORY>` option:
 
 ```console
-protoc --grpc-swift_out=. my-service.proto
+protoc --grpc-swift-2_out=. my-service.proto
 ```
 
 > `protoc-gen-grpc-swift-2` only generates gRPC stubs, it doesn't generate messages. You must use
 > `protoc-gen-swift` to generate messages in addition to gRPC Stubs.
 
-The presence of `--grpc-swift_out` tells `protoc` to use the `protoc-gen-grpc-swift-2` plugin. By
+The presence of `--grpc-swift-2_out` tells `protoc` to use the `protoc-gen-grpc-swift-2` plugin. By
 default it'll look for the plugin in your `PATH`. You can also specify the path to the plugin
 explicitly:
 
 ```console
-protoc --plugin=/path/to/protoc-gen-grpc-swift-2 --grpc-swift_out=. my-service.proto
+protoc --plugin=/path/to/protoc-gen-grpc-swift-2 --grpc-swift-2_out=. my-service.proto
 ```
 
 You can also specify various option the `protoc-gen-grpc-swift-2` via `protoc` using
-the `--grpc-swift_opt` argument:
+the `--grpc-swift-2_opt` argument:
 
 ```console
-protoc --grpc-swift_opt=<OPTION_NAME>=<OPTION_VALUE> --grpc-swift_out=.
+protoc --grpc-swift-2_opt=<OPTION_NAME>=<OPTION_VALUE> --grpc-swift-2_out=.
 ```
 
-You can specify multiple options by passing the `--grpc-swift_opt` argument multiple times:
+You can specify multiple options by passing the `--grpc-swift-2_opt` argument multiple times:
 
 ```console
 protoc \
-  --grpc-swift_opt=<OPTION_NAME1>=<OPTION_VALUE1> \
-  --grpc-swift_opt=<OPTION_NAME2>=<OPTION_VALUE2> \
-  --grpc-swift_out=.
+  --grpc-swift-2_opt=<OPTION_NAME1>=<OPTION_VALUE1> \
+  --grpc-swift-2_opt=<OPTION_NAME2>=<OPTION_VALUE2> \
+  --grpc-swift-2_out=.
 ```
 
 #### Generator options
