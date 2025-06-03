@@ -36,6 +36,7 @@ public import SwiftProtobuf
 /// > the serialized bytes of a "google.rpc.Status" protocol buffers message containing the status
 /// > code, message, and details.
 @available(gRPCSwiftProtobuf 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct GoogleRPCStatus: Error, Hashable {
   /// A code representing the high-level domain of the error.
   public var code: RPCError.Code
