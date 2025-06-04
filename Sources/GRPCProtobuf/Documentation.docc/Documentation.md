@@ -23,6 +23,7 @@ This package provides three products:
 - <doc:Generating-stubs>
 - <doc:API-stability-of-generated-code>
 - <doc:Understanding-the-generated-code>
+- <doc:Public-services-with-private-implementations>
 
 ### Serialization
 
