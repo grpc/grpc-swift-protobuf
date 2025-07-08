@@ -61,7 +61,7 @@ You must name the file `grpc-swift-proto-generator-config.json` and structure it
   "generatedSource": {
     "accessLevelOnImports": false,
     "accessLevel": "internal",
-  }
+  },
   "protoc": {
     "executablePath": "/opt/homebrew/bin/protoc"
     "importPaths": [
