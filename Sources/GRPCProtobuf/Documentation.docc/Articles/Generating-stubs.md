@@ -56,18 +56,18 @@ You must name the file `grpc-swift-proto-generator-config.json` and structure it
   "generate": {
     "clients": true,
     "servers": true,
-    "messages": true,
+    "messages": true
   },
   "generatedSource": {
     "accessLevelOnImports": false,
-    "accessLevel": "internal",
+    "accessLevel": "internal"
   },
   "protoc": {
-    "executablePath": "/opt/homebrew/bin/protoc"
+    "executablePath": "/opt/homebrew/bin/protoc",
     "importPaths": [
-      "../directory_1",
-    ],
-  },
+      "../directory_1"
+    ]
+  }
 }
 ```
 
