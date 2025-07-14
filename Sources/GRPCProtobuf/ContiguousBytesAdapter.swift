@@ -64,5 +64,5 @@ struct ContiguousBytesAdapter<
   }
 }
 
-@available(gRPCSwiftProtobuf 2.0, *)
+@available(gRPCSwiftProtobuf 2.1, *)
 extension ContiguousBytesAdapter: Sendable where Bytes: Sendable {}
