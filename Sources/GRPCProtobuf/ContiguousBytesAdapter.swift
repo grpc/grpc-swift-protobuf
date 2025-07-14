@@ -63,3 +63,6 @@ struct ContiguousBytesAdapter<
     try self.bytes.withUnsafeMutableBytes(body)
   }
 }
+
+@available(gRPCSwiftProtobuf 2.1, *)
+extension ContiguousBytesAdapter: Sendable where Bytes: Sendable {}
