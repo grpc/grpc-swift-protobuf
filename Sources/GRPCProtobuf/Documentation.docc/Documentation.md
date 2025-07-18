@@ -17,10 +17,16 @@ This package provides three products:
 
 ## Topics
 
-### Essentials
+### Generating code
 
 - <doc:Installing-protoc>
 - <doc:Generating-stubs>
+- <doc:Code-generation-with-protoc>
+- <doc:Code-generation-with-the-command-plugin>
+- <doc:Code-generation-with-the-build-plugin>
+
+### Generated code
+
 - <doc:API-stability-of-generated-code>
 - <doc:Understanding-the-generated-code>
 - <doc:Public-services-with-private-implementations>
