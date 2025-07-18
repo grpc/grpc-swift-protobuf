@@ -21,13 +21,12 @@ enum CommandPluginError: Error {
   case unknownAccessLevel(String)
   case unknownFileNamingStrategy(String)
   case conflictingFlags(String, String)
+  case invalidInputFiles([String])
   case generationFailure(
-    errorDescription: String,
     executable: String,
     arguments: [String],
     stdErr: String?
   )
-  case tooManyParameterSeparators
 }
 
 extension CommandPluginError: CustomStringConvertible {
@@ -45,21 +44,52 @@ extension CommandPluginError: CustomStringConvertible {
       return "Provided file naming strategy is unknown: \(value)."
     case .conflictingFlags(let flag1, let flag2):
       return "Provided flags conflict: '\(flag1)' and '\(flag2)'."
-    case .generationFailure(let errorDescription, let executable, let arguments, let stdErr):
-      var message = """
-        Code generation failed with: \(errorDescription).
-        \tExecutable: \(executable)
-        \tArguments: \(arguments.joined(separator: " "))
-        """
-      if let stdErr {
-        message += """
-          \n\tprotoc error output:
-          \t\(stdErr)
-          """
+
+    case .invalidInputFiles(let files):
+      var lines: [String] = []
+      lines.append("Invalid input file(s)")
+      lines.append("")
+      lines.append("Found \(files.count) input(s) not ending in '.proto':")
+      for file in files {
+        lines.append("- \(file)")
       }
-      return message
-    case .tooManyParameterSeparators:
-      return "Unexpected parameter structure, too many '--' separators."
+      lines.append("")
+      lines.append("All options must be before '--', and all input files must be")
+      lines.append("after '--'. Input files must end in '.proto'.")
+      lines.append("")
+      lines.append("See --help for more information.")
+      return lines.joined(separator: "\n")
+
+    case .generationFailure(let executable, let arguments, let stdErr):
+      var lines: [String] = []
+      lines.append("protoc failed to generate code")
+      lines.append("")
+      lines.append(String(repeating: "-", count: 80))
+      lines.append("Command run:")
+      lines.append("")
+      lines.append("\(executable) \\")
+      var iterator = arguments.makeIterator()
+      var current = iterator.next()
+      while let currentArg = current {
+        var nextArg = iterator.next()
+        defer { current = nextArg }
+
+        if nextArg != nil {
+          lines.append("  \(currentArg) \\")
+        } else {
+          lines.append("  \(currentArg)")
+        }
+      }
+
+      if let stdErr {
+        lines.append("")
+        lines.append(String(repeating: "-", count: 80))
+        lines.append("Error output (stderr):")
+        lines.append("")
+        lines.append(stdErr)
+      }
+
+      return lines.joined(separator: "\n")
     }
   }
 }

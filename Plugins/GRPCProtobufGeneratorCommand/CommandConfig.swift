@@ -42,10 +42,8 @@ struct CommandConfig {
 }
 
 extension CommandConfig {
-  static func parse(
-    argumentExtractor argExtractor: inout ArgumentExtractor,
-    pluginWorkDirectory: URL
-  ) throws -> CommandConfig {
+  static func parse(args: [String]) throws -> CommandConfig {
+    var argExtractor = ArgumentExtractor(args)
     var config = CommandConfig.defaults
 
     for flag in OptionsAndFlags.allCases {
@@ -131,9 +129,7 @@ extension CommandConfig {
         config.common.protocPath = argExtractor.extractSingleOption(named: flag.rawValue)
 
       case .outputPath:
-        config.common.outputPath =
-          argExtractor.extractSingleOption(named: flag.rawValue)
-          ?? pluginWorkDirectory.absoluteStringNoScheme
+        config.common.outputPath = argExtractor.extractSingleOption(named: flag.rawValue) ?? "."
 
       case .verbose:
         let verbose = argExtractor.extractFlag(named: flag.rawValue)

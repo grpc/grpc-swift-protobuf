@@ -50,45 +50,29 @@ struct GRPCProtobufGeneratorCommandPlugin {
     tool: (String) throws -> PluginContext.Tool,
     pluginWorkDirectoryURL: URL
   ) throws {
-    let flagsAndOptions: [String]
-    let inputFiles: [String]
-
-    let separatorCount = arguments.count { $0 == CommandConfig.parameterGroupSeparator }
-    switch separatorCount {
-    case 0:
-      var argExtractor = ArgumentExtractor(arguments)
-      // check if help requested
-      if argExtractor.extractFlag(named: OptionsAndFlags.help.rawValue) > 0 {
-        OptionsAndFlags.printHelp(requested: true)
-        return
-      }
-
-      inputFiles = arguments
-      flagsAndOptions = []
-
-    case 1:
-      let splitIndex = arguments.firstIndex(of: CommandConfig.parameterGroupSeparator)!
-      flagsAndOptions = Array(arguments[..<splitIndex])
-      inputFiles = Array(arguments[splitIndex.advanced(by: 1)...])
-
-    default:
-      throw CommandPluginError.tooManyParameterSeparators
-    }
-
-    var argExtractor = ArgumentExtractor(flagsAndOptions)
-    // help requested
-    if argExtractor.extractFlag(named: OptionsAndFlags.help.rawValue) > 0 {
+    // Check for help.
+    if arguments.isEmpty || arguments.contains(where: { $0 == "--help" || $0 == "-h" }) {
       OptionsAndFlags.printHelp(requested: true)
       return
     }
 
-    // MARK: Configuration
+    // Split the input into options and input files.
+    let (flagsAndOptions, inputFiles) = self.splitArgs(arguments)
+
+    // Check the input files all look like protos
+    let nonProtoInputs = inputFiles.filter { !$0.hasSuffix(".proto") }
+    if !nonProtoInputs.isEmpty {
+      throw CommandPluginError.invalidInputFiles(nonProtoInputs)
+    }
+
+    if inputFiles.isEmpty {
+      throw CommandPluginError.missingInputFile
+    }
+
+    // Parse the config.
     let commandConfig: CommandConfig
     do {
-      commandConfig = try CommandConfig.parse(
-        argumentExtractor: &argExtractor,
-        pluginWorkDirectory: pluginWorkDirectoryURL
-      )
+      commandConfig = try CommandConfig.parse(args: flagsAndOptions)
     } catch {
       throw error
     }
@@ -159,6 +143,22 @@ struct GRPCProtobufGeneratorCommandPlugin {
       }
     }
   }
+
+  private func splitArgs(_ args: [String]) -> (options: [String], inputs: [String]) {
+    let inputs: [String]
+    let options: [String]
+
+    if let index = args.firstIndex(of: "--") {
+      let nextIndex = args.index(after: index)
+      inputs = Array(args[nextIndex...])
+      options = Array(args[..<index])
+    } else {
+      options = []
+      inputs = args
+    }
+
+    return (options, inputs)
+  }
 }
 
 /// Execute a single invocation of `protoc`, printing output and if in verbose mode the invocation
@@ -202,7 +202,6 @@ func executeProtocInvocation(
       stdErr = nil
     }
     throw CommandPluginError.generationFailure(
-      errorDescription: "\(error)",
       executable: executableURL.absoluteStringNoScheme,
       arguments: arguments,
       stdErr: stdErr
@@ -224,7 +223,6 @@ func executeProtocInvocation(
   }
   let problem = "\(process.terminationReason):\(process.terminationStatus)"
   throw CommandPluginError.generationFailure(
-    errorDescription: problem,
     executable: executableURL.absoluteStringNoScheme,
     arguments: arguments,
     stdErr: stdErr
