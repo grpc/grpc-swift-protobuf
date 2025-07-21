@@ -68,7 +68,7 @@ func constructProtocGenSwiftArguments(
   protocArgs.append("--swift_opt=Visibility=\(config.accessLevel.rawValue)")
   protocArgs.append("--swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--swift_opt=UseAccessLevelOnImports=\(config.accessLevelOnImports)")
-  protocArgs.append(contentsOf: inputFiles.map { $0.absoluteStringNoScheme })
+  protocArgs.append(contentsOf: inputFiles.map { $0.relativePath })
 
   return protocArgs
 }
@@ -104,7 +104,7 @@ func constructProtocGenGRPCSwiftArguments(
   protocArgs.append("--grpc-swift_opt=Client=\(config.clients)")
   protocArgs.append("--grpc-swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--grpc-swift_opt=UseAccessLevelOnImports=\(config.accessLevelOnImports)")
-  protocArgs.append(contentsOf: inputFiles.map { $0.absoluteStringNoScheme })
+  protocArgs.append(contentsOf: inputFiles.map { $0.relativePath })
 
   return protocArgs
 }
