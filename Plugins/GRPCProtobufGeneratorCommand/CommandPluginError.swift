@@ -47,15 +47,15 @@ extension CommandPluginError: CustomStringConvertible {
 
     case .invalidInputFiles(let files):
       var lines: [String] = []
-      lines.append("Invalid input file(s)")
+      lines.append("Found \(files.count) invalid input file(s)")
       lines.append("")
-      lines.append("Found \(files.count) input(s) not ending in '.proto':")
+      lines.append("The following don't exist or aren't '.proto' files or directories:")
       for file in files {
         lines.append("- \(file)")
       }
       lines.append("")
       lines.append("All options must be before '--', and all input files must be")
-      lines.append("after '--'. Input files must end in '.proto'.")
+      lines.append("after '--'. Inputs be '.proto' files or directories.")
       lines.append("")
       lines.append("See --help for more information.")
       return lines.joined(separator: "\n")
