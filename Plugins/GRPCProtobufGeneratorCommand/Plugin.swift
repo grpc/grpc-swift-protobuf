@@ -57,13 +57,10 @@ struct GRPCProtobufGeneratorCommandPlugin {
     }
 
     // Split the input into options and input files.
-    let (flagsAndOptions, inputFiles) = self.splitArgs(arguments)
+    let (flagsAndOptions, inputs) = self.splitArgs(arguments)
 
     // Check the input files all look like protos
-    let nonProtoInputs = inputFiles.filter { !$0.hasSuffix(".proto") }
-    if !nonProtoInputs.isEmpty {
-      throw CommandPluginError.invalidInputFiles(nonProtoInputs)
-    }
+    let (inputFiles, extraImportPaths) = try self.checkAndExpandInputs(inputs)
 
     if inputFiles.isEmpty {
       throw CommandPluginError.missingInputFile
@@ -101,7 +98,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
         config: config,
         fileNaming: config.fileNaming,
         inputFiles: inputFileURLs,
-        protoDirectoryPaths: config.importPaths,
+        protoDirectoryPaths: config.importPaths + extraImportPaths,
         protocGenGRPCSwiftPath: protocGenGRPCSwiftPath,
         outputDirectory: outputDirectory
       )
@@ -124,7 +121,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
         config: config,
         fileNaming: config.fileNaming,
         inputFiles: inputFileURLs,
-        protoDirectoryPaths: config.importPaths,
+        protoDirectoryPaths: config.importPaths + extraImportPaths,
         protocGenSwiftPath: protocGenSwiftPath,
         outputDirectory: outputDirectory
       )
@@ -158,6 +155,50 @@ struct GRPCProtobufGeneratorCommandPlugin {
     }
 
     return (options, inputs)
+  }
+
+  private func checkAndExpandInputs(
+    _ files: [String]
+  ) throws -> (protos: [String], directories: [String]) {
+    let fileManager = FileManager.default
+    var invalidInputFiles = [String]()
+    var protos = [String]()
+    var dirs = [String]()
+
+    for file in files {
+      // Check that each file:
+      // a) exists, and
+      // b) is either a '.proto' file or a directory.
+      //
+      // If the file is a directory then all '.proto' files within the directory
+      // are added as input files.
+      var isDirectory = ObjCBool(false)
+      let exists = fileManager.fileExists(atPath: file, isDirectory: &isDirectory)
+
+      if !exists {
+        invalidInputFiles.append(file)
+      } else if isDirectory.boolValue {
+        dirs.append(file)
+        // Do a deep traversal of the directory.
+        if var enumerator = fileManager.enumerator(atPath: file) {
+          while let path = enumerator.nextObject() as? String {
+            if path.hasSuffix(".proto") {
+              protos.append(path)
+            }
+          }
+        }
+      } else if file.hasSuffix(".proto") {
+        protos.append(file)
+      } else {
+        invalidInputFiles.append(file)
+      }
+    }
+
+    if !invalidInputFiles.isEmpty {
+      throw CommandPluginError.invalidInputFiles(invalidInputFiles)
+    }
+
+    return (protos, dirs)
   }
 }
 
