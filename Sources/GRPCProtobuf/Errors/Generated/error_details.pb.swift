@@ -8,7 +8,7 @@
 // For information on using the generated types, please see the documentation:
 //   https://github.com/apple/swift-protobuf/
 
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,11 +80,12 @@ struct Google_Rpc_ErrorInfo: Sendable {
 
   /// Additional structured details about this error.
   ///
-  /// Keys should match /[a-zA-Z0-9-_]/ and be limited to 64 characters in
+  /// Keys must match a regular expression of `[a-z][a-zA-Z0-9-_]+` but should
+  /// ideally be lowerCamelCase. Also, they must be limited to 64 characters in
   /// length. When identifying the current value of an exceeded limit, the units
   /// should be contained in the key, not the value.  For example, rather than
-  /// {"instanceLimit": "100/request"}, should be returned as,
-  /// {"instanceLimitPerRequest": "100"}, if the client exceeds the number of
+  /// `{"instanceLimit": "100/request"}`, should be returned as,
+  /// `{"instanceLimitPerRequest": "100"}`, if the client exceeds the number of
   /// instances that can be created in a single (batch) request.
   var metadata: Dictionary<String,String> = [:]
 
@@ -187,9 +188,83 @@ struct Google_Rpc_QuotaFailure: Sendable {
     /// exceeded".
     var description_p: String = String()
 
+    /// The API Service from which the `QuotaFailure.Violation` orginates. In
+    /// some cases, Quota issues originate from an API Service other than the one
+    /// that was called. In other words, a dependency of the called API Service
+    /// could be the cause of the `QuotaFailure`, and this field would have the
+    /// dependency API service name.
+    ///
+    /// For example, if the called API is Kubernetes Engine API
+    /// (container.googleapis.com), and a quota violation occurs in the
+    /// Kubernetes Engine API itself, this field would be
+    /// "container.googleapis.com". On the other hand, if the quota violation
+    /// occurs when the Kubernetes Engine API creates VMs in the Compute Engine
+    /// API (compute.googleapis.com), this field would be
+    /// "compute.googleapis.com".
+    var apiService: String = String()
+
+    /// The metric of the violated quota. A quota metric is a named counter to
+    /// measure usage, such as API requests or CPUs. When an activity occurs in a
+    /// service, such as Virtual Machine allocation, one or more quota metrics
+    /// may be affected.
+    ///
+    /// For example, "compute.googleapis.com/cpus_per_vm_family",
+    /// "storage.googleapis.com/internet_egress_bandwidth".
+    var quotaMetric: String = String()
+
+    /// The id of the violated quota. Also know as "limit name", this is the
+    /// unique identifier of a quota in the context of an API service.
+    ///
+    /// For example, "CPUS-PER-VM-FAMILY-per-project-region".
+    var quotaID: String = String()
+
+    /// The dimensions of the violated quota. Every non-global quota is enforced
+    /// on a set of dimensions. While quota metric defines what to count, the
+    /// dimensions specify for what aspects the counter should be increased.
+    ///
+    /// For example, the quota "CPUs per region per VM family" enforces a limit
+    /// on the metric "compute.googleapis.com/cpus_per_vm_family" on dimensions
+    /// "region" and "vm_family". And if the violation occurred in region
+    /// "us-central1" and for VM family "n1", the quota_dimensions would be,
+    ///
+    /// {
+    ///   "region": "us-central1",
+    ///   "vm_family": "n1",
+    /// }
+    ///
+    /// When a quota is enforced globally, the quota_dimensions would always be
+    /// empty.
+    var quotaDimensions: Dictionary<String,String> = [:]
+
+    /// The enforced quota value at the time of the `QuotaFailure`.
+    ///
+    /// For example, if the enforced quota value at the time of the
+    /// `QuotaFailure` on the number of CPUs is "10", then the value of this
+    /// field would reflect this quantity.
+    var quotaValue: Int64 = 0
+
+    /// The new quota value being rolled out at the time of the violation. At the
+    /// completion of the rollout, this value will be enforced in place of
+    /// quota_value. If no rollout is in progress at the time of the violation,
+    /// this field is not set.
+    ///
+    /// For example, if at the time of the violation a rollout is in progress
+    /// changing the number of CPUs quota from 10 to 20, 20 would be the value of
+    /// this field.
+    var futureQuotaValue: Int64 {
+      get {return _futureQuotaValue ?? 0}
+      set {_futureQuotaValue = newValue}
+    }
+    /// Returns true if `futureQuotaValue` has been explicitly set.
+    var hasFutureQuotaValue: Bool {return self._futureQuotaValue != nil}
+    /// Clears the value of `futureQuotaValue`. Subsequent reads from it will return its default value.
+    mutating func clearFutureQuotaValue() {self._futureQuotaValue = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
+
+    fileprivate var _futureQuotaValue: Int64? = nil
   }
 
   init() {}
@@ -300,9 +375,30 @@ struct Google_Rpc_BadRequest: Sendable {
     /// A description of why the request element is bad.
     var description_p: String = String()
 
+    /// The reason of the field-level error. This is a constant value that
+    /// identifies the proximate cause of the field-level error. It should
+    /// uniquely identify the type of the FieldViolation within the scope of the
+    /// google.rpc.ErrorInfo.domain. This should be at most 63
+    /// characters and match a regular expression of `[A-Z][A-Z0-9_]+[A-Z0-9]`,
+    /// which represents UPPER_SNAKE_CASE.
+    var reason: String = String()
+
+    /// Provides a localized error message for field-level errors that is safe to
+    /// return to the API consumer.
+    var localizedMessage: Google_Rpc_LocalizedMessage {
+      get {return _localizedMessage ?? Google_Rpc_LocalizedMessage()}
+      set {_localizedMessage = newValue}
+    }
+    /// Returns true if `localizedMessage` has been explicitly set.
+    var hasLocalizedMessage: Bool {return self._localizedMessage != nil}
+    /// Clears the value of `localizedMessage`. Subsequent reads from it will return its default value.
+    mutating func clearLocalizedMessage() {self._localizedMessage = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
+
+    fileprivate var _localizedMessage: Google_Rpc_LocalizedMessage? = nil
   }
 
   init() {}
@@ -574,6 +670,12 @@ extension Google_Rpc_QuotaFailure.Violation: SwiftProtobuf.Message, SwiftProtobu
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "subject"),
     2: .same(proto: "description"),
+    3: .standard(proto: "api_service"),
+    4: .standard(proto: "quota_metric"),
+    5: .standard(proto: "quota_id"),
+    6: .standard(proto: "quota_dimensions"),
+    7: .standard(proto: "quota_value"),
+    8: .standard(proto: "future_quota_value"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -584,24 +686,58 @@ extension Google_Rpc_QuotaFailure.Violation: SwiftProtobuf.Message, SwiftProtobu
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.subject) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.description_p) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.apiService) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.quotaMetric) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self.quotaID) }()
+      case 6: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.quotaDimensions) }()
+      case 7: try { try decoder.decodeSingularInt64Field(value: &self.quotaValue) }()
+      case 8: try { try decoder.decodeSingularInt64Field(value: &self._futureQuotaValue) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.subject.isEmpty {
       try visitor.visitSingularStringField(value: self.subject, fieldNumber: 1)
     }
     if !self.description_p.isEmpty {
       try visitor.visitSingularStringField(value: self.description_p, fieldNumber: 2)
     }
+    if !self.apiService.isEmpty {
+      try visitor.visitSingularStringField(value: self.apiService, fieldNumber: 3)
+    }
+    if !self.quotaMetric.isEmpty {
+      try visitor.visitSingularStringField(value: self.quotaMetric, fieldNumber: 4)
+    }
+    if !self.quotaID.isEmpty {
+      try visitor.visitSingularStringField(value: self.quotaID, fieldNumber: 5)
+    }
+    if !self.quotaDimensions.isEmpty {
+      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: self.quotaDimensions, fieldNumber: 6)
+    }
+    if self.quotaValue != 0 {
+      try visitor.visitSingularInt64Field(value: self.quotaValue, fieldNumber: 7)
+    }
+    try { if let v = self._futureQuotaValue {
+      try visitor.visitSingularInt64Field(value: v, fieldNumber: 8)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Google_Rpc_QuotaFailure.Violation, rhs: Google_Rpc_QuotaFailure.Violation) -> Bool {
     if lhs.subject != rhs.subject {return false}
     if lhs.description_p != rhs.description_p {return false}
+    if lhs.apiService != rhs.apiService {return false}
+    if lhs.quotaMetric != rhs.quotaMetric {return false}
+    if lhs.quotaID != rhs.quotaID {return false}
+    if lhs.quotaDimensions != rhs.quotaDimensions {return false}
+    if lhs.quotaValue != rhs.quotaValue {return false}
+    if lhs._futureQuotaValue != rhs._futureQuotaValue {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -720,6 +856,8 @@ extension Google_Rpc_BadRequest.FieldViolation: SwiftProtobuf.Message, SwiftProt
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "field"),
     2: .same(proto: "description"),
+    3: .same(proto: "reason"),
+    4: .standard(proto: "localized_message"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -730,24 +868,38 @@ extension Google_Rpc_BadRequest.FieldViolation: SwiftProtobuf.Message, SwiftProt
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.field) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.description_p) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.reason) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._localizedMessage) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.field.isEmpty {
       try visitor.visitSingularStringField(value: self.field, fieldNumber: 1)
     }
     if !self.description_p.isEmpty {
       try visitor.visitSingularStringField(value: self.description_p, fieldNumber: 2)
     }
+    if !self.reason.isEmpty {
+      try visitor.visitSingularStringField(value: self.reason, fieldNumber: 3)
+    }
+    try { if let v = self._localizedMessage {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Google_Rpc_BadRequest.FieldViolation, rhs: Google_Rpc_BadRequest.FieldViolation) -> Bool {
     if lhs.field != rhs.field {return false}
     if lhs.description_p != rhs.description_p {return false}
+    if lhs.reason != rhs.reason {return false}
+    if lhs._localizedMessage != rhs._localizedMessage {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
