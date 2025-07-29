@@ -77,7 +77,7 @@ struct DetailedErrorTests {
       (.debugInfo(.testValue), #"DebugInfo(stack: ["foo.foo()", "foo.bar()"], detail: "detail")"#),
       (
         .quotaFailure(.testValue),
-        #"QuotaFailure(violations: [Violation(subject: "s", violationDescription: "d")])"#
+        #"QuotaFailure(violations: [Violation(subject: "s", violationDescription: "d", apiService: "a", quotaMetric: "m", quotaID: "i", quotaDimensions: ["k": "v"], quotaValue: 1, futureQuotaValue: 2)])"#
       ),
       (
         .preconditionFailure(.testValue),
@@ -85,7 +85,7 @@ struct DetailedErrorTests {
       ),
       (
         .badRequest(.testValue),
-        #"BadRequest(violations: [FieldViolation(field: "f", violationDescription: "d")])"#
+        #"BadRequest(violations: [FieldViolation(field: "f", violationDescription: "d", reason: "r", localizedMessage: LocalizedMessage(locale: "l", message: "m"))])"#
       ),
       (.requestInfo(.testValue), #"RequestInfo(requestID: "id", servingData: "d")"#),
       (
@@ -209,7 +209,16 @@ extension ErrorDetails.DebugInfo {
 extension ErrorDetails.QuotaFailure {
   fileprivate static let testValue = Self(
     violations: [
-      Violation(subject: "s", description: "d")
+      Violation(
+        subject: "s",
+        description: "d",
+        apiService: "a",
+        quotaMetric: "m",
+        quotaID: "i",
+        quotaDimensions: ["k": "v"],
+        quotaValue: 1,
+        futureQuotaValue: 2
+      )
     ]
   )
 }
@@ -227,7 +236,12 @@ extension ErrorDetails.PreconditionFailure {
 extension ErrorDetails.BadRequest {
   fileprivate static let testValue = Self(
     violations: [
-      FieldViolation(field: "f", description: "d")
+      FieldViolation(
+        field: "f",
+        description: "d",
+        reason: "r",
+        localizedMessage: .init(locale: "l", message: "m")
+      )
     ]
   )
 }

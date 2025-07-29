@@ -64,7 +64,7 @@ extension ErrorDetails.DebugInfo: CustomStringConvertible {
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.QuotaFailure.Violation: CustomStringConvertible {
   public var description: String {
-    "\(Self.self)(subject: \"\(self.subject)\", violationDescription: \"\(self.violationDescription)\")"
+    "\(Self.self)(subject: \"\(self.subject)\", violationDescription: \"\(self.violationDescription)\", apiService: \"\(self.apiService)\", quotaMetric: \"\(self.quotaMetric)\", quotaID: \"\(self.quotaID)\", quotaDimensions: [\(self.quotaDimensions.map({ "\"\($0)\": \"\($1)\"" }).joined(separator: ", "))], quotaValue: \(self.quotaValue), futureQuotaValue: \(self.futureQuotaValue.map({ String(describing: $0) }) ?? "nil"))"
   }
 }
 
@@ -78,7 +78,7 @@ extension ErrorDetails.PreconditionFailure.Violation: CustomStringConvertible {
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.BadRequest.FieldViolation: CustomStringConvertible {
   public var description: String {
-    "\(Self.self)(field: \"\(self.field)\", violationDescription: \"\(self.violationDescription)\")"
+    "\(Self.self)(field: \"\(self.field)\", violationDescription: \"\(self.violationDescription)\", reason: \"\(self.reason)\", localizedMessage: \(self.localizedMessage.map({ String(describing: $0) }) ?? "nil"))"
   }
 }
 

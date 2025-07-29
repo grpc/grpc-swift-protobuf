@@ -205,14 +205,123 @@ extension ErrorDetails {
       /// exceeded".
       public var violationDescription: String
 
-      public init(subject: String, description: String) {
+      /// The API Service from which the `QuotaFailure.Violation` orginates. In
+      /// some cases, Quota issues originate from an API Service other than the one
+      /// that was called. In other words, a dependency of the called API Service
+      /// could be the cause of the `QuotaFailure`, and this field would have the
+      /// dependency API service name.
+      ///
+      /// For example, if the called API is Kubernetes Engine API
+      /// (container.googleapis.com), and a quota violation occurs in the
+      /// Kubernetes Engine API itself, this field would be
+      /// "container.googleapis.com". On the other hand, if the quota violation
+      /// occurs when the Kubernetes Engine API creates VMs in the Compute Engine
+      /// API (compute.googleapis.com), this field would be
+      /// "compute.googleapis.com".
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var apiService: String
+
+      /// The metric of the violated quota. A quota metric is a named counter to
+      /// measure usage, such as API requests or CPUs. When an activity occurs in a
+      /// service, such as Virtual Machine allocation, one or more quota metrics
+      /// may be affected.
+      ///
+      /// For example, "compute.googleapis.com/cpus_per_vm_family",
+      /// "storage.googleapis.com/internet_egress_bandwidth".
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var quotaMetric: String
+
+      /// The id of the violated quota. Also know as "limit name", this is the
+      /// unique identifier of a quota in the context of an API service.
+      ///
+      /// For example, "CPUS-PER-VM-FAMILY-per-project-region".
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var quotaID: String
+
+      /// The dimensions of the violated quota. Every non-global quota is enforced
+      /// on a set of dimensions. While quota metric defines what to count, the
+      /// dimensions specify for what aspects the counter should be increased.
+      ///
+      /// For example, the quota "CPUs per region per VM family" enforces a limit
+      /// on the metric "compute.googleapis.com/cpus_per_vm_family" on dimensions
+      /// "region" and "vm_family". And if the violation occurred in region
+      /// "us-central1" and for VM family "n1", the quota_dimensions would be,
+      ///
+      /// {
+      ///   "region": "us-central1",
+      ///   "vm_family": "n1",
+      /// }
+      ///
+      /// When a quota is enforced globally, the quota_dimensions would always be
+      /// empty.
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var quotaDimensions: [String: String]
+
+      /// The enforced quota value at the time of the `QuotaFailure`.
+      ///
+      /// For example, if the enforced quota value at the time of the
+      /// `QuotaFailure` on the number of CPUs is "10", then the value of this
+      /// field would reflect this quantity.
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var quotaValue: Int
+
+      /// The new quota value being rolled out at the time of the violation. At the
+      /// completion of the rollout, this value will be enforced in place of
+      /// quota_value. If no rollout is in progress at the time of the violation,
+      /// this field is not set.
+      ///
+      /// For example, if at the time of the violation a rollout is in progress
+      /// changing the number of CPUs quota from 10 to 20, 20 would be the value of
+      /// this field.
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var futureQuotaValue: Int?
+
+      public init(
+        subject: String,
+        description: String
+      ) {
         self.subject = subject
         self.violationDescription = description
+        self.apiService = ""
+        self.quotaMetric = ""
+        self.quotaID = ""
+        self.quotaDimensions = [:]
+        self.quotaValue = 0
+        self.futureQuotaValue = nil
+      }
+
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public init(
+        subject: String,
+        description: String,
+        apiService: String,
+        quotaMetric: String,
+        quotaID: String,
+        quotaDimensions: [String: String],
+        quotaValue: Int,
+        futureQuotaValue: Int?
+      ) {
+        self.subject = subject
+        self.violationDescription = description
+        self.apiService = apiService
+        self.quotaMetric = quotaMetric
+        self.quotaID = quotaID
+        self.quotaDimensions = quotaDimensions
+        self.quotaValue = quotaValue
+        self.futureQuotaValue = futureQuotaValue
       }
 
       init(_ storage: Google_Rpc_QuotaFailure.Violation) {
         self.subject = storage.subject
         self.violationDescription = storage.description_p
+        self.apiService = storage.apiService
+        self.quotaMetric = storage.quotaMetric
+        self.quotaID = storage.quotaID
+        self.quotaDimensions = storage.quotaDimensions
+        self.quotaValue = Int(storage.quotaValue)
+        if storage.hasFutureQuotaValue {
+          self.futureQuotaValue = Int(storage.futureQuotaValue)
+        }
       }
     }
 
@@ -225,6 +334,14 @@ extension ErrorDetails {
           .with {
             $0.subject = violation.subject
             $0.description_p = violation.violationDescription
+            $0.apiService = violation.apiService
+            $0.quotaMetric = violation.quotaMetric
+            $0.quotaID = violation.quotaID
+            $0.quotaDimensions = violation.quotaDimensions
+            $0.quotaValue = Int64(violation.quotaValue)
+            if let futureQuotaValue = violation.futureQuotaValue {
+              $0.futureQuotaValue = Int64(futureQuotaValue)
+            }
           }
         }
       }
@@ -368,14 +485,52 @@ extension ErrorDetails {
       /// A description of why the request element is bad.
       public var violationDescription: String
 
-      public init(field: String, description: String) {
+      /// The reason of the field-level error. This is a constant value that
+      /// identifies the proximate cause of the field-level error. It should
+      /// uniquely identify the type of the FieldViolation within the scope of the
+      /// google.rpc.ErrorInfo.domain. This should be at most 63
+      /// characters and match a regular expression of `[A-Z][A-Z0-9_]+[A-Z0-9]`,
+      /// which represents UPPER_SNAKE_CASE.
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var reason: String
+
+      /// Provides a localized error message for field-level errors that is safe to
+      /// return to the API consumer.
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var localizedMessage: LocalizedMessage?
+
+      public init(
+        field: String,
+        description: String
+      ) {
         self.field = field
         self.violationDescription = description
+        self.reason = ""
+        self.localizedMessage = nil
+      }
+
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public init(
+        field: String,
+        description: String,
+        reason: String,
+        localizedMessage: LocalizedMessage?
+      ) {
+        self.field = field
+        self.violationDescription = description
+        self.reason = reason
+        self.localizedMessage = localizedMessage
       }
 
       init(_ storage: Google_Rpc_BadRequest.FieldViolation) {
         self.field = storage.field
         self.violationDescription = storage.description_p
+        self.reason = storage.reason
+        if storage.hasLocalizedMessage {
+          self.localizedMessage = LocalizedMessage(storage: storage.localizedMessage)
+        } else {
+          self.localizedMessage = nil
+        }
       }
     }
 
@@ -388,6 +543,10 @@ extension ErrorDetails {
           .with {
             $0.field = violation.field
             $0.description_p = violation.violationDescription
+            $0.reason = violation.reason
+            if let localizedMessage = violation.localizedMessage {
+              $0.localizedMessage = localizedMessage.storage
+            }
           }
         }
       }
