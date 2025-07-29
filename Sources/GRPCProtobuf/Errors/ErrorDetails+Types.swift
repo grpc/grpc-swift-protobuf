@@ -218,6 +218,7 @@ extension ErrorDetails {
       /// occurs when the Kubernetes Engine API creates VMs in the Compute Engine
       /// API (compute.googleapis.com), this field would be
       /// "compute.googleapis.com".
+      @available(gRPCSwiftProtobuf 2.1, *)
       public var apiService: String
 
       /// The metric of the violated quota. A quota metric is a named counter to
@@ -227,12 +228,14 @@ extension ErrorDetails {
       ///
       /// For example, "compute.googleapis.com/cpus_per_vm_family",
       /// "storage.googleapis.com/internet_egress_bandwidth".
+      @available(gRPCSwiftProtobuf 2.1, *)
       public var quotaMetric: String
 
       /// The id of the violated quota. Also know as "limit name", this is the
       /// unique identifier of a quota in the context of an API service.
       ///
       /// For example, "CPUS-PER-VM-FAMILY-per-project-region".
+      @available(gRPCSwiftProtobuf 2.1, *)
       public var quotaID: String
 
       /// The dimensions of the violated quota. Every non-global quota is enforced
@@ -251,6 +254,7 @@ extension ErrorDetails {
       ///
       /// When a quota is enforced globally, the quota_dimensions would always be
       /// empty.
+      @available(gRPCSwiftProtobuf 2.1, *)
       public var quotaDimensions: [String: String]
 
       /// The enforced quota value at the time of the `QuotaFailure`.
@@ -258,7 +262,8 @@ extension ErrorDetails {
       /// For example, if the enforced quota value at the time of the
       /// `QuotaFailure` on the number of CPUs is "10", then the value of this
       /// field would reflect this quantity.
-      public var quotaValue: Int64
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var quotaValue: Int
 
       /// The new quota value being rolled out at the time of the violation. At the
       /// completion of the rollout, this value will be enforced in place of
@@ -268,7 +273,8 @@ extension ErrorDetails {
       /// For example, if at the time of the violation a rollout is in progress
       /// changing the number of CPUs quota from 10 to 20, 20 would be the value of
       /// this field.
-      public var futureQuotaValue: Int64?
+      @available(gRPCSwiftProtobuf 2.1, *)
+      public var futureQuotaValue: Int?
 
       public init(
         subject: String,
@@ -284,6 +290,7 @@ extension ErrorDetails {
         self.futureQuotaValue = nil
       }
 
+      @available(gRPCSwiftProtobuf 2.1, *)
       public init(
         subject: String,
         description: String,
@@ -291,8 +298,8 @@ extension ErrorDetails {
         quotaMetric: String,
         quotaID: String,
         quotaDimensions: [String: String],
-        quotaValue: Int64,
-        futureQuotaValue: Int64?
+        quotaValue: Int,
+        futureQuotaValue: Int?
       ) {
         self.subject = subject
         self.violationDescription = description
@@ -311,9 +318,9 @@ extension ErrorDetails {
         self.quotaMetric = storage.quotaMetric
         self.quotaID = storage.quotaID
         self.quotaDimensions = storage.quotaDimensions
-        self.quotaValue = storage.quotaValue
+        self.quotaValue = Int(storage.quotaValue)
         if storage.hasFutureQuotaValue {
-          self.futureQuotaValue = storage.futureQuotaValue
+          self.futureQuotaValue = Int(storage.futureQuotaValue)
         }
       }
     }
@@ -331,9 +338,9 @@ extension ErrorDetails {
             $0.quotaMetric = violation.quotaMetric
             $0.quotaID = violation.quotaID
             $0.quotaDimensions = violation.quotaDimensions
-            $0.quotaValue = violation.quotaValue
+            $0.quotaValue = Int64(violation.quotaValue)
             if let futureQuotaValue = violation.futureQuotaValue {
-              $0.futureQuotaValue = futureQuotaValue
+              $0.futureQuotaValue = Int64(futureQuotaValue)
             }
           }
         }
@@ -484,10 +491,12 @@ extension ErrorDetails {
       /// google.rpc.ErrorInfo.domain. This should be at most 63
       /// characters and match a regular expression of `[A-Z][A-Z0-9_]+[A-Z0-9]`,
       /// which represents UPPER_SNAKE_CASE.
+      @available(gRPCSwiftProtobuf 2.1, *)
       public var reason: String
 
       /// Provides a localized error message for field-level errors that is safe to
       /// return to the API consumer.
+      @available(gRPCSwiftProtobuf 2.1, *)
       public var localizedMessage: LocalizedMessage?
 
       public init(
@@ -500,6 +509,7 @@ extension ErrorDetails {
         self.localizedMessage = nil
       }
 
+      @available(gRPCSwiftProtobuf 2.1, *)
       public init(
         field: String,
         description: String,
