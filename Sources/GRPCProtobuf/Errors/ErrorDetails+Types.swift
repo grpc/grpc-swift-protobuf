@@ -278,7 +278,7 @@ extension ErrorDetails {
 
       public init(
         subject: String,
-        description: String,
+        description: String
       ) {
         self.subject = subject
         self.violationDescription = description
@@ -501,7 +501,7 @@ extension ErrorDetails {
 
       public init(
         field: String,
-        description: String,
+        description: String
       ) {
         self.field = field
         self.violationDescription = description
