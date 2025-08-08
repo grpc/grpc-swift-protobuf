@@ -34,14 +34,14 @@ explicitly:
 protoc --plugin=/path/to/protoc-gen-grpc-swift-2 --grpc-swift-2_out=. my-service.proto
 ```
 
-You can also specify various option the `protoc-gen-grpc-swift-2` via `protoc` using
+You can specify various options to `protoc-gen-grpc-swift-2` via `protoc` using
 the `--grpc-swift-2_opt` argument:
 
 ```console
 protoc --grpc-swift-2_opt=<OPTION_NAME>=<OPTION_VALUE> --grpc-swift-2_out=.
 ```
 
-You can specify multiple options by passing the `--grpc-swift-2_opt` argument multiple times:
+You can specify multiple options by repeating the `--grpc-swift-2_opt` argument:
 
 ```console
 protoc \
