@@ -61,7 +61,7 @@ invocations.
 
 > Warning:
 > The name of the config file is important and must match exactly, the
-> plugin won't be > applied if it can't find the config file.
+> plugin won't be applied if it can't find the config file.
 
 You can use the following as a starting point for your configuration:
 
