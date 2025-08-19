@@ -51,9 +51,7 @@ struct ThrowInput: Sendable {
 
 extension ThrowInput: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = "ThrowInput"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "kind"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}kind\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
