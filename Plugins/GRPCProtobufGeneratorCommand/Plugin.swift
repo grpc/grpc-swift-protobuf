@@ -180,7 +180,7 @@ struct GRPCProtobufGeneratorCommandPlugin {
       } else if isDirectory.boolValue {
         dirs.append(file)
         // Do a deep traversal of the directory.
-        if var enumerator = fileManager.enumerator(atPath: file) {
+        if let enumerator = fileManager.enumerator(atPath: file) {
           while let path = enumerator.nextObject() as? String {
             if path.hasSuffix(".proto") {
               protos.append(path)
@@ -262,7 +262,6 @@ func executeProtocInvocation(
   } else {
     stdErr = nil
   }
-  let problem = "\(process.terminationReason):\(process.terminationStatus)"
   throw CommandPluginError.generationFailure(
     executable: executableURL.absoluteStringNoScheme,
     arguments: arguments,
