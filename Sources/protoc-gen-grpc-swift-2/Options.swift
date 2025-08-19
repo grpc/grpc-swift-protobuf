@@ -89,7 +89,7 @@ struct GeneratorOptions {
 
       case "ProtoPathModuleMappings":
         if !pair.value.isEmpty {
-            moduleMapPath = pair.value
+          moduleMapPath = pair.value
         }
 
       case "FileNaming":
