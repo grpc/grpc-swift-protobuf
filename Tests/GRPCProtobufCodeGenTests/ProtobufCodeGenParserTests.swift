@@ -66,8 +66,7 @@ struct ProtobufCodeGenParserTests {
     @available(gRPCSwiftProtobuf 2.0, *)
     func dependencies() throws {
       let expected: [GRPCCodeGen.Dependency] = [
-        .init(module: "GRPCProtobuf", accessLevel: .internal),  // Always an internal import
-        .init(module: "SwiftProtobuf", accessLevel: .internal),
+        .init(module: "GRPCProtobuf", accessLevel: .internal)  // Always an internal import
       ]
       #expect(try self.codeGen.dependencies == expected)
     }
@@ -265,6 +264,38 @@ struct ProtobufCodeGenParserTests {
         Dependency(module: "SwiftProtobuf", accessLevel: .internal),
       ]
       #expect(codeGen.dependencies == expected)
+    }
+
+    @Test("Generate with different module names")
+    @available(gRPCSwiftProtobuf 2.0, *)
+    func generateWithDifferentModuleNames() throws {
+      var config = ProtobufCodeGenerator.Config.defaults
+      let defaultNames = config.moduleNames
+
+      config.accessLevel = .public
+      config.indentation = 2
+      config.moduleNames.grpcCore = String(config.moduleNames.grpcCore.reversed())
+      config.moduleNames.grpcProtobuf = String(config.moduleNames.grpcProtobuf.reversed())
+      config.moduleNames.swiftProtobuf = String(config.moduleNames.swiftProtobuf.reversed())
+
+      let generator = ProtobufCodeGenerator(config: config)
+      let generated = try generator.generateCode(
+        fileDescriptor: Self.fileDescriptor,
+        protoFileModuleMappings: ProtoFileToModuleMappings(
+          swiftProtobufModuleName: config.moduleNames.swiftProtobuf
+        ),
+        extraModuleImports: []
+      )
+
+      // Mustn't contain the default names.
+      #expect(!generated.contains(defaultNames.grpcCore))
+      #expect(!generated.contains(defaultNames.grpcProtobuf))
+      #expect(!generated.contains(defaultNames.swiftProtobuf))
+
+      // Must contain the configured names.
+      #expect(generated.contains(config.moduleNames.grpcCore))
+      #expect(generated.contains(config.moduleNames.grpcProtobuf))
+      #expect(generated.contains(config.moduleNames.swiftProtobuf))
     }
   }
 }
