@@ -110,15 +110,26 @@ extension ProtobufCodeGenParser {
     var codeDependencies: [Dependency] = [
       Dependency(module: self.moduleNames.grpcProtobuf, accessLevel: .internal)
     ]
+
     // If there's a dependency on a bundled proto then add the SwiftProtobuf import.
     //
     // Importing SwiftProtobuf unconditionally results in warnings in the generated
     // code if access-levels are used on imports and no bundled protos are used.
-    let dependsOnBundledProto = file.dependencies.contains { descriptor in
-      SwiftProtobufInfo.isBundledProto(file: descriptor)
+    //
+    // The import is only needed if a bundled proto is used as the input or output type
+    // for an RPC. The file may have a dependency on a bundled proto without requiring
+    // the SwiftProtobuf import (e.g. a message depending on a bundle proto may be
+    // defined in the same file as the service, the dependency will be in the '.pb.swift'
+    // along with the message code).
+    let needsProtobufImport = file.services.contains { service in
+      service.methods.contains { method in
+        let inputIsBundled = SwiftProtobufInfo.isBundledProto(file: method.inputType.file)
+        let outputIsBundled = SwiftProtobufInfo.isBundledProto(file: method.outputType.file)
+        return inputIsBundled || outputIsBundled
+      }
     }
 
-    if dependsOnBundledProto {
+    if needsProtobufImport {
       let dependency = Dependency(
         module: self.moduleNames.swiftProtobuf,
         accessLevel: self.accessLevel
