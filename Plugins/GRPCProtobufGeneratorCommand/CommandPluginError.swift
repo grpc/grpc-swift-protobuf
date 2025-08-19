@@ -71,7 +71,7 @@ extension CommandPluginError: CustomStringConvertible {
       var iterator = arguments.makeIterator()
       var current = iterator.next()
       while let currentArg = current {
-        var nextArg = iterator.next()
+        let nextArg = iterator.next()
         defer { current = nextArg }
 
         if nextArg != nil {
