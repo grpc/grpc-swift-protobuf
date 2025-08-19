@@ -62,6 +62,8 @@ struct GeneratorOptions {
   }
 
   init(pairs: [(key: String, value: String)]) throws {
+    var moduleMapPath: String?
+
     for pair in pairs {
       switch pair.key {
       case "Visibility":
@@ -87,14 +89,7 @@ struct GeneratorOptions {
 
       case "ProtoPathModuleMappings":
         if !pair.value.isEmpty {
-          do {
-            self.protoToModuleMappings = try ProtoFileToModuleMappings(path: pair.value)
-          } catch let e {
-            throw GenerationError.wrappedError(
-              message: "Parameter 'ProtoPathModuleMappings=\(pair.value)'",
-              error: e
-            )
-          }
+            moduleMapPath = pair.value
         }
 
       case "FileNaming":
@@ -163,6 +158,24 @@ struct GeneratorOptions {
       default:
         throw GenerationError.unknownParameter(name: pair.key)
       }
+    }
+
+    if let moduleMapPath = moduleMapPath {
+      do {
+        self.protoToModuleMappings = try ProtoFileToModuleMappings(
+          path: moduleMapPath,
+          swiftProtobufModuleName: self.config.moduleNames.swiftProtobuf
+        )
+      } catch let e {
+        throw GenerationError.wrappedError(
+          message: "Parameter 'ProtoPathModuleMappings=\(moduleMapPath)'",
+          error: e
+        )
+      }
+    } else {
+      self.protoToModuleMappings = ProtoFileToModuleMappings(
+        swiftProtobufModuleName: self.config.moduleNames.swiftProtobuf
+      )
     }
   }
 
