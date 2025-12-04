@@ -31,13 +31,13 @@ internal import SwiftProtobuf
 
 /// Namespace containing generated types for the "ErrorService" service.
 @available(gRPCSwiftProtobuf 2.0, *)
-internal enum ErrorService {
+internal enum ErrorService: Sendable {
     /// Service descriptor for the "ErrorService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ErrorService")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "ThrowError" metadata.
-        internal enum ThrowError {
+        internal enum ThrowError: Sendable {
             /// Request type for "ThrowError".
             internal typealias Input = ThrowInput
             /// Response type for "ThrowError".
