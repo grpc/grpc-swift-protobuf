@@ -104,13 +104,13 @@ struct ProtobufCodeGeneratorTests {
 
         /// Namespace containing generated types for the "test.TestService" service.
         @available(\(expectedAvailability), *)
-        \(access) enum Test_TestService {
+        \(access) enum Test_TestService: Sendable {
           /// Service descriptor for the "test.TestService" service.
           \(access) static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService")
           /// Namespace for method metadata.
-          \(access) enum Method {
+          \(access) enum Method: Sendable {
             /// Namespace for "Unary" metadata.
-            \(access) enum Unary {
+            \(access) enum Unary: Sendable {
               /// Request type for "Unary".
               \(access) typealias Input = Test_TestInput
               /// Response type for "Unary".
@@ -122,7 +122,7 @@ struct ProtobufCodeGeneratorTests {
               )
             }
             /// Namespace for "ClientStreaming" metadata.
-            \(access) enum ClientStreaming {
+            \(access) enum ClientStreaming: Sendable {
               /// Request type for "ClientStreaming".
               \(access) typealias Input = Test_TestInput
               /// Response type for "ClientStreaming".
@@ -134,7 +134,7 @@ struct ProtobufCodeGeneratorTests {
               )
             }
             /// Namespace for "ServerStreaming" metadata.
-            \(access) enum ServerStreaming {
+            \(access) enum ServerStreaming: Sendable {
               /// Request type for "ServerStreaming".
               \(access) typealias Input = Test_TestInput
               /// Response type for "ServerStreaming".
@@ -146,7 +146,7 @@ struct ProtobufCodeGeneratorTests {
               )
             }
             /// Namespace for "BidirectionalStreaming" metadata.
-            \(access) enum BidirectionalStreaming {
+            \(access) enum BidirectionalStreaming: Sendable {
               /// Request type for "BidirectionalStreaming".
               \(access) typealias Input = Test_TestInput
               /// Response type for "BidirectionalStreaming".
