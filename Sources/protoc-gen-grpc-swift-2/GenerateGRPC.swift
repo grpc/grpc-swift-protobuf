@@ -41,7 +41,7 @@ final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
   }
 
   var supportedEditionRange: ClosedRange<Google_Protobuf_Edition> {
-    Google_Protobuf_Edition.proto2 ... Google_Protobuf_Edition.edition2023
+    Google_Protobuf_Edition.proto2 ... Google_Protobuf_Edition.edition2024
   }
 
   // A count of generated files by desired name (actual name may differ to avoid collisions).
