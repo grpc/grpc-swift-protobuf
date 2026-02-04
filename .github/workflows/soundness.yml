@@ -36,6 +36,8 @@ jobs:
       - name: Install protoc
         run: ./dev/install-protoc-ubuntu.sh
       - name: Check generated code
+        env:
+          PROTOC_PATH: /usr/local/bin/protoc
         run: |
           ./dev/check-generated-code.sh
 
