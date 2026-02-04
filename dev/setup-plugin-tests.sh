@@ -199,6 +199,23 @@ function test_07_duplicated_proto_file_name {
   cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/Protos/grpc-swift-proto-generator-config.json"
 }
 
+function test_08_edition2024 {
+  # .
+  # ├── Package.swift
+  # └── Sources
+  #     ├── HelloWorldAdopter.swift
+  #     ├── Protos
+  #     │   └── HelloWorld_edition2024.proto
+  #     └── grpc-swift-proto-generator-config.json
+
+  local -r test_dir=$(test_dir_name)
+  mkdir -p "${test_dir}/Sources/Protos"
+  cp "${package_manifest}" "${test_dir}/"
+  cp "${sources}/HelloWorldAdopter.swift" "${test_dir}/Sources/"
+  cp "${protos}/HelloWorld/HelloWorld_edition2024.proto" "${test_dir}/Sources/Protos"
+  cp "${config}/internal-grpc-swift-proto-generator-config.json" "${test_dir}/Sources/grpc-swift-proto-generator-config.json"
+}
+
 test_01_top_level_config_file
 test_02_peer_config_file
 test_03_separate_service_message_protos
@@ -206,3 +223,4 @@ test_04_cross_directory_imports
 test_05_two_definitions
 test_06_nested_definitions
 test_07_duplicated_proto_file_name
+test_08_edition2024
