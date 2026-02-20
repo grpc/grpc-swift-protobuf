@@ -114,11 +114,11 @@ struct Google_Rpc_RetryInfo: Sendable {
 
   /// Clients should wait at least this long between retrying the same request.
   var retryDelay: SwiftProtobuf.Google_Protobuf_Duration {
-    get {return _retryDelay ?? SwiftProtobuf.Google_Protobuf_Duration()}
+    get {_retryDelay ?? SwiftProtobuf.Google_Protobuf_Duration()}
     set {_retryDelay = newValue}
   }
   /// Returns true if `retryDelay` has been explicitly set.
-  var hasRetryDelay: Bool {return self._retryDelay != nil}
+  var hasRetryDelay: Bool {self._retryDelay != nil}
   /// Clears the value of `retryDelay`. Subsequent reads from it will return its default value.
   mutating func clearRetryDelay() {self._retryDelay = nil}
 
@@ -252,11 +252,11 @@ struct Google_Rpc_QuotaFailure: Sendable {
     /// changing the number of CPUs quota from 10 to 20, 20 would be the value of
     /// this field.
     var futureQuotaValue: Int64 {
-      get {return _futureQuotaValue ?? 0}
+      get {_futureQuotaValue ?? 0}
       set {_futureQuotaValue = newValue}
     }
     /// Returns true if `futureQuotaValue` has been explicitly set.
-    var hasFutureQuotaValue: Bool {return self._futureQuotaValue != nil}
+    var hasFutureQuotaValue: Bool {self._futureQuotaValue != nil}
     /// Clears the value of `futureQuotaValue`. Subsequent reads from it will return its default value.
     mutating func clearFutureQuotaValue() {self._futureQuotaValue = nil}
 
@@ -386,11 +386,11 @@ struct Google_Rpc_BadRequest: Sendable {
     /// Provides a localized error message for field-level errors that is safe to
     /// return to the API consumer.
     var localizedMessage: Google_Rpc_LocalizedMessage {
-      get {return _localizedMessage ?? Google_Rpc_LocalizedMessage()}
+      get {_localizedMessage ?? Google_Rpc_LocalizedMessage()}
       set {_localizedMessage = newValue}
     }
     /// Returns true if `localizedMessage` has been explicitly set.
-    var hasLocalizedMessage: Bool {return self._localizedMessage != nil}
+    var hasLocalizedMessage: Bool {self._localizedMessage != nil}
     /// Clears the value of `localizedMessage`. Subsequent reads from it will return its default value.
     mutating func clearLocalizedMessage() {self._localizedMessage = nil}
 
