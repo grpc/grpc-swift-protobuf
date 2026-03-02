@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Mark the workspace as safe
@@ -28,7 +28,7 @@ jobs:
       image: swift:latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Mark the workspace as safe
@@ -48,7 +48,7 @@ jobs:
       image: swift:latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
           fetch-depth: 0  # Fetching tags requires fetch-depth: 0 (https://github.com/actions/checkout/issues/1471)
