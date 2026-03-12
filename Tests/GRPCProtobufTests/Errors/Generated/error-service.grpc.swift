@@ -45,7 +45,8 @@ internal enum ErrorService: Sendable {
             /// Descriptor for "ThrowError".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ErrorService"),
-                method: "ThrowError"
+                method: "ThrowError",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "ErrorService" service.

@@ -118,7 +118,8 @@ struct ProtobufCodeGeneratorTests {
               /// Descriptor for "Unary".
               \(access) static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService"),
-                method: "Unary"
+                method: "Unary",
+                type: .unary
               )
             }
             /// Namespace for "ClientStreaming" metadata.
@@ -130,7 +131,8 @@ struct ProtobufCodeGeneratorTests {
               /// Descriptor for "ClientStreaming".
               \(access) static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService"),
-                method: "ClientStreaming"
+                method: "ClientStreaming",
+                type: .clientStreaming
               )
             }
             /// Namespace for "ServerStreaming" metadata.
@@ -142,7 +144,8 @@ struct ProtobufCodeGeneratorTests {
               /// Descriptor for "ServerStreaming".
               \(access) static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService"),
-                method: "ServerStreaming"
+                method: "ServerStreaming",
+                type: .serverStreaming
               )
             }
             /// Namespace for "BidirectionalStreaming" metadata.
@@ -154,7 +157,8 @@ struct ProtobufCodeGeneratorTests {
               /// Descriptor for "BidirectionalStreaming".
               \(access) static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "test.TestService"),
-                method: "BidirectionalStreaming"
+                method: "BidirectionalStreaming",
+                type: .bidirectionalStreaming
               )
             }
             /// Descriptors for all methods in the "test.TestService" service.
