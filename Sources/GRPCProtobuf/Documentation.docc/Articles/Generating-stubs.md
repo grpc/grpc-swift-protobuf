@@ -33,22 +33,18 @@ yours), you **may** use the Swift Package Manager build plugin.
 
 - **Pros:** Stubs are generated as part of your package's build process,
   eliminating the need for manual generation steps.
-- **Cons:** The `protoc` binary must be available in all environments where
-  you build your package, including continuous integration (CI) systems.
 
 ### For Libraries (dependent packages)
 
 If you are building a **library** (a package that other packages will depend
-on), you **must not** use the build plugin.
+on), you may still prefer to generate stubs out-of-band using either:
 
-- **Reason:** You cannot guarantee that consumers of your library will have
-  protoc available in their build environments.
-- **Recommended Approach:** Instead, you must generate stubs out-of-band using
-  either:
-  - `protoc` directly from the command line, or
-  - The helper CLI tool offered by this package.
-- **Requirement:** The generated code must then be included directly with the
-  source files of your library package.
+- `protoc` directly from the command line, or
+- The helper CLI tool offered by this package.
+
+The generated code must then be included directly with the source files of your
+library package. This avoids the first-time build cost of compiling `protoc`
+from source for consumers of your library.
 
 ### The CLI Tool
 
@@ -64,11 +60,15 @@ This table summarizes the three different approaches:
 
 |                                   | `protoc` | `generate-grpc-code-from-protos` | Build Plugin
 |-----------------------------------|----------|----------------------------------|--------------
-| Suitable for libraries            | ✓        | ✓                                | ✗
+| Suitable for libraries            | ✓        | ✓                                | ✓†
 | Suitable for applications         | ✗        | ✗                                | ✓
 | Builds plugins for you            | ✗        | ✓                                | ✓
 | Generated at build time           | ✗        | ✗                                | ✓
 | Generated code must be checked in | ✓        | ✓                                | ✗
+
+† Using the build plugin in a library means consumers incur a one-time cost of
+compiling `protoc` from source. Libraries may prefer checking in generated code
+to avoid this.
 
 You can learn more about each approach in:
 - <doc:Code-generation-with-protoc>

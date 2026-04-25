@@ -43,7 +43,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
-    from: "1.31.0"
+    from: "1.37.0"
   ),
 ]
 
@@ -133,6 +133,7 @@ var targets: [Target] = [
     dependencies: [
       .target(name: "protoc-gen-grpc-swift-2"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
+      .product(name: "protoc", package: "swift-protobuf"),
     ]
   ),
 
@@ -154,6 +155,7 @@ var targets: [Target] = [
     dependencies: [
       .target(name: "protoc-gen-grpc-swift-2"),
       .product(name: "protoc-gen-swift", package: "swift-protobuf"),
+      .product(name: "protoc", package: "swift-protobuf"),
     ],
     path: "Plugins/GRPCProtobufGeneratorCommand"
   ),
