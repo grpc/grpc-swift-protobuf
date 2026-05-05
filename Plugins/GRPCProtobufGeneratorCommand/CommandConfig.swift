@@ -31,6 +31,7 @@ struct CommandConfig {
       messages: true,
       fileNaming: .fullPath,
       accessLevelOnImports: false,
+      nonisolated: false,
       importPaths: [],
       outputPath: ""
     ),
@@ -122,6 +123,11 @@ extension CommandConfig {
           config.common.accessLevelOnImports = true
         }
 
+      case .nonisolated:
+        if argExtractor.extractFlag(named: flag.rawValue) > 0 {
+          config.common.nonisolated = true
+        }
+
       case .importPath:
         config.common.importPaths = argExtractor.extractOption(named: flag.rawValue)
 
@@ -175,6 +181,7 @@ enum OptionsAndFlags: String, CaseIterable {
   case fileNaming = "file-naming"
   case accessLevel = "access-level"
   case accessLevelOnImports = "access-level-on-imports"
+  case nonisolated
   case importPath = "import-path"
   case protocPath = "protoc-path"
   case outputPath = "output-path"
@@ -199,6 +206,7 @@ extension OptionsAndFlags {
       --access-level <access>     Access level of generated code (internal/public/package)
                                   (default: internal)
       --access-level-on-imports   Whether imports have explicit access levels
+      --nonisolated               Whether generated declarations use nonisolated(unsafe)
       --protoc-path <path>        Path to the protoc binary
       --import-path <path>        Directory to search for imports, may be specified
                                   multiple times. If none are specified the current

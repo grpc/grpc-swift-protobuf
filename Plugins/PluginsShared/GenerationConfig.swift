@@ -54,6 +54,9 @@ struct GenerationConfig {
   /// Whether imports should have explicit access levels.
   var accessLevelOnImports: Bool
 
+  /// Whether generated declarations use `nonisolated(unsafe)` for global actor isolation.
+  var nonisolated: Bool
+
   /// Specify the directory in which to search for imports.
   ///
   /// May be specified multiple times; directories will be searched in order.

@@ -56,15 +56,25 @@ struct BuildPluginConfig: Codable {
     ///
     /// Defaults to `false`.
     var accessLevelOnImports: Bool
+    /// Whether generated declarations use `nonisolated(unsafe)` for global actor isolation.
+    ///
+    /// Defaults to `false`.
+    var nonisolated: Bool
 
     static let defaults = Self(
       accessLevel: .internal,
-      accessLevelOnImports: false
+      accessLevelOnImports: false,
+      nonisolated: false
     )
 
-    private init(accessLevel: GenerationConfig.AccessLevel, accessLevelOnImports: Bool) {
+    private init(
+      accessLevel: GenerationConfig.AccessLevel,
+      accessLevelOnImports: Bool,
+      nonisolated: Bool
+    ) {
       self.accessLevel = accessLevel
       self.accessLevelOnImports = accessLevelOnImports
+      self.nonisolated = nonisolated
     }
   }
 
@@ -158,6 +168,7 @@ extension BuildPluginConfig.GeneratedSource: Codable {
   enum CodingKeys: String, CodingKey {
     case accessLevel
     case accessLevelOnImports
+    case nonisolated
   }
 
   init(from decoder: any Decoder) throws {
@@ -169,6 +180,9 @@ extension BuildPluginConfig.GeneratedSource: Codable {
     self.accessLevelOnImports =
       try container.decodeIfPresent(Bool.self, forKey: .accessLevelOnImports)
       ?? Self.defaults.accessLevelOnImports
+    self.nonisolated =
+      try container.decodeIfPresent(Bool.self, forKey: .nonisolated)
+      ?? Self.defaults.nonisolated
   }
 }
 
@@ -200,6 +214,7 @@ extension GenerationConfig {
     self.fileNaming = .pathToUnderscores
     self.accessLevel = buildPluginConfig.generatedSource.accessLevel
     self.accessLevelOnImports = buildPluginConfig.generatedSource.accessLevelOnImports
+    self.nonisolated = buildPluginConfig.generatedSource.nonisolated
     // Generate absolute paths for the imports relative to the config file in which they are specified
     self.importPaths = buildPluginConfig.protoc.importPaths.map { relativePath in
       configFilePath.deletingLastPathComponent().absoluteStringNoScheme + "/" + relativePath

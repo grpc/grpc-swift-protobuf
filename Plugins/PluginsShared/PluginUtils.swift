@@ -68,6 +68,7 @@ func constructProtocGenSwiftArguments(
   protocArgs.append("--swift_opt=Visibility=\(config.accessLevel.rawValue)")
   protocArgs.append("--swift_opt=FileNaming=\(config.fileNaming.rawValue)")
   protocArgs.append("--swift_opt=UseAccessLevelOnImports=\(config.accessLevelOnImports)")
+  protocArgs.append("--swift_opt=Nonisolated=\(config.nonisolated)")
   protocArgs.append(contentsOf: inputFiles.map { $0.relativePath })
 
   return protocArgs
