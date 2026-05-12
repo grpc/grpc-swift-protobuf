@@ -12,9 +12,6 @@ This plugin is particularly useful for:
   source code should be checked into your repository to avoid external `protoc`
   dependencies for your library's consumers.
 
-If you haven't installed `protoc` yet refer to <doc:Installing-protoc> for
-instructions.
-
 ## Adding the Plugin to Your Package
 
 To use `generate-grpc-code-from-protos` your package needs to depend on
@@ -60,6 +57,8 @@ ones are:
 - `--no-messages` disables message code generation,
 - `--access-level <access>` specifies the access level of the generated code,
   (`<access>` must be one of "internal", "package", or "public").
+- `--protoc-path <path>` overrides the vendored `protoc` with a specific binary.
+  The `PROTOC_PATH` environment variable can also be used as an override.
 
 You can read about other options by referring to the `--help` text:
 
