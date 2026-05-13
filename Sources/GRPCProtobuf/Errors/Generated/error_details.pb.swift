@@ -29,7 +29,7 @@ internal import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
@@ -58,7 +58,7 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
 ///         "availableRegions": "us-central1,us-east2"
 ///       }
 ///     }
-struct Google_Rpc_ErrorInfo: Sendable {
+nonisolated struct Google_Rpc_ErrorInfo: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -107,7 +107,7 @@ struct Google_Rpc_ErrorInfo: Sendable {
 /// the delay between retries based on `retry_delay`, until either a maximum
 /// number of retries have been reached or a maximum retry delay cap has been
 /// reached.
-struct Google_Rpc_RetryInfo: Sendable {
+nonisolated struct Google_Rpc_RetryInfo: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -130,7 +130,7 @@ struct Google_Rpc_RetryInfo: Sendable {
 }
 
 /// Describes additional debugging info.
-struct Google_Rpc_DebugInfo: Sendable {
+nonisolated struct Google_Rpc_DebugInfo: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -157,7 +157,7 @@ struct Google_Rpc_DebugInfo: Sendable {
 ///
 /// Also see RetryInfo and Help types for other details about handling a
 /// quota failure.
-struct Google_Rpc_QuotaFailure: Sendable {
+nonisolated struct Google_Rpc_QuotaFailure: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -169,7 +169,7 @@ struct Google_Rpc_QuotaFailure: Sendable {
 
   /// A message type used to describe a single quota violation.  For example, a
   /// daily quota or a custom quota that was exceeded.
-  struct Violation: Sendable {
+  nonisolated struct Violation: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -275,7 +275,7 @@ struct Google_Rpc_QuotaFailure: Sendable {
 /// For example, if an RPC failed because it required the Terms of Service to be
 /// acknowledged, it could list the terms of service violation in the
 /// PreconditionFailure message.
-struct Google_Rpc_PreconditionFailure: Sendable {
+nonisolated struct Google_Rpc_PreconditionFailure: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -286,7 +286,7 @@ struct Google_Rpc_PreconditionFailure: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// A message type used to describe a single precondition failure.
-  struct Violation: Sendable {
+  nonisolated struct Violation: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -317,7 +317,7 @@ struct Google_Rpc_PreconditionFailure: Sendable {
 
 /// Describes violations in a client request. This error type focuses on the
 /// syntactic aspects of the request.
-struct Google_Rpc_BadRequest: Sendable {
+nonisolated struct Google_Rpc_BadRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -328,7 +328,7 @@ struct Google_Rpc_BadRequest: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// A message type used to describe a single bad request field.
-  struct FieldViolation: Sendable {
+  nonisolated struct FieldViolation: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -406,7 +406,7 @@ struct Google_Rpc_BadRequest: Sendable {
 
 /// Contains metadata about the request that clients can attach when filing a bug
 /// or providing other forms of feedback.
-struct Google_Rpc_RequestInfo: Sendable {
+nonisolated struct Google_Rpc_RequestInfo: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -425,7 +425,7 @@ struct Google_Rpc_RequestInfo: Sendable {
 }
 
 /// Describes the resource that is being accessed.
-struct Google_Rpc_ResourceInfo: Sendable {
+nonisolated struct Google_Rpc_ResourceInfo: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -461,7 +461,7 @@ struct Google_Rpc_ResourceInfo: Sendable {
 /// For example, if a quota check failed with an error indicating the calling
 /// project hasn't enabled the accessed service, this can contain a URL pointing
 /// directly to the right place in the developer console to flip the bit.
-struct Google_Rpc_Help: Sendable {
+nonisolated struct Google_Rpc_Help: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -472,7 +472,7 @@ struct Google_Rpc_Help: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// Describes a URL link.
-  struct Link: Sendable {
+  nonisolated struct Link: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -493,7 +493,7 @@ struct Google_Rpc_Help: Sendable {
 
 /// Provides a localized error message that is safe to return to the user
 /// which can be attached to an RPC error.
-struct Google_Rpc_LocalizedMessage: Sendable {
+nonisolated struct Google_Rpc_LocalizedMessage: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -513,9 +513,9 @@ struct Google_Rpc_LocalizedMessage: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "google.rpc"
+fileprivate nonisolated let _protobuf_package = "google.rpc"
 
-extension Google_Rpc_ErrorInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_ErrorInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ErrorInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}reason\0\u{1}domain\0\u{1}metadata\0")
 
@@ -555,7 +555,7 @@ extension Google_Rpc_ErrorInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 }
 
-extension Google_Rpc_RetryInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_RetryInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RetryInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}retry_delay\0")
 
@@ -589,7 +589,7 @@ extension Google_Rpc_RetryInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 }
 
-extension Google_Rpc_DebugInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_DebugInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DebugInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}stack_entries\0\u{1}detail\0")
 
@@ -624,7 +624,7 @@ extension Google_Rpc_DebugInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 }
 
-extension Google_Rpc_QuotaFailure: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_QuotaFailure: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".QuotaFailure"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}violations\0")
 
@@ -654,7 +654,7 @@ extension Google_Rpc_QuotaFailure: SwiftProtobuf.Message, SwiftProtobuf._Message
   }
 }
 
-extension Google_Rpc_QuotaFailure.Violation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_QuotaFailure.Violation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Google_Rpc_QuotaFailure.protoMessageName + ".Violation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0\u{1}description\0\u{3}api_service\0\u{3}quota_metric\0\u{3}quota_id\0\u{3}quota_dimensions\0\u{3}quota_value\0\u{3}future_quota_value\0")
 
@@ -723,7 +723,7 @@ extension Google_Rpc_QuotaFailure.Violation: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Google_Rpc_PreconditionFailure: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_PreconditionFailure: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PreconditionFailure"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}violations\0")
 
@@ -753,7 +753,7 @@ extension Google_Rpc_PreconditionFailure: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
-extension Google_Rpc_PreconditionFailure.Violation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_PreconditionFailure.Violation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Google_Rpc_PreconditionFailure.protoMessageName + ".Violation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}type\0\u{1}subject\0\u{1}description\0")
 
@@ -793,7 +793,7 @@ extension Google_Rpc_PreconditionFailure.Violation: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Google_Rpc_BadRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_BadRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".BadRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}field_violations\0")
 
@@ -823,7 +823,7 @@ extension Google_Rpc_BadRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
   }
 }
 
-extension Google_Rpc_BadRequest.FieldViolation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_BadRequest.FieldViolation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Google_Rpc_BadRequest.protoMessageName + ".FieldViolation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}field\0\u{1}description\0\u{1}reason\0\u{3}localized_message\0")
 
@@ -872,7 +872,7 @@ extension Google_Rpc_BadRequest.FieldViolation: SwiftProtobuf.Message, SwiftProt
   }
 }
 
-extension Google_Rpc_RequestInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_RequestInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RequestInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}request_id\0\u{3}serving_data\0")
 
@@ -907,7 +907,7 @@ extension Google_Rpc_RequestInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Google_Rpc_ResourceInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_ResourceInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResourceInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}resource_type\0\u{3}resource_name\0\u{1}owner\0\u{1}description\0")
 
@@ -952,7 +952,7 @@ extension Google_Rpc_ResourceInfo: SwiftProtobuf.Message, SwiftProtobuf._Message
   }
 }
 
-extension Google_Rpc_Help: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_Help: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Help"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}links\0")
 
@@ -982,7 +982,7 @@ extension Google_Rpc_Help: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
   }
 }
 
-extension Google_Rpc_Help.Link: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_Help.Link: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Google_Rpc_Help.protoMessageName + ".Link"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}description\0\u{1}url\0")
 
@@ -1017,7 +1017,7 @@ extension Google_Rpc_Help.Link: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 }
 
-extension Google_Rpc_LocalizedMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Google_Rpc_LocalizedMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".LocalizedMessage"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}locale\0\u{1}message\0")
 
