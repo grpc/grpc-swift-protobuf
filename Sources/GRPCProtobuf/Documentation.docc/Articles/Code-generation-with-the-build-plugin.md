@@ -5,20 +5,15 @@ Swift Protobuf from your Protocol Buffers `.proto` files.
 
 ## Overview
 
-The build plugin (`GRPCProtobufGenerator`) is a great choice for convenient
-dynamic code generation, however it does come with some limitations. Because it
-generates the gRPC Swift stubs as part of the build it has the requirement that
-`protoc` must be available at compile time. This requirement means it is not a
-good fit for library authors who do not have direct control over this.
+The build plugin (`GRPCProtobufGenerator`) generates gRPC Swift stubs as part of
+your build. It uses a vendored copy of `protoc` provided by the `swift-protobuf`
+package, so no separate installation is required.
 
 To learn more about other options for code generation see <doc:Generating-stubs>.
 
 The build plugin works by detecting `.proto` files in the source tree and
 invokes `protoc` once for each file (caching results and performing the
 generation as necessary).
-
-If you haven't installed `protoc` yet refer to <doc:Installing-protoc> for
-instructions.
 
 ### Adoption
 
@@ -112,8 +107,10 @@ Each of the options are described below:
 | `protoc.executablePath`                | N/A                                        | `null`†      | Path to the `protoc` executable                     |
 | `protoc.importPaths`                   | N/A                                        | `null`‡      | Import paths passed to `protoc`                     |
 
-† The Swift Package Manager build plugin infrastructure will attempt to discover
-the executable's location if you don't provide one.
+† By default a vendored copy of `protoc` from `swift-protobuf` is used. To
+override it, set `protoc.executablePath` in the configuration file or the
+`PROTOC_PATH` environment variable. If both are set, `protoc.executablePath`
+takes precedence.
 
 ‡ If you don't provide any import paths then the path to the configuration file
 will be used on a per-source-file basis.
