@@ -43,7 +43,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
-    branch: "main"
+    from: "1.38.0"
   ),
 ]
 
