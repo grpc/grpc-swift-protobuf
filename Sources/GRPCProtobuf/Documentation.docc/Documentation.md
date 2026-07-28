@@ -9,8 +9,8 @@ This package provides three products:
   [SwiftProtobuf](https://github.com/apple/swift-protobuf).
 - `protoc-gen-grpc-swift-2`, an executable which is a plugin for `protoc`, the Protocol Buffers
   compiler. An article describing how to generate gRPC Swift stubs using it is available with the
-  `grpc-swift` documentation on the [Swift Package
-  Index](https://swiftpackageindex.com/grpc/grpc-swift/documentation).
+  `grpc-swift-2` documentation on the [Swift Package
+  Index](https://swiftpackageindex.com/grpc/grpc-swift-2/documentation).
 - `GRPCProtobufGenerator`, a Swift Package build plugin for generating stubs as part of the build
   process.
 

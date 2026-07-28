@@ -33,7 +33,7 @@ final class GenerateGRPC: SwiftProtobufPluginLibrary.CodeGenerator {
   }
 
   var projectURL: String {
-    "https://github.com/grpc/grpc-swift"
+    "https://github.com/grpc/grpc-swift-2"
   }
 
   var supportedFeatures: [Google_Protobuf_Compiler_CodeGeneratorResponse.Feature] {
