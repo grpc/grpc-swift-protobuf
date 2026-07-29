@@ -16,14 +16,14 @@
 
 internal import SwiftProtobuf
 
-/// A type which can be packed and unpacked from a `Google_Protobuf_Any` message.
+/// A type that can be packed into, and unpacked from, an "Any" protobuf message.
 internal protocol GoogleProtobufAnyPackable {
   static var typeURL: String { get }
 
-  /// Pack the value into a `Google_Protobuf_Any`, if possible.
+  /// Packs the value into an "Any" protobuf message, if possible.
   func pack() throws -> Google_Protobuf_Any
 
-  /// Unpack the value from a `Google_Protobuf_Any`, if possible.
+  /// Unpacks the value from an "Any" protobuf message, if possible.
   init?(unpacking any: Google_Protobuf_Any) throws
 }
 

@@ -16,13 +16,16 @@
 
 public import SwiftProtobuf
 
-/// Common details which can be used to supplement ``GoogleRPCStatus``.
+/// Common, structured details that describe the cause of an error.
+///
+/// Attach these to a ``GoogleRPCStatus`` error to give clients more context about what went
+/// wrong.
 ///
 /// This represents the set of common error types suggested by [Google AIP-193](https://google.aip.dev/193).
-/// These types are derived from and will serialize to the those represented in
+/// These types are derived from and will serialize to those represented in
 /// [google/rpc/error_details.proto](https://github.com/googleapis/googleapis/blob/3597f7db2191c00b100400991ef96e52d62f5841/google/rpc/error_details.proto).
 ///
-/// This type also allows you to provide wrap your own error details up as an "Any"
+/// This type also allows you to provide your own error details wrapped up as an "Any"
 /// protobuf (`Google_Protobuf_Any`).
 @available(gRPCSwiftProtobuf 2.0, *)
 public struct ErrorDetails: Sendable, Hashable {
@@ -46,20 +49,20 @@ public struct ErrorDetails: Sendable, Hashable {
     self.wrapped = wrapped
   }
 
-  /// Create a new detail wrapping a `Google_Protobuf_Any`.
+  /// Creates a detail from a custom error, packed into a Protocol Buffers Any message.
   public static func any(_ any: Google_Protobuf_Any) -> Self {
     Self(.any(any))
   }
 
-  /// Create a new detail wrapping an ``ErrorInfo-swift.struct``.
+  /// Creates a detail that wraps an existing error info value.
   public static func errorInfo(_ info: ErrorInfo) -> Self {
     Self(.errorInfo(info))
   }
 
-  /// Create a ``ErrorInfo-swift.struct`` detail.
+  /// Creates an error info detail from a reason, domain, and metadata.
   ///
   /// - Parameters:
-  ///   - reason: The reason of the error.
+  ///   - reason: The reason for the error.
   ///   - domain: The logical grouping to which the "reason" belongs.
   ///   - metadata: Additional structured details about this error.
   public static func errorInfo(
@@ -70,24 +73,24 @@ public struct ErrorDetails: Sendable, Hashable {
     Self.errorInfo(ErrorInfo(reason: reason, domain: domain, metadata: metadata))
   }
 
-  /// Create a new detail wrapping a ``RetryInfo-swift.struct``.
+  /// Creates a detail that wraps an existing retry info value.
   public static func retryInfo(_ info: RetryInfo) -> Self {
     Self(.retryInfo(info))
   }
 
-  /// Create a ``RetryInfo-swift.struct`` detail.
+  /// Creates a retry info detail that tells clients how long to wait before retrying.
   ///
   /// - Parameter delay: Amount of time clients should wait before retrying this request.
   public static func retryInfo(delay: Duration) -> Self {
     Self.retryInfo(RetryInfo(delay: delay))
   }
 
-  /// Create a new detail wrapping a ``DebugInfo-swift.struct``.
+  /// Creates a detail that wraps existing debug info.
   public static func debugInfo(_ info: DebugInfo) -> Self {
     Self(.debugInfo(info))
   }
 
-  /// Create a ``DebugInfo-swift.struct`` detail.
+  /// Creates a debug info detail from a stack trace and additional detail text.
   ///
   /// - Parameters:
   ///   - stack: The stack trace entries indicating where the error occurred.
@@ -96,48 +99,48 @@ public struct ErrorDetails: Sendable, Hashable {
     Self.debugInfo(DebugInfo(stack: stack, detail: detail))
   }
 
-  /// Create a new detail wrapping a ``QuotaFailure-swift.struct``.
+  /// Creates a detail that wraps an existing quota failure value.
   public static func quotaFailure(_ info: QuotaFailure) -> Self {
     Self(.quotaFailure(info))
   }
 
-  /// Create a ``QuotaFailure-swift.struct`` detail.
+  /// Creates a quota failure detail from one or more violations.
   ///
   /// - Parameter violations: Describes all quota violations.
   public static func quotaFailure(violations: [QuotaFailure.Violation]) -> Self {
     Self.quotaFailure(QuotaFailure(violations: violations))
   }
 
-  /// Create a new detail wrapping a ``PreconditionFailure-swift.struct``.
+  /// Creates a detail that wraps an existing precondition failure value.
   public static func preconditionFailure(_ info: PreconditionFailure) -> Self {
     Self(.preconditionFailure(info))
   }
 
-  /// Create a ``PreconditionFailure-swift.struct`` detail.
+  /// Creates a precondition failure detail from one or more violations.
   ///
   /// - Parameter violations: Describes all precondition violations.
   public static func preconditionFailure(violations: [PreconditionFailure.Violation]) -> Self {
     Self.preconditionFailure(PreconditionFailure(violations: violations))
   }
 
-  /// Create a new detail wrapping a ``BadRequest-swift.struct``.
+  /// Creates a detail that wraps an existing bad request value.
   public static func badRequest(_ info: BadRequest) -> Self {
     Self(.badRequest(info))
   }
 
-  /// Create a ``BadRequest-swift.struct`` detail.
+  /// Creates a bad request detail from one or more field violations.
   ///
   /// - Parameter violations: Describes all request violations.
   public static func badRequest(violations: [BadRequest.FieldViolation]) -> Self {
     Self.badRequest(BadRequest(violations: violations))
   }
 
-  /// Create a new detail wrapping a ``RequestInfo-swift.struct``.
+  /// Creates a detail that wraps existing request info.
   public static func requestInfo(_ info: RequestInfo) -> Self {
     Self(.requestInfo(info))
   }
 
-  /// Create a ``RequestInfo-swift.struct`` detail.
+  /// Creates a request info detail that helps correlate this error with server-side logs.
   ///
   /// - Parameters:
   ///   - requestID: An opaque string that should only be interpreted by the service generating
@@ -148,16 +151,16 @@ public struct ErrorDetails: Sendable, Hashable {
     Self.requestInfo(RequestInfo(requestID: requestID, servingData: servingData))
   }
 
-  /// Create a new detail wrapping a ``ResourceInfo-swift.struct``.
+  /// Creates a detail that wraps existing resource info.
   public static func resourceInfo(_ info: ResourceInfo) -> Self {
     Self(.resourceInfo(info))
   }
 
-  ///  Create a ``ResourceInfo-swift.struct`` detail.
+  /// Creates a resource info detail identifying the resource involved in the error.
   ///
   /// - Parameters:
-  ///   - type: The type of resource being accessed, e,.g. "sql table", "file" or type URL of the
-  ///       resource.
+  ///   - type: The type of resource being accessed, for example, "sql table", "file", or a type
+  ///       URL of the resource.
   ///   - name: The name of the resource being accessed.
   ///   - errorDescription: Describes the error encountered when accessing this resource.
   ///   - owner: The owner of the resource.
@@ -172,24 +175,24 @@ public struct ErrorDetails: Sendable, Hashable {
     )
   }
 
-  /// Create a ``Help-swift.struct`` detail.
+  /// Creates a detail that wraps an existing help value.
   public static func help(_ info: Help) -> Self {
     Self(.help(info))
   }
 
-  ///  Create a ``Help-swift.struct`` detail.
+  /// Creates a help detail from one or more links.
   ///
   /// - Parameter links: URL(s) pointing to additional information on handling the current error.
   public static func help(links: [Help.Link]) -> Self {
     Self.help(Help(links: links))
   }
 
-  /// Create a ``LocalizedMessage-swift.struct`` detail.
+  /// Creates a detail that wraps an existing localized message.
   public static func localizedMessage(_ info: LocalizedMessage) -> Self {
     Self(.localizedMessage(info))
   }
 
-  /// Create a ``Help-swift.struct`` detail.
+  /// Creates a localized message detail for the given locale.
   ///
   /// - Parameters:
   ///   - locale: The locale used.
@@ -301,7 +304,7 @@ extension ErrorDetails {
     }
   }
 
-  /// Returns `Google_Protobuf_Any` if applicable.
+  /// Returns this detail's "Any" protobuf message if set.
   ///
   /// - Important: Calling this **doesn't** encode a detail of another type into a `Google_Protobuf_Any`.
   public var any: Google_Protobuf_Any? {

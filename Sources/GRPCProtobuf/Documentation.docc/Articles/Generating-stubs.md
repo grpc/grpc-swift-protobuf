@@ -4,7 +4,7 @@ Learn about the different options for generating stubs for gRPC Swift.
 
 ## Overview
 
-There are three primary approaches to generate stubs for your gRPC Swift
+There are three primary approaches to generating stubs for your gRPC Swift
 project:
 
 1. **Using `protoc` from the command line:** This is a common method for those
@@ -13,58 +13,57 @@ project:
    also <doc:Code-generation-with-protoc>.
 2. **Using a helper CLI provided by this package:** This tool,
    `generate-grpc-code-from-protos`, simplifies the
-   process by wrapping protoc. It handles the building and locating of `protoc`
-   plugins for you, and exposes various generation options as command-line
-   arguments.
+   process by wrapping `protoc`. It builds and locates `protoc` plugins for you
+   and exposes various generation options as command-line arguments.
 3. **Using a Swift Package Manager build plugin:** This approach integrates stub
    generation directly into your project's build graph, generating stubs
    automatically at build time. See <doc:Code-generation-with-the-build-plugin> for
    more information.
 
-## Deciding Which Approach to Take
+## Deciding which approach to take
 
-Each method has its own trade-offs. This section will help you choose the best
+Each method has its own trade-offs. This section helps you choose the best
 approach for your specific use case.
 
-### For Applications (self-contained packages)
+### For applications (self-contained packages)
 
-If you are building an **application** (meaning no other packages will depend on
+If you are building an **application** (meaning no other packages depend on
 yours), you **may** use the Swift Package Manager build plugin.
 
-- **Pros:** Stubs are generated as part of your package's build process,
-  eliminating the need for manual generation steps.
+- **Pros:** The build plugin generates stubs as part of your package's build
+  process, eliminating the need for manual generation steps.
 
-### For Libraries (dependent packages)
+### For libraries (dependent packages)
 
-If you are building a **library** (a package that other packages will depend
+If you are building a **library** (a package that other packages depend
 on), you may still prefer to generate stubs out-of-band using either:
 
 - `protoc` directly from the command line, or
-- The helper CLI tool offered by this package.
+- the helper CLI tool offered by this package.
 
-The generated code must then be included directly with the source files of your
+You must then include the generated code directly with the source files of your
 library package. This avoids the first-time build cost of compiling `protoc`
 from source for consumers of your library.
 
-### The CLI Tool
+### The CLI tool
 
-The `generate-grpc-code-from-protos` tool is designed to be a simpler and more
+The `generate-grpc-code-from-protos` tool provides a simpler, more
 user-friendly alternative to invoking `protoc` directly. It automates the process
-of building the necessary gRPC and Protobuf plugins for `protoc` and provides
-a simpler interface for configuring generation options. It is often the most
-convenient way to generate code for your gRPC project.
+of building the necessary gRPC Swift and Swift Protobuf plugins for `protoc` and
+provides a simpler interface for configuring generation options. It is often the
+most convenient way to generate code for your gRPC project.
 
-### Summary and Next Steps
+### Summary and next steps
 
-This table summarizes the three different approaches:
+This table summarizes the three approaches:
 
-|                                   | `protoc` | `generate-grpc-code-from-protos` | Build Plugin
+|                                   | `protoc` | `generate-grpc-code-from-protos` | Build plugin
 |-----------------------------------|----------|----------------------------------|--------------
-| Suitable for libraries            | ✓        | ✓                                | ✓†
-| Suitable for applications         | ✗        | ✗                                | ✓
-| Builds plugins for you            | ✗        | ✓                                | ✓
-| Generated at build time           | ✗        | ✗                                | ✓
-| Generated code must be checked in | ✓        | ✓                                | ✗
+| Suitable for libraries            | Yes      | Yes                              | Yes†
+| Suitable for applications         | No       | No                               | Yes
+| Builds plugins for you            | No       | Yes                              | Yes
+| Generated at build time           | No       | No                               | Yes
+| Generated code must be checked in | Yes      | Yes                              | No
 
 † Using the build plugin in a library means consumers incur a one-time cost of
 compiling `protoc` from source. Libraries may prefer checking in generated code

@@ -17,8 +17,8 @@
 public import GRPCCore  // internal but @usableFromInline
 public import SwiftProtobuf  // internal but @usableFromInline
 
-/// Brides between `GRPCContiguousBytes` and `SwiftProtobufContiguousBytes` which have the same
-/// requirements.
+/// Bridges two contiguous-bytes protocols that have the same requirements but live in different
+/// modules.
 ///
 /// This is necessary as `SwiftProtobufContiguousBytes` can't be the protocol in the gRPC API (as
 /// it'd require a dependency on Protobuf in the core package), and `GRPCContiguousBytes` can't

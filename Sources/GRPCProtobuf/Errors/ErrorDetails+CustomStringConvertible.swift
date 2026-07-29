@@ -16,6 +16,7 @@
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails: CustomStringConvertible {
+  /// A human-readable summary of whichever error detail this value wraps.
   public var description: String {
     switch self.wrapped {
     case .errorInfo(let info):
@@ -49,6 +50,7 @@ extension ErrorDetails: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.ErrorInfo: CustomStringConvertible {
+  /// A debug-friendly summary of the error's reason, domain, and metadata.
   public var description: String {
     "\(Self.self)(reason: \"\(self.reason)\", domain: \"\(self.domain)\", metadata: \(self.metadata))"
   }
@@ -56,6 +58,7 @@ extension ErrorDetails.ErrorInfo: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.DebugInfo: CustomStringConvertible {
+  /// A debug-friendly summary of the stack trace and detail text.
   public var description: String {
     "\(Self.self)(stack: \(self.stack), detail: \"\(self.detail)\")"
   }
@@ -63,6 +66,7 @@ extension ErrorDetails.DebugInfo: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.QuotaFailure.Violation: CustomStringConvertible {
+  /// A debug-friendly summary of the violation's subject, metric, and limits.
   public var description: String {
     "\(Self.self)(subject: \"\(self.subject)\", violationDescription: \"\(self.violationDescription)\", apiService: \"\(self.apiService)\", quotaMetric: \"\(self.quotaMetric)\", quotaID: \"\(self.quotaID)\", quotaDimensions: [\(self.quotaDimensions.map({ "\"\($0)\": \"\($1)\"" }).joined(separator: ", "))], quotaValue: \(self.quotaValue), futureQuotaValue: \(self.futureQuotaValue.map({ String(describing: $0) }) ?? "nil"))"
   }
@@ -70,6 +74,7 @@ extension ErrorDetails.QuotaFailure.Violation: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.PreconditionFailure.Violation: CustomStringConvertible {
+  /// A debug-friendly summary of the violation's subject and type.
   public var description: String {
     "\(Self.self)(subject: \"\(self.subject)\", type: \"\(self.type)\", violationDescription: \"\(self.violationDescription)\")"
   }
@@ -77,6 +82,7 @@ extension ErrorDetails.PreconditionFailure.Violation: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.BadRequest.FieldViolation: CustomStringConvertible {
+  /// A debug-friendly summary of the field path and the reason it's invalid.
   public var description: String {
     "\(Self.self)(field: \"\(self.field)\", violationDescription: \"\(self.violationDescription)\", reason: \"\(self.reason)\", localizedMessage: \(self.localizedMessage.map({ String(describing: $0) }) ?? "nil"))"
   }
@@ -84,6 +90,7 @@ extension ErrorDetails.BadRequest.FieldViolation: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.RequestInfo: CustomStringConvertible {
+  /// A debug-friendly summary of the request ID and serving data.
   public var description: String {
     "\(Self.self)(requestID: \"\(self.requestID)\", servingData: \"\(self.servingData)\")"
   }
@@ -91,6 +98,7 @@ extension ErrorDetails.RequestInfo: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.ResourceInfo: CustomStringConvertible {
+  /// A debug-friendly summary of the resource's name, type, and owner.
   public var description: String {
     "\(Self.self)(name: \"\(self.name)\", owner: \"\(self.owner)\", type: \"\(self.type)\", errorDescription: \"\(self.errorDescription)\")"
   }
@@ -98,6 +106,7 @@ extension ErrorDetails.ResourceInfo: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.Help.Link: CustomStringConvertible {
+  /// A debug-friendly summary of the link's URL and description.
   public var description: String {
     "\(Self.self)(url: \"\(self.url)\", linkDescription: \"\(self.linkDescription)\")"
   }
@@ -105,6 +114,7 @@ extension ErrorDetails.Help.Link: CustomStringConvertible {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension ErrorDetails.LocalizedMessage: CustomStringConvertible {
+  /// A debug-friendly summary of the message's locale and text.
   public var description: String {
     "\(Self.self)(locale: \"\(self.locale)\", message: \"\(self.message)\")"
   }

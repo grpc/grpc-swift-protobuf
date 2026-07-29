@@ -20,9 +20,10 @@ public import SwiftProtobuf
 /// Serializes a Protobuf message into a sequence of bytes.
 @available(gRPCSwiftProtobuf 2.0, *)
 public struct ProtobufSerializer<Message: SwiftProtobuf.Message>: GRPCCore.MessageSerializer {
+  /// Creates a serializer for the given message type.
   public init() {}
 
-  /// Serializes a `Message` into a sequence of bytes.
+  /// Serializes a message into a sequence of bytes.
   ///
   /// - Parameter message: The message to serialize.
   /// - Returns: An array of serialized bytes representing the message.
@@ -44,9 +45,10 @@ public struct ProtobufSerializer<Message: SwiftProtobuf.Message>: GRPCCore.Messa
 /// Deserializes a sequence of bytes into a Protobuf message.
 @available(gRPCSwiftProtobuf 2.0, *)
 public struct ProtobufDeserializer<Message: SwiftProtobuf.Message>: GRPCCore.MessageDeserializer {
+  /// Creates a deserializer for the given message type.
   public init() {}
 
-  /// Deserializes a sequence of bytes into a `Message`.
+  /// Deserializes a sequence of bytes into a message.
   ///
   /// - Parameter serializedMessageBytes: The array of bytes to deserialize.
   /// - Returns: The deserialized message.

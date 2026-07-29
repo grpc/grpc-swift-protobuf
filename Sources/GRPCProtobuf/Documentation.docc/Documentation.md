@@ -7,12 +7,12 @@ A package integrating Swift Protobuf with gRPC Swift.
 This package provides three products:
 - ``GRPCProtobuf``, a module providing runtime serialization and deserialization components for
   [SwiftProtobuf](https://github.com/apple/swift-protobuf).
-- `protoc-gen-grpc-swift-2`, an executable which is a plugin for `protoc`, the Protocol Buffers
-  compiler. An article describing how to generate gRPC Swift stubs using it is available with the
-  `grpc-swift-2` documentation on the [Swift Package
-  Index](https://swiftpackageindex.com/grpc/grpc-swift-2/documentation).
-- `GRPCProtobufGenerator`, a Swift Package build plugin for generating stubs as part of the build
-  process.
+- `protoc-gen-grpc-swift-2`, an executable that is a plugin for `protoc`, the Protocol Buffers
+  compiler. See the `grpc-swift-2` documentation on the [Swift Package
+  Index](https://swiftpackageindex.com/grpc/grpc-swift-2/documentation) for an article describing
+  how to generate gRPC Swift stubs using it.
+- `GRPCProtobufGenerator`, a Swift Package Manager build plugin for generating stubs as part of
+  the build process.
 
 
 ## Topics
@@ -35,3 +35,8 @@ This package provides three products:
 
 - ``ProtobufSerializer``
 - ``ProtobufDeserializer``
+
+### Error handling
+
+- ``GoogleRPCStatus``
+- ``ErrorDetails``

@@ -37,12 +37,12 @@ dnf install -y protobuf-compiler
 
 ### Installing a pre-built binary
 
-If you're unable to use a package manager to install `protoc` then you may be able
+If you're unable to use a package manager to install `protoc`, then you may be able
 to download a pre-built binary from the [Protocol Buffers GitHub
 repository](https://github.com/protocolbuffers/protobuf).
 
 First, find and download the appropriate binary for your system from the
- [releases](https://github.com/protocolbuffers/protobuf/releases) page.
+[releases](https://github.com/protocolbuffers/protobuf/releases) page.
 
 Next, unzip the artifact to a directory called `protoc`:
 
