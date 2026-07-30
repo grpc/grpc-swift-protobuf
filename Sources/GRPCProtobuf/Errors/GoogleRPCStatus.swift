@@ -17,23 +17,23 @@
 public import GRPCCore
 public import SwiftProtobuf
 
-/// An error containing structured details which can be delivered to the client.
+/// An error containing structured details that can be delivered to the client.
 ///
-/// This error follows the "richer error model" detailed in the
+/// This error follows the “richer error model” detailed in the
 /// [gRPC error guide](https://grpc.io/docs/guides/error/) and
 /// [Google AIP-193](https://google.aip.dev/193).
 ///
-/// Like an `RPCError`, this error has a `code` and `message`. However it also includes
-/// a list of structured error details which can be propagated to clients. A set of standard
-/// details are provided by ``ErrorDetails``.
+/// Like an `RPCError`, this error has a `code` and a `message`. However, it also includes
+/// a list of structured error details that can be propagated to clients. A set of standard
+/// details is provided by ``ErrorDetails``.
 ///
-/// As a client you can extract this error from an `RPCError` using `unpackGoogleRPCStatus()`.
+/// As a client, you can extract this error from an `RPCError` using `unpackGoogleRPCStatus()`.
 ///
 /// > Implementation details:
 /// >
 /// > The error information is transmitted to clients in the trailing metadata of an RPC. It is
-/// > inserted into the metadata keyed by "grpc-status-details-bin". The value of the metadata is
-/// > the serialized bytes of a "google.rpc.Status" protocol buffers message containing the status
+/// > inserted into the metadata keyed by `grpc-status-details-bin`. The value of the metadata is
+/// > the serialized bytes of a `google.rpc.Status` Protocol Buffers message containing the status
 /// > code, message, and details.
 @available(gRPCSwiftProtobuf 2.0, *)
 public struct GoogleRPCStatus: Error, Hashable {
@@ -49,7 +49,7 @@ public struct GoogleRPCStatus: Error, Hashable {
   /// A list of messages that carry the error details.
   public var details: [ErrorDetails]
 
-  /// Create a new Google RPC Status error.
+  /// Creates a new Google RPC Status error.
   ///
   /// - Parameters:
   ///   - code: A code representing the high-level domain of the error.
@@ -61,7 +61,7 @@ public struct GoogleRPCStatus: Error, Hashable {
     self.details = details
   }
 
-  /// Create a new Google RPC Status error.
+  /// Creates a new Google RPC Status error.
   ///
   /// - Parameters:
   ///   - code: A code representing the high-level domain of the error.
@@ -76,17 +76,16 @@ public struct GoogleRPCStatus: Error, Hashable {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension GoogleRPCStatus {
-  /// Creates a new message by decoding the given `SwiftProtobufContiguousBytes` value
-  /// containing a serialized message in Protocol Buffer binary format.
+  /// Creates a new status by decoding a serialized message in Protocol Buffer binary format.
   ///
   /// - Parameters:
   ///   - bytes: The binary-encoded message data to decode.
   ///   - extensions: An `ExtensionMap` used to look up and decode any
   ///     extensions in this message or messages nested within this message's
   ///     fields.
-  ///   - partial: If `false` (the default), this method will check if the `Message`
-  ///      is initialized after decoding to verify that all required fields are present.
-  ///      If any are missing, this method throws `BinaryDecodingError`.
+  ///   - partial: If `false` (the default), this method checks whether the `Message`
+  ///     is initialized after decoding to verify that all required fields are present.
+  ///     If any are missing, this method throws `BinaryDecodingError`.
   ///   - options: The `BinaryDecodingOptions` to use.
   /// - Throws: `BinaryDecodingError` if decoding fails.
   public init<Bytes: SwiftProtobufContiguousBytes>(
@@ -108,13 +107,12 @@ extension GoogleRPCStatus {
     self.details = try status.details.map { try ErrorDetails(unpacking: $0) }
   }
 
-  /// Returns a `SwiftProtobufContiguousBytes` instance containing the Protocol Buffer binary
-  /// format serialization of the message.
+  /// Returns the Protocol Buffer binary format serialization of this status.
   ///
   /// - Parameters:
-  ///   - partial: If `false` (the default), this method will check
+  ///   - partial: If `false` (the default), this method checks
   ///     `Message.isInitialized` before encoding to verify that all required
-  ///     fields are present. If any are missing, this method throws.
+  ///     fields are present. If any are missing, this method throws
   ///     `BinaryEncodingError/missingRequiredFields`.
   ///   - options: The `BinaryEncodingOptions` to use.
   /// - Returns: A `SwiftProtobufContiguousBytes` instance containing the binary serialization
@@ -137,8 +135,19 @@ extension GoogleRPCStatus {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension GoogleRPCStatus: RPCErrorConvertible {
+  /// The high-level domain of the error.
+  ///
+  /// This satisfies `RPCErrorConvertible` by mirroring `code`.
   public var rpcErrorCode: RPCError.Code { self.code }
+
+  /// The developer-facing message associated with the error.
+  ///
+  /// This satisfies `RPCErrorConvertible` by mirroring `message`.
   public var rpcErrorMessage: String { self.message }
+
+  /// The metadata used to carry this status's error details over the wire.
+  ///
+  /// Returns empty metadata if serializing the details fails.
   public var rpcErrorMetadata: Metadata {
     do {
       let bytes: [UInt8] = try self.serializedBytes()

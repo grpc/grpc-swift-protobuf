@@ -20,7 +20,7 @@ internal import SwiftProtobuf
 extension ErrorDetails {
   /// Describes the cause of the error with structured details.
   ///
-  /// Example of an error when contacting the "pubsub.googleapis.com" API when it
+  /// Example of an error when contacting the "pubsub.googleapis.com" API while it
   /// is not enabled:
   ///
   /// ```
@@ -55,7 +55,7 @@ extension ErrorDetails {
       self.storage = storage
     }
 
-    /// The reason of the error.
+    /// The reason for the error.
     ///
     /// This is a constant value that identifies the proximate cause of the error. Error reasons
     /// are unique within a particular domain of errors. This should be at most 63 characters and
@@ -81,14 +81,20 @@ extension ErrorDetails {
     ///
     /// Keys should match `[a-zA-Z0-9-_]` and be limited to 64 characters in length. When
     /// identifying the current value of an exceeded limit, the units should be contained in the
-    /// key, not the value.  For example, rather than `{"instanceLimit": "100/request"}`, should be
-    /// returned as, `{"instanceLimitPerRequest": "100"}``, if the client exceeds the number of
+    /// key, not the value. For example, rather than `{"instanceLimit": "100/request"}`, should be
+    /// returned as, `{"instanceLimitPerRequest": "100"}`, if the client exceeds the number of
     /// instances that can be created in a single (batch) request.
     public var metadata: [String: String] {
       get { self.storage.metadata }
       set { self.storage.metadata = newValue }
     }
 
+    /// Creates an error info detail from a reason, domain, and metadata.
+    ///
+    /// - Parameters:
+    ///   - reason: The reason for the error.
+    ///   - domain: The logical grouping to which the "reason" belongs.
+    ///   - metadata: Additional structured details about this error.
     public init(reason: String, domain: String, metadata: [String: String] = [:]) {
       self.storage = .with {
         $0.reason = reason
@@ -106,7 +112,7 @@ extension ErrorDetails {
   /// retrying.
   ///
   /// Clients should wait until `retry_delay` amount of time has passed since
-  /// receiving the error response before retrying.  If retrying requests also
+  /// receiving the error response before retrying. If retrying requests also
   /// fail, clients should use an exponential backoff scheme to gradually increase
   /// the delay between retries based on `retry_delay`, until either a maximum
   /// number of retries have been reached or a maximum retry delay cap has been
@@ -132,6 +138,9 @@ extension ErrorDetails {
     /// Clients should wait at least this long between retrying the same request.
     public var delay: Duration
 
+    /// Creates a retry info detail that tells clients how long to wait before retrying.
+    ///
+    /// - Parameter delay: The amount of time clients should wait before retrying this request.
     public init(delay: Duration) {
       self.delay = delay
     }
@@ -167,6 +176,11 @@ extension ErrorDetails {
       set { self.storage.detail = newValue }
     }
 
+    /// Creates a debug info detail from a stack trace and additional detail text.
+    ///
+    /// - Parameters:
+    ///   - stack: The stack trace entries indicating where the error occurred.
+    ///   - detail: Additional debugging information provided by the server.
     public init(stack: [String], detail: String) {
       self.storage = .with {
         $0.stackEntries = stack
@@ -177,14 +191,14 @@ extension ErrorDetails {
 
   /// Describes how a quota check failed.
   ///
-  /// For example if a daily limit was exceeded for the calling project,
+  /// For example, if a daily limit was exceeded for the calling project,
   /// a service could respond with a QuotaFailure detail containing the project
-  /// id and the description of the quota limit that was exceeded.  If the
+  /// id and the description of the quota limit that was exceeded. If the
   /// calling project hasn't enabled the service in the developer console, then
   /// a service could respond with the project id and set `service_disabled`
   /// to true.
   ///
-  /// Also see RetryInfo and Help types for other details about handling a
+  /// Also see ``RetryInfo-swift.struct`` and ``Help-swift.struct`` for other details about handling a
   /// quota failure.
   public struct QuotaFailure: Sendable, Hashable, GoogleProtobufAnyPackable {
     /// A message type used to describe a single quota violation. For example, a
@@ -199,15 +213,15 @@ extension ErrorDetails {
       ///
       /// Clients can use this description to find more about the quota configuration in the
       /// service's public documentation, or find the relevant quota limit to adjust through
-      /// developer console.
+      /// the developer console.
       ///
       /// For example: "Service disabled" or "Daily Limit for read operations
       /// exceeded".
       public var violationDescription: String
 
-      /// The API Service from which the `QuotaFailure.Violation` orginates. In
-      /// some cases, Quota issues originate from an API Service other than the one
-      /// that was called. In other words, a dependency of the called API Service
+      /// The API service from which the violation originates. In
+      /// some cases, quota issues originate from an API service other than the one
+      /// that was called. In other words, a dependency of the called API service
       /// could be the cause of the `QuotaFailure`, and this field would have the
       /// dependency API service name.
       ///
@@ -231,7 +245,7 @@ extension ErrorDetails {
       @available(gRPCSwiftProtobuf 2.1, *)
       public var quotaMetric: String
 
-      /// The id of the violated quota. Also know as "limit name", this is the
+      /// The id of the violated quota. Also known as "limit name", this is the
       /// unique identifier of a quota in the context of an API service.
       ///
       /// For example, "CPUS-PER-VM-FAMILY-per-project-region".
@@ -257,7 +271,7 @@ extension ErrorDetails {
       @available(gRPCSwiftProtobuf 2.1, *)
       public var quotaDimensions: [String: String]
 
-      /// The enforced quota value at the time of the `QuotaFailure`.
+      /// The enforced quota value at the time of the violation.
       ///
       /// For example, if the enforced quota value at the time of the
       /// `QuotaFailure` on the number of CPUs is "10", then the value of this
@@ -276,6 +290,11 @@ extension ErrorDetails {
       @available(gRPCSwiftProtobuf 2.1, *)
       public var futureQuotaValue: Int?
 
+      /// Creates a quota violation for the given subject and description.
+      ///
+      /// - Parameters:
+      ///   - subject: The subject on which the quota check failed.
+      ///   - description: A description of how the quota check failed.
       public init(
         subject: String,
         description: String
@@ -290,6 +309,18 @@ extension ErrorDetails {
         self.futureQuotaValue = nil
       }
 
+      /// Creates a quota violation that also records the API service, metric, and dimensions involved.
+      ///
+      /// - Parameters:
+      ///   - subject: The subject on which the quota check failed.
+      ///   - description: A description of how the quota check failed.
+      ///   - apiService: The API service from which the violation originates.
+      ///   - quotaMetric: The metric of the violated quota.
+      ///   - quotaID: The id of the violated quota.
+      ///   - quotaDimensions: The dimensions of the violated quota.
+      ///   - quotaValue: The enforced quota value at the time of the violation.
+      ///   - futureQuotaValue: The new quota value being rolled out at the time of the
+      ///       violation, if any.
       @available(gRPCSwiftProtobuf 2.1, *)
       public init(
         subject: String,
@@ -356,6 +387,9 @@ extension ErrorDetails {
     /// Describes all quota violations.
     public var violations: [Violation]
 
+    /// Creates a quota failure detail from one or more violations.
+    ///
+    /// - Parameter violations: Describes all quota violations.
     public init(violations: [Violation]) {
       self.violations = violations
     }
@@ -392,6 +426,12 @@ extension ErrorDetails {
       /// For example: "Terms of service not accepted".
       public var violationDescription: String
 
+      /// Creates a precondition violation describing what failed and why.
+      ///
+      /// - Parameters:
+      ///   - type: The type of PreconditionFailure.
+      ///   - subject: The subject, relative to the type, that failed.
+      ///   - description: A description of how the precondition failed.
       public init(type: String, subject: String, description: String) {
         self.type = type
         self.subject = subject
@@ -428,6 +468,9 @@ extension ErrorDetails {
     /// Describes all precondition violations.
     public var violations: [Violation]
 
+    /// Creates a precondition failure detail from one or more violations.
+    ///
+    /// - Parameter violations: Describes all precondition violations.
     public init(violations: [Violation]) {
       self.violations = violations
     }
@@ -465,13 +508,13 @@ extension ErrorDetails {
       ///       repeated EmailAddress email_addresses = 2;
       ///     }
       ///
-      /// In this example, in proto `field` could take one of the following values:
+      /// In this example, in proto, `field` could take one of the following values:
       ///
       /// * `full_name` for a violation in the `full_name` value
       /// * `email_addresses[1].email` for a violation in the `email` field of the
       ///   first `email_addresses` message
       /// * `email_addresses[3].type[2]` for a violation in the second `type`
-      ///   value in the third `email_addresses` message.
+      ///   value in the third `email_addresses` message
       ///
       /// In JSON, the same values are represented as:
       ///
@@ -479,18 +522,18 @@ extension ErrorDetails {
       /// * `emailAddresses[1].email` for a violation in the `email` field of the
       ///   first `emailAddresses` message
       /// * `emailAddresses[3].type[2]` for a violation in the second `type`
-      ///   value in the third `emailAddresses` message.
+      ///   value in the third `emailAddresses` message
       public var field: String
 
       /// A description of why the request element is bad.
       public var violationDescription: String
 
-      /// The reason of the field-level error. This is a constant value that
+      /// The reason for the field-level error. This is a constant value that
       /// identifies the proximate cause of the field-level error. It should
       /// uniquely identify the type of the FieldViolation within the scope of the
       /// google.rpc.ErrorInfo.domain. This should be at most 63
       /// characters and match a regular expression of `[A-Z][A-Z0-9_]+[A-Z0-9]`,
-      /// which represents UPPER_SNAKE_CASE.
+      /// which represents 'UPPER\_SNAKE\_CASE'.
       @available(gRPCSwiftProtobuf 2.1, *)
       public var reason: String
 
@@ -499,6 +542,11 @@ extension ErrorDetails {
       @available(gRPCSwiftProtobuf 2.1, *)
       public var localizedMessage: LocalizedMessage?
 
+      /// Creates a field violation identifying a bad request field and why it's invalid.
+      ///
+      /// - Parameters:
+      ///   - field: A path that leads to a field in the request body.
+      ///   - description: A description of why the request element is bad.
       public init(
         field: String,
         description: String
@@ -509,6 +557,14 @@ extension ErrorDetails {
         self.localizedMessage = nil
       }
 
+      /// Creates a field violation that also carries a machine-readable reason and a localized message.
+      ///
+      /// - Parameters:
+      ///   - field: A path that leads to a field in the request body.
+      ///   - description: A description of why the request element is bad.
+      ///   - reason: The reason for the field-level error.
+      ///   - localizedMessage: A localized error message for the field-level error that's safe to
+      ///       return to the API consumer.
       @available(gRPCSwiftProtobuf 2.1, *)
       public init(
         field: String,
@@ -565,6 +621,9 @@ extension ErrorDetails {
     /// Describes all violations in a client request.
     public var violations: [FieldViolation]
 
+    /// Creates a bad request detail from one or more field violations.
+    ///
+    /// - Parameter violations: Describes all violations in a client request.
     public init(violations: [FieldViolation]) {
       self.violations = violations
     }
@@ -596,6 +655,13 @@ extension ErrorDetails {
       set { self.storage.servingData = newValue }
     }
 
+    /// Creates a request info detail that helps correlate this error with server-side logs.
+    ///
+    /// - Parameters:
+    ///   - requestID: An opaque string that should only be interpreted by the service generating
+    ///       it. For example, it can be used to identify requests in the service's logs.
+    ///   - servingData: Any data that was used to serve this request. For example, an encrypted
+    ///       stack trace that can be sent back to the service provider for debugging.
     public init(requestID: String, servingData: String) {
       self.storage = .with {
         $0.requestID = requestID
@@ -614,9 +680,9 @@ extension ErrorDetails {
       self.storage = storage
     }
 
-    /// A name for the type of resource being accessed, e.g. "sql table",
+    /// A name for the type of resource being accessed, for example, "sql table",
     /// "cloud storage bucket", "file", "Google calendar"; or the type URL
-    /// of the resource: e.g. "type.googleapis.com/google.pubsub.v1.Topic".
+    /// of the resource, for example, "type.googleapis.com/google.pubsub.v1.Topic".
     public var type: String {
       get { self.storage.resourceType }
       set { self.storage.resourceType = newValue }
@@ -640,7 +706,7 @@ extension ErrorDetails {
       set { self.storage.owner = newValue }
     }
 
-    /// Describes what error is encountered when accessing this resource.
+    /// Describes the error encountered when accessing this resource.
     /// For example, updating a cloud project may require the `writer` permission
     /// on the developer console project.
     public var errorDescription: String {
@@ -648,6 +714,13 @@ extension ErrorDetails {
       set { self.storage.description_p = newValue }
     }
 
+    /// Creates a resource info detail identifying the resource involved in the error.
+    ///
+    /// - Parameters:
+    ///   - type: A name for the type of resource being accessed, or the type URL of the resource.
+    ///   - name: The name of the resource being accessed.
+    ///   - errorDescription: Describes the error encountered when accessing this resource.
+    ///   - owner: The owner of the resource.
     public init(type: String, name: String, errorDescription: String, owner: String = "") {
       self.storage = .with {
         $0.resourceType = type
@@ -658,7 +731,7 @@ extension ErrorDetails {
     }
   }
 
-  /// Provides links to documentation or for performing an out of band action.
+  /// Provides links to documentation or for performing an out-of-band action.
   ///
   /// For example, if a quota check failed with an error indicating the calling
   /// project hasn't enabled the accessed service, this can contain a URL pointing
@@ -672,6 +745,11 @@ extension ErrorDetails {
       /// Describes what the link offers.
       public var linkDescription: String
 
+      /// Creates a help link pointing to further information about the error.
+      ///
+      /// - Parameters:
+      ///   - url: The URL of the link.
+      ///   - description: Describes what the link offers.
       public init(url: String, description: String) {
         self.url = url
         self.linkDescription = description
@@ -710,12 +788,15 @@ extension ErrorDetails {
     /// URL(s) pointing to additional information on handling the current error.
     public var links: [Link]
 
+    /// Creates a help detail from one or more links.
+    ///
+    /// - Parameter links: URL(s) pointing to additional information on handling the current error.
     public init(links: [Link]) {
       self.links = links
     }
   }
 
-  /// Provides a localized error message that is safe to return to the user
+  /// Provides a localized error message that is safe to return to the user,
   /// which can be attached to an RPC error.
   public struct LocalizedMessage: Sendable, Hashable, GoogleProtobufAnyPackable, ProtobufBacked {
     var storage: Google_Rpc_LocalizedMessage
@@ -729,18 +810,23 @@ extension ErrorDetails {
     /// The locale used following the specification defined at
     /// https://www.rfc-editor.org/rfc/bcp/bcp47.txt.
     ///
-    /// Examples are: "en-US", "fr-CH", "es-MX"
+    /// Examples are: "en-US", "fr-CH", "es-MX".
     public var locale: String {
       get { self.storage.locale }
       set { self.storage.locale = newValue }
     }
 
-    /// The localized error message in the above locale.
+    /// The localized error message in the given locale.
     public var message: String {
       get { self.storage.message }
       set { self.storage.message = newValue }
     }
 
+    /// Creates a localized message detail for the given locale.
+    ///
+    /// - Parameters:
+    ///   - locale: The locale used.
+    ///   - message: The localized error message in the given locale.
     public init(locale: String, message: String) {
       self.storage = .with {
         $0.locale = locale

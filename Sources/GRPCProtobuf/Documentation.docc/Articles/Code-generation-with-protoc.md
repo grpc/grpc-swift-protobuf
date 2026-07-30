@@ -1,30 +1,30 @@
 # Code generation with protoc
 
-This article describes how to use the Swift Package Manager build plugin to
-generate gRPC Swift and Swift Protobuf code from your Protocol Buffers `.proto` files.
+This article describes how to generate gRPC Swift and Swift Protobuf code by invoking `protoc`
+directly with your Protocol Buffers `.proto` files.
 
 ## Overview
 
-If you've used Protocol Buffers before then generating gRPC Swift stubs should be simple. If you're
-unfamiliar with Protocol Buffers then you should get comfortable with the concepts before
+If you've used Protocol Buffers before, then generating gRPC Swift stubs should be simple. If
+you're unfamiliar with Protocol Buffers, then you should get comfortable with the concepts before
 continuing; the [Protocol Buffers website](https://protobuf.dev/) is a great place to start.
 
-If you haven't installed `protoc` yet refer to <doc:Installing-protoc> for
+If you haven't installed `protoc` yet, refer to <doc:Installing-protoc> for
 instructions.
 
 ## Using protoc
 
 The [`grpc-swift-protobuf`](https://github.com/grpc/grpc-swift-protobuf) package provides
-`protoc-gen-grpc-swift-2`, a program which is a plugin for the Protocol Buffers compiler, `protoc`.
-To generate gRPC stubs for your `.proto` files directly you must run the `protoc` command with
+`protoc-gen-grpc-swift-2`, a program that is a plugin for the Protocol Buffers compiler, `protoc`.
+To generate gRPC stubs for your `.proto` files directly, you must run the `protoc` command with
 the `--grpc-swift-2_out=<DIRECTORY>` option:
 
 ```console
 protoc --grpc-swift-2_out=. my-service.proto
 ```
 
-> `protoc-gen-grpc-swift-2` only generates gRPC stubs, it doesn't generate messages. You must use
-> `protoc-gen-swift` to generate messages in addition to gRPC Stubs.
+> `protoc-gen-grpc-swift-2` only generates gRPC stubs; it doesn't generate messages. You must use
+> `protoc-gen-swift` to generate messages in addition to gRPC stubs.
 
 The presence of `--grpc-swift-2_out` tells `protoc` to use the `protoc-gen-grpc-swift-2` plugin. By
 default it'll look for the plugin in your `PATH`. You can also specify the path to the plugin
@@ -52,11 +52,11 @@ protoc \
 
 ### Generator options
 
-| Name                      | Possible Values                             | Default         | Description                                              |
-|---------------------------|---------------------------------------------|-----------------|----------------------------------------------------------|
-| `Visibility`              | `Public`, `Package`, `Internal`             | `Internal`      | Access level for generated stubs                         |
-| `Server`                  | `True`, `False`                             | `True`          | Generate server stubs                                    |
-| `Client`                  | `True`, `False`                             | `True`          | Generate client stubs                                    |
+| Name                      | Possible values                             | Default         | Description                                              |
+|---------------------------|---------------------------------------------|-----------------|------------------------------------------------------------|
+| `Visibility`              | `Public`, `Package`, `Internal`             | `Internal`      | Access level for generated stubs.                         |
+| `Server`                  | `True`, `False`                             | `True`          | Generate server stubs.                                    |
+| `Client`                  | `True`, `False`                             | `True`          | Generate client stubs.                                    |
 | `FileNaming`              | `FullPath`, `PathToUnderscores`, `DropPath` | `FullPath`      | How generated source files should be named. †            |
 | `ProtoPathModuleMappings` |                                             |                 | Path to module map `.asciipb` file. ‡                    |
 | `UseAccessLevelOnImports` | `True`, `False`                             | `False`         | Whether imports should have explicit access levels.      |
@@ -65,20 +65,21 @@ protoc \
 | `SwiftProtobufModuleName` |                                             | `SwiftProtobuf` | The name of the `SwiftProtobuf` module.                  |
 | `Availability`            | String, in the form `OS Version`            |                 | Platform availability to use in generated code. §        |
 
-† The `FileNaming` option has three possible values, for an input of `foo/bar/baz.proto` the following
-output file will be generated:
-- `FullPath`: `foo/bar/baz.grpc.swift`.
+† The `FileNaming` option has three possible values. For an input of `foo/bar/baz.proto`, `protoc`
+generates the following output file:
+- `FullPath`: `foo/bar/baz.grpc.swift`
 - `PathToUnderscores`: `foo_bar_baz.grpc.swift`
 - `DropPath`: `baz.grpc.swift`
 
-‡ The code generator assumes all inputs are generated into the same module, `ProtoPathModuleMappings`
+‡ The code generator assumes all inputs are generated into the same module. `ProtoPathModuleMappings`
 allows you to specify a mapping from `.proto` files to the Swift module they are generated in. This
-allows the code generator to add appropriate imports to your generated stubs. This is described in
-more detail in the [SwiftProtobuf documentation](https://github.com/apple/swift-protobuf/blob/main/Documentation/PLUGIN.md).
+allows the code generator to add appropriate imports to your generated stubs. The [SwiftProtobuf
+documentation](https://github.com/apple/swift-protobuf/blob/main/Documentation/PLUGIN.md) describes
+this in more detail.
 
-§ If unspecified the following availability is used: macOS 15, iOS 18, tvOS 18,
-watchOS 11, visionOS 2. The `Availability` option may be specified multiple
-times, where each value is a space delimited pair of platform and version, e.g.
+§ If unspecified, the generator uses the following availability: macOS 15, iOS 18, tvOS 18,
+watchOS 11, visionOS 2. You can specify the `Availability` option multiple
+times, where each value is a space-delimited pair of platform and version, for example
 `Availability=macOS 15.0`.
 
 ### Building the protoc plugin
@@ -86,12 +87,12 @@ times, where each value is a space delimited pair of platform and version, e.g.
 > The version of `protoc-gen-grpc-swift-2` you use mustn't be newer than the version of
 > the `grpc-swift-protobuf` you're using.
 
-If your package depends on `grpc-swift-protobuf` then you can get a copy of `protoc-gen-grpc-swift-2`
+If your package depends on `grpc-swift-protobuf`, then you can get a copy of `protoc-gen-grpc-swift-2`
 by building it directly:
 
 ```console
 swift build --product protoc-gen-grpc-swift-2
 ```
 
-This command will build the plugin into `.build/debug` directory. You can get the full path using
+This command builds the plugin into the `.build/debug` directory. You can get the full path using
 `swift build --show-bin-path`.

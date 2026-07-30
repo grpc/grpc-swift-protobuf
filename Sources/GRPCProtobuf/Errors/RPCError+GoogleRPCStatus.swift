@@ -24,11 +24,11 @@ extension Metadata {
 
 @available(gRPCSwiftProtobuf 2.0, *)
 extension RPCError {
-  /// Unpack a ``GoogleRPCStatus`` error from the error metadata.
+  /// Extracts the structured Google RPC status error from this error's metadata, if present.
   ///
-  /// - Throws: If status details exist in the metadata but they couldn't be unpacked to
+  /// - Throws: If status details exist in the metadata but they can't be unpacked to
   ///     a ``GoogleRPCStatus``.
-  /// - Returns: The unpacked ``GoogleRPCStatus`` or `nil` if the metadata didn't contain any
+  /// - Returns: The unpacked ``GoogleRPCStatus`` or `nil` if the metadata doesn't contain any
   ///     status details.
   public func unpackGoogleRPCStatus() throws -> GoogleRPCStatus? {
     let values = self.metadata[binaryValues: Metadata.statusDetailsBinKey]
