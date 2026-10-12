@@ -43,7 +43,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
-    from: "1.38.0",
+    from: "1.39.0",
     // Opt-out of default traits to avoid pulling in full Foundation from `BinaryDelimitedStreams`
     traits: []
   ),
